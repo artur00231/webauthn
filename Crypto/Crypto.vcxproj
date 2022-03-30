@@ -145,15 +145,19 @@
     <ClInclude Include="CertificateValidator.h" />
     <ClInclude Include="Crypto.h" />
     <ClInclude Include="CryptoExceptions.h" />
+    <ClInclude Include="ECDSAKey.h" />
     <ClInclude Include="Hash.h" />
     <ClInclude Include="OpenSSLErros.h" />
+    <ClInclude Include="PublicKey.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="x509Cert.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CertificateValidator.cpp" />
     <ClCompile Include="Crypto.cpp" />
+    <ClCompile Include="ECDSAKey.cpp" />
     <ClCompile Include="OpenSSLErros.cpp" />
+    <ClCompile Include="PublicKey.cpp" />
     <ClCompile Include="x509Cert.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -39,6 +39,12 @@
     <ClInclude Include="Base64.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PublicKey.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECDSAKey.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Crypto.cpp">
@@ -51,6 +57,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CertificateValidator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PublicKey.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ECDSAKey.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
