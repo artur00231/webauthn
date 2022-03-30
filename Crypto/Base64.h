@@ -98,9 +98,9 @@ namespace webauthn::crypto::base64
 	std::optional<Out> fromBase64Fix(const In& data)
 	{
 		std::vector<char> data_fixed{};
-		std::copy(data.begin(), data.end(), std::back_inserter(data_fixed));
+		std::copy_if(data.begin(), data.end(), std::back_inserter(data_fixed), [](auto x) { return x != '='; });
 
-		auto diff = 4 - data.size() % 4;
+		auto diff = 4 - data_fixed.size() % 4;
 		diff = diff == 4 ? 0 : diff;
 
 		for (decltype(diff) i = 0; i < diff; i++)

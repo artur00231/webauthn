@@ -43,7 +43,7 @@ webauthn::AuthenticatorData webauthn::AuthenticatorData::fromBin(const std::vect
         std::copy(data.begin() + curr_pos, data.begin() + curr_pos + 16, attested_credential_data.AAGUID.begin());
         curr_pos += 16;
 
-        std::size_t key_size = (static_cast<std::size_t>(data.at(curr_pos)) << 8) | static_cast<std::size_t>(data.at(curr_pos));
+        std::size_t key_size = (static_cast<std::size_t>(data.at(curr_pos)) << 8) | static_cast<std::size_t>(data.at(curr_pos + 1));
         curr_pos += 2;
 
         if (data.size() < key_size + curr_pos)
@@ -51,8 +51,8 @@ webauthn::AuthenticatorData webauthn::AuthenticatorData::fromBin(const std::vect
             throw exceptions::FormatException("Invalid AuthenticatorData format");
         }
 
-        std::vector<std::byte> cbor{};
-        std::copy(data.begin() + curr_pos, data.begin() + curr_pos + key_size, std::back_inserter(cbor));
+        std::copy(data.begin() + curr_pos, data.begin() + curr_pos + key_size, 
+            std::back_inserter(attested_credential_data.credential_id));
 
         //KEY
 

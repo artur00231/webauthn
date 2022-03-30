@@ -12,7 +12,8 @@ namespace webauthn
 	{
 		using namespace std::string_literals;
 
-		auto attestation_object = "o2NmbXRkbm9uZWdhdHRTdG10oGhhdXRoRGF0YVjE6OigMGfkOiVfr_NFhth65_18t1hxC6VA81Sw5PU2eJJFAAAABAAAAAAAAAAAAAAAAAAAAAAAhnVwuOwqcONt06pQ_1-zXfHvX68QvF1EHszBMgd3YxuIohDVIKMxIYVvS5FSlc0_yCotKOhHeCplbX5kR3QQ3mGlAQIDJiABIVggb6RAOt8ujb7kA_H5IUDU55WSiPyIL3MYtMZ_SZcbOKoiWCDk-aBKAGMtx_g6p4rwDmR9PrZDbFavLv4uYNc2NErwyg"s;
+		auto attestation_object = "o2NmbXRkbm9uZWdhdHRTdG10oGhhdXRoRGF0YVjE6OigMGfkOiVfr/NFhth65/18t1hxC6VA81Sw5PU2eJJFAAAABAAAAAAAAAAAAAAAAAAAAAAAQP3r3W6zF66CKi7yT9HztDGlSdsXVesAprXdiE1b+gt+Fly74PLnaD8whnGArf66WYgNdNBMOQYarAELk1Q/UcmlAQIDJiABIVggx7D6tRNHzOwPoqSStRN1isSTsNfGgvnS/QwwF/osgqkiWCCkQ5xjtZNFB6wz+M20Y5LEGPN3i4wiXd6sgXo9tZP2Fg=="s;
+		auto attestation_object_key_id = "/evdbrMXroIqLvJP0fO0MaVJ2xdV6wCmtd2ITVv6C34WXLvg8udoPzCGcYCt/rpZiA100Ew5BhqsAQuTVD9RyQ=="s;
 	}
 
 	TEST(AttestationObjectTests, AttestationObject1)
@@ -20,8 +21,10 @@ namespace webauthn
 		using namespace std::string_literals;
 
 		auto decoded = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::attestation_object);
+		auto decoded_key_id = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::attestation_object_key_id);
 
 		ASSERT_TRUE(decoded.has_value());
+		ASSERT_TRUE(decoded_key_id.has_value());
 
 		auto attestation_object = AttestationObject::fromCbor(*decoded);
 
@@ -38,5 +41,7 @@ namespace webauthn
 		
 		std::array<std::byte, 16> AAGUID{};
 		EXPECT_EQ(attestation_object.authenticator_data.attested_credential_data->AAGUID, AAGUID);
+
+		EXPECT_EQ(attestation_object.authenticator_data.attested_credential_data->credential_id, *decoded_key_id);
 	}
 }
