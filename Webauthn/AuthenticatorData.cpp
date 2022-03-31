@@ -53,8 +53,26 @@ webauthn::AuthenticatorData webauthn::AuthenticatorData::fromBin(const std::vect
 
         std::copy(data.begin() + curr_pos, data.begin() + curr_pos + key_size, 
             std::back_inserter(attested_credential_data.credential_id));
+        curr_pos += key_size;
 
         //KEY
+        std::vector<std::byte> public_key_data{};
+        std::copy(data.begin() + curr_pos, data.end(), std::back_inserter(public_key_data));
+
+        auto [key_raw, result] = CBOR::CBORHandle::fromBin(public_key_data);
+        curr_pos += result.read;
+        public_key_data.resize(result.read);
+
+        PublicKey p_key{};
+        p_key.public_key_cbor = public_key_data;
+
+        auto crypto_key = crypto::createPublicKey(key_raw);
+        if (!crypto_key)
+        {
+            throw exceptions::DataException("Cannot read public key");
+        }
+
+        p_key.public_key = std::move(*crypto_key);
 
         authenticator_data.attested_credential_data = std::move(attested_credential_data);
     }

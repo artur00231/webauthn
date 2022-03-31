@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Attestation.h"
-#include "COSE.h"
+#include "../Crypto/COSE.h"
 
 #include <nlohmann/json.hpp>
 #include <cstddef>
@@ -14,7 +14,7 @@ namespace webauthn
 	public:
 		std::string version{};
 
-		COSE::COSE_ALGORITHM algorithm{};
+		crypto::COSE::COSE_ALGORITHM algorithm{};
 		std::vector<std::vector<std::byte>> x5c{};
 		std::vector<std::uint8_t> ecdaaKeyId{};
 		std::vector<std::uint8_t> key_id{};

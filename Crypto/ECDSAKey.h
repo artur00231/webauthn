@@ -1,6 +1,7 @@
 #pragma once
 
 #include "PublicKey.h"
+#include "COSE.h"
 
 #include <optional>
 #include <vector>
@@ -10,8 +11,6 @@
 
 namespace webauthn::crypto
 {
-	enum class ECDSA_EC { P256 = 1, P384 = 2, P521 = 3, secp256k1 = 8 };
-
 	class ECDSAKey : public PublicKey
 	{
 	public:
@@ -21,19 +20,28 @@ namespace webauthn::crypto
 		ECDSAKey& operator=(ECDSAKey&&) noexcept;
 		~ECDSAKey();
 
-		static std::optional<ECDSAKey> create(const std::string& hex_x, const std::string& hex_y, const ECDSA_EC ec);
+		static std::optional<ECDSAKey> create(const std::vector<std::byte>& bin_x, const std::vector<std::byte>& bin_y, const COSE::ECDSA_EC ec);
 
-		std::optional<bool> verify(const std::string& data, const std::string& signature, const SIGNATURE_HASH hash) const override;
-		std::optional<bool> verify(const std::vector<std::byte>& data, const std::vector<std::byte>& signature, const SIGNATURE_HASH hash) const override;
+		std::optional<bool> verify(const std::string& data, const std::string& signature, const COSE::SIGNATURE_HASH hash) const override;
+		std::optional<bool> verify(const std::vector<std::byte>& data, const std::vector<std::byte>& signature, const COSE::SIGNATURE_HASH hash) const override;
+
+		void setDefaultHash(COSE::SIGNATURE_HASH hash) noexcept {
+			default_hash = hash;
+		}
+
+		COSE::SIGNATURE_HASH defaultHash() const noexcept {
+			return default_hash;
+		}
 
 	protected:
 		std::optional<bool> verify(const void* data, std::size_t data_size, const unsigned char* signature, std::size_t signature_size,
-			const SIGNATURE_HASH hash) const;
+			const COSE::SIGNATURE_HASH hash) const;
 
 	private:
 		ECDSAKey() = default;
 
 		EC_KEY* eckey{ nullptr };
+		COSE::SIGNATURE_HASH default_hash{ COSE::SIGNATURE_HASH::SHA256 };
 	};
 }
 

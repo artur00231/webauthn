@@ -4,14 +4,19 @@
 #include <string>
 #include <vector>
 #include <cstddef>
+#include <memory>
+
+#include "COSE.h"
+#include "../CBOR/CBOR.h"
 
 namespace webauthn::crypto
 {
-	enum class SIGNATURE_HASH { SHA256 = -16, SHA384 = -43, SHA512 = -44 };
-
 	class PublicKey
 	{
-		virtual std::optional<bool> verify(const std::string& data, const std::string& signature, const SIGNATURE_HASH hash) const = 0;
-		virtual std::optional<bool> verify(const std::vector<std::byte>& data, const std::vector<std::byte>& signature, const SIGNATURE_HASH hash) const = 0;
+		virtual std::optional<bool> verify(const std::string& data, const std::string& signature, const COSE::SIGNATURE_HASH hash) const = 0;
+		virtual std::optional<bool> verify(const std::vector<std::byte>& data, const std::vector<std::byte>& signature, const COSE::SIGNATURE_HASH hash) const = 0;
 	};
+
+	std::optional<std::unique_ptr<PublicKey>> createPublicKey(const std::vector<std::byte>& cbor);
+	std::optional<std::unique_ptr<PublicKey>> createPublicKey(CBOR::CBORHandle handle);
 }

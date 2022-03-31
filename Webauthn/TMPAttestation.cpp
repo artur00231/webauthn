@@ -10,11 +10,11 @@ webauthn::TMPAttestation webauthn::TMPAttestation::parseJSON(const nlohmann::jso
         attestation.version = data.at("ver");
         std::int32_t algorithm = data.at("alg");
 
-        if (!webauthn::COSE::isCOSE_ALGORITHM(algorithm))
+        if (!webauthn::crypto::COSE::isCOSE_ALGORITHM(algorithm))
         {
             throw webauthn::exceptions::DataException("Invalid or unsupported algorithm");
         }
-        attestation.algorithm = static_cast<webauthn::COSE::COSE_ALGORITHM>(algorithm);
+        attestation.algorithm = static_cast<webauthn::crypto::COSE::COSE_ALGORITHM>(algorithm);
 
         auto& cert_info_arr = data.at("certInfo").get_binary();
         std::copy(cert_info_arr.cbegin(), cert_info_arr.cend(), std::back_inserter(attestation.cert_info));

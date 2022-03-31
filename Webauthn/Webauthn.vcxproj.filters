@@ -41,9 +41,6 @@
     <ClInclude Include="TMPAttestation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="COSE.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="WebAuthn.h">
       <Filter>Header Files</Filter>
     </ClInclude>

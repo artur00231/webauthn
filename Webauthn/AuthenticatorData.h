@@ -4,9 +4,20 @@
 #include <vector>
 #include <cstddef>
 #include <optional>
+#include <memory>
+
+#include "../Crypto/PublicKey.h"
 
 namespace webauthn
 {
+	class PublicKey
+	{
+	public:
+		std::vector<std::byte> public_key_cbor{};
+
+		std::unique_ptr<crypto::PublicKey> public_key{ nullptr };
+	};
+
 	class AttestedCredentialData
 	{
 	public:

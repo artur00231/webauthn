@@ -143,6 +143,7 @@
   <ItemGroup>
     <ClInclude Include="Base64.h" />
     <ClInclude Include="CertificateValidator.h" />
+    <ClInclude Include="COSE.h" />
     <ClInclude Include="Crypto.h" />
     <ClInclude Include="CryptoExceptions.h" />
     <ClInclude Include="ECDSAKey.h" />
@@ -159,6 +160,11 @@
     <ClCompile Include="OpenSSLErros.cpp" />
     <ClCompile Include="PublicKey.cpp" />
     <ClCompile Include="x509Cert.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CBOR\CBOR.vcxproj">
+      <Project>{cc078584-d971-4846-88fd-4a16c4bc867c}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

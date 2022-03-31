@@ -6,22 +6,23 @@
 #include <openssl/evp.h>
 #include <openssl/bn.h>
 
-std::optional<webauthn::crypto::ECDSAKey> webauthn::crypto::ECDSAKey::create(const std::string& hex_x, const std::string& hex_y, const ECDSA_EC ec)
+std::optional<webauthn::crypto::ECDSAKey> webauthn::crypto::ECDSAKey::create(const std::vector<std::byte>& bin_x,
+    const std::vector<std::byte>& bin_y, const COSE::ECDSA_EC ec)
 {
     ECDSAKey ECDSA_key{};
 
     switch (ec)
     {
-    case ECDSA_EC::P256:
+    case COSE::ECDSA_EC::P256:
         ECDSA_key.eckey = EC_KEY_new_by_curve_name(NID_X9_62_prime256v1);
         break;
-    case ECDSA_EC::P384:
+    case COSE::ECDSA_EC::P384:
         ECDSA_key.eckey = EC_KEY_new_by_curve_name(NID_secp384r1);
         break;
-    case ECDSA_EC::P521:
+    case COSE::ECDSA_EC::P521:
         ECDSA_key.eckey = EC_KEY_new_by_curve_name(NID_secp521r1);
         break;
-    case ECDSA_EC::secp256k1:
+    case COSE::ECDSA_EC::secp256k1:
         ECDSA_key.eckey = EC_KEY_new_by_curve_name(NID_secp256k1);
         break;
     default:
@@ -48,16 +49,16 @@ std::optional<webauthn::crypto::ECDSAKey> webauthn::crypto::ECDSAKey::create(con
     if (!bn_ctx) return {};
 
     BIGNUM* num{ nullptr };
-    auto result = BN_hex2bn(&num, hex_x.c_str());
-    if (result == 0 || num == nullptr) return {};
+    num = BN_bin2bn(reinterpret_cast<const unsigned char*>(bin_x.data()), static_cast<int>(bin_x.size()), nullptr);
+    if (num == nullptr) return {};
     BN_ptr x{ num };
 
     num = nullptr;
-    result = BN_hex2bn(&num, hex_y.c_str());
-    if (result == 0 || num == nullptr) return {};
+    num = BN_bin2bn(reinterpret_cast<const unsigned char*>(bin_y.data()), static_cast<int>(bin_y.size()), nullptr);
+    if (num == nullptr) return {};
     BN_ptr y{ num };
 
-    result = EC_POINT_set_affine_coordinates(group, pub_key.get(), x.get(), y.get(), bn_ctx.get());
+    auto result = EC_POINT_set_affine_coordinates(group, pub_key.get(), x.get(), y.get(), bn_ctx.get());
     if (result != 1) return {};
 
     result = EC_KEY_set_public_key(ECDSA_key.eckey, pub_key.get());
@@ -66,17 +67,17 @@ std::optional<webauthn::crypto::ECDSAKey> webauthn::crypto::ECDSAKey::create(con
     return ECDSA_key;
 }
 
-std::optional<bool> webauthn::crypto::ECDSAKey::verify(const std::string& data, const std::string& signature, const SIGNATURE_HASH hash) const
+std::optional<bool> webauthn::crypto::ECDSAKey::verify(const std::string& data, const std::string& signature, const COSE::SIGNATURE_HASH hash) const
 {
     return verify(reinterpret_cast<const void*>(data.data()), data.size(), reinterpret_cast<const unsigned char*>(signature.data()), signature.size(), hash);
 }
 
-std::optional<bool> webauthn::crypto::ECDSAKey::verify(const std::vector<std::byte>& data, const std::vector<std::byte>& signature, const SIGNATURE_HASH hash) const
+std::optional<bool> webauthn::crypto::ECDSAKey::verify(const std::vector<std::byte>& data, const std::vector<std::byte>& signature, const COSE::SIGNATURE_HASH hash) const
 {
     return verify(reinterpret_cast<const void*>(data.data()), data.size(), reinterpret_cast<const unsigned char*>(signature.data()), signature.size(), hash);
 }
 
-std::optional<bool> webauthn::crypto::ECDSAKey::verify(const void* data, std::size_t data_size, const unsigned char* signature, std::size_t signature_size, const SIGNATURE_HASH hash) const
+std::optional<bool> webauthn::crypto::ECDSAKey::verify(const void* data, std::size_t data_size, const unsigned char* signature, std::size_t signature_size, const COSE::SIGNATURE_HASH hash) const
 {
     std::unique_ptr<EVP_PKEY, decltype([](EVP_PKEY* ptr) {
             if (ptr) EVP_PKEY_free(ptr);
@@ -92,13 +93,13 @@ std::optional<bool> webauthn::crypto::ECDSAKey::verify(const void* data, std::si
     const EVP_MD* hash_type{ nullptr };
     switch (hash)
     {
-    case SIGNATURE_HASH::SHA256:
+    case COSE::SIGNATURE_HASH::SHA256:
         hash_type = EVP_sha256();
         break;
-    case SIGNATURE_HASH::SHA384:
+    case COSE::SIGNATURE_HASH::SHA384:
         hash_type = EVP_sha384();
         break;
-    case SIGNATURE_HASH::SHA512:
+    case COSE::SIGNATURE_HASH::SHA512:
         hash_type = EVP_sha512();
         break;
     default:
