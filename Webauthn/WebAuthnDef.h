@@ -37,6 +37,8 @@ namespace webauthn
 	{
 		std::vector<std::byte> authenticator_data{};
 		std::vector<std::byte> signature{};
-		std::vector<std::byte> user_id{};
+
+		//May not be present in non discoverable credentials
+		std::optional<std::vector<std::byte>> user_id{};
 	};
 }

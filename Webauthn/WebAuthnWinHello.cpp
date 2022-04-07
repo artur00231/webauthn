@@ -222,8 +222,14 @@ std::optional<webauthn::GetAssertionResult> webauthn::impl::WebAuthnWinHello::ge
 		[](auto x) { return static_cast<std::byte>(x); });
 
 	std::span id_span{ webAuthNAssertion->pbUserId, webAuthNAssertion->cbUserId };
-	std::transform(id_span.begin(), id_span.end(), std::back_inserter(get_assertion_result.user_id),
-		[](auto x) { return static_cast<std::byte>(x); });
+	if (id_span.size() != 0)
+	{
+		std::vector<std::byte> user_id{};
+		std::transform(id_span.begin(), id_span.end(), std::back_inserter(user_id),
+			[](auto x) { return static_cast<std::byte>(x); });
+
+		get_assertion_result.user_id = user_id;
+	}
 
 	std::span auth_data_span{ webAuthNAssertion->pbAuthenticatorData, webAuthNAssertion->cbAuthenticatorData };
 	std::transform(auth_data_span.begin(), auth_data_span.end(), std::back_inserter(get_assertion_result.authenticator_data),
