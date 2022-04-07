@@ -45,7 +45,8 @@ namespace webauthn::impl
 		WebAuthnWinHello();
 		~WebAuthnWinHello();
 
-		std::optional<std::vector<std::byte>> makeCredentials(const UserData& user, const RelyingParty& rp) override;
+		std::optional<MakeCredentialResult> makeCredential(const UserData& user, const RelyingParty& rp) override;
+		std::optional<GetAssertionResult> getAssertion(const CredentialId& id, const RelyingParty& rp) override;
 
 	private:
 		WebAuthnWinHelloDll webAuthnWinHelloDll{};

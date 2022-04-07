@@ -23,4 +23,17 @@ namespace webauthn
 		std::string name{};
 		std::string display_name{};
 	};
+
+	struct MakeCredentialResult
+	{
+		std::vector<std::byte> attestation_object{};
+	};
+
+
+	struct GetAssertionResult
+	{
+		std::vector<std::byte> authenticator_data{};
+		std::vector<std::byte> signature{};
+		std::vector<std::byte> user_id{};
+	};
 }

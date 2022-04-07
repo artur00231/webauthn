@@ -1,8 +1,15 @@
 #include "WebAuthn.h"
 
-std::optional<webauthn::AttestationObject> webauthn::WebAuthn::makeCredentials(const UserData& user)
+std::optional<webauthn::MakeCredentialResult> webauthn::WebAuthn::makeCredential(const UserData& user)
 {
-    auto data = impl.makeCredentials(user, rp);
+    auto data = impl.makeCredential(user, rp);
+
+    return {};
+}
+
+std::optional<webauthn::GetAssertionResult> webauthn::WebAuthn::getAssertion(const CredentialId& credential_id)
+{
+    auto data = impl.getAssertion(credential_id, rp);
 
     return {};
 }

@@ -6,6 +6,8 @@
 #include <optional>
 #include <memory>
 
+#include "CredentialId.h"
+
 #include "../Crypto/PublicKey.h"
 
 namespace webauthn
@@ -22,7 +24,7 @@ namespace webauthn
 	{
 	public:
 		std::array<std::byte, 16> AAGUID{};
-		std::vector<std::byte> credential_id{};
+		CredentialId credential_id{};
 		//Public key
 	};
 

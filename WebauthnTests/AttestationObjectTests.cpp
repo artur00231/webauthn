@@ -42,6 +42,6 @@ namespace webauthn
 		std::array<std::byte, 16> AAGUID{};
 		EXPECT_EQ(attestation_object.authenticator_data.attested_credential_data->AAGUID, AAGUID);
 
-		EXPECT_EQ(attestation_object.authenticator_data.attested_credential_data->credential_id, *decoded_key_id);
+		EXPECT_EQ(attestation_object.authenticator_data.attested_credential_data->credential_id.id, *decoded_key_id);
 	}
 }

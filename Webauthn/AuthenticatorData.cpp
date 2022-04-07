@@ -52,7 +52,7 @@ webauthn::AuthenticatorData webauthn::AuthenticatorData::fromBin(const std::vect
         }
 
         std::copy(data.begin() + curr_pos, data.begin() + curr_pos + key_size, 
-            std::back_inserter(attested_credential_data.credential_id));
+            std::back_inserter(attested_credential_data.credential_id.id));
         curr_pos += key_size;
 
         //KEY

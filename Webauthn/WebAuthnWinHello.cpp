@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <ranges>
 #include <array>
+#include <span>
 
 namespace webauthn::impl::WH
 {
@@ -77,7 +78,7 @@ webauthn::impl::WebAuthnWinHello::~WebAuthnWinHello()
 {
 }
 
-std::optional<std::vector<std::byte>> webauthn::impl::WebAuthnWinHello::makeCredentials(const UserData& user, const RelyingParty& rp)
+std::optional<webauthn::MakeCredentialResult> webauthn::impl::WebAuthnWinHello::makeCredential(const UserData& user, const RelyingParty& rp)
 {
 	if (!webAuthnWinHelloDll)
 	{
@@ -166,7 +167,68 @@ std::optional<std::vector<std::byte>> webauthn::impl::WebAuthnWinHello::makeCred
 		return {};
 	}
 
-	return { attestationObject };
+	return { { attestationObject } };
+}
+
+std::optional<webauthn::GetAssertionResult> webauthn::impl::WebAuthnWinHello::getAssertion(const CredentialId& id, const RelyingParty& rp)
+{
+	std::vector<BYTE> credentials_id{};
+	std::transform(id.id.begin(), id.id.end(), std::back_inserter(credentials_id),
+		[](auto x) { return static_cast<BYTE>(x); });
+
+	WEBAUTHN_CLIENT_DATA webAuthNClientData{};
+	webAuthNClientData.dwVersion = WEBAUTHN_CLIENT_DATA_CURRENT_VERSION;
+	webAuthNClientData.pwszHashAlgId = WEBAUTHN_HASH_ALGORITHM_SHA_256;
+	std::array<std::uint8_t, 32> data{};
+	webAuthNClientData.pbClientDataJSON = data.data();
+	webAuthNClientData.cbClientDataJSON = static_cast<DWORD>(data.size());
+
+	BOOL pbU2fAppId = FALSE;
+
+	WEBAUTHN_CREDENTIAL credential{};// = { WEBAUTHN_CREDENTIAL_CURRENT_VERSION, key_handle_len, (uint8_t*)key_handle, WEBAUTHN_CREDENTIAL_TYPE_PUBLIC_KEY };
+	credential.dwVersion = WEBAUTHN_CREDENTIAL_CURRENT_VERSION;
+	credential.cbId = static_cast<DWORD>(credentials_id.size());
+	credential.pbId = credentials_id.data();
+	credential.pwszCredentialType = WEBAUTHN_CREDENTIAL_TYPE_PUBLIC_KEY;
+
+	WEBAUTHN_CREDENTIALS allowCredentialList = { 1, &credential };
+
+	WEBAUTHN_AUTHENTICATOR_GET_ASSERTION_OPTIONS WebAuthNAssertionOptions{};
+	WebAuthNAssertionOptions.dwVersion = WEBAUTHN_AUTHENTICATOR_GET_ASSERTION_OPTIONS_VERSION_2;
+	WebAuthNAssertionOptions.dwTimeoutMilliseconds = 60000;
+	WebAuthNAssertionOptions.CredentialList = allowCredentialList;
+	WebAuthNAssertionOptions.Extensions = { 0, nullptr };
+	WebAuthNAssertionOptions.dwAuthenticatorAttachment = WEBAUTHN_AUTHENTICATOR_ATTACHMENT_ANY;
+	WebAuthNAssertionOptions.dwUserVerificationRequirement = WEBAUTHN_USER_VERIFICATION_REQUIREMENT_DISCOURAGED;
+	WebAuthNAssertionOptions.dwFlags = 0;
+	WebAuthNAssertionOptions.pwszU2fAppId = nullptr;
+	WebAuthNAssertionOptions.pbU2fAppId = &pbU2fAppId;
+
+	WEBAUTHN_ASSERTION* webAuthNAssertion{};
+	HWND Hwindow = GetForegroundWindow();
+	auto RP_ID_w = WH::fromASCIIString(rp.ID);
+
+	auto result = WebAuthNAuthenticatorGetAssertion(Hwindow, RP_ID_w.c_str(), &webAuthNClientData, &WebAuthNAssertionOptions, &webAuthNAssertion);
+
+	if (result != S_OK || webAuthNAssertion == nullptr)
+	{
+		return {};
+	}
+
+	GetAssertionResult get_assertion_result{};
+	std::span sign_span{ webAuthNAssertion->pbSignature, webAuthNAssertion->cbSignature };
+	std::transform(sign_span.begin(), sign_span.end(), std::back_inserter(get_assertion_result.signature),
+		[](auto x) { return static_cast<std::byte>(x); });
+
+	std::span id_span{ webAuthNAssertion->pbUserId, webAuthNAssertion->cbUserId };
+	std::transform(id_span.begin(), id_span.end(), std::back_inserter(get_assertion_result.user_id),
+		[](auto x) { return static_cast<std::byte>(x); });
+
+	std::span auth_data_span{ webAuthNAssertion->pbAuthenticatorData, webAuthNAssertion->cbAuthenticatorData };
+	std::transform(auth_data_span.begin(), auth_data_span.end(), std::back_inserter(get_assertion_result.authenticator_data),
+		[](auto x) { return static_cast<std::byte>(x); });
+
+	return get_assertion_result;
 }
 
 #endif // _WIN32

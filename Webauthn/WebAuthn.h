@@ -5,6 +5,7 @@
 #include "WebAuthnDef.h"
 #include "WebAuthnImpl.h"
 #include "AttestationObject.h"
+#include "CredentialId.h"
 
 namespace webauthn
 {
@@ -13,7 +14,8 @@ namespace webauthn
 	public:
 		WebAuthn(const RelyingParty rp, impl::WebAuthnImpl& impl) : rp{ rp }, impl{ impl } {}
 
-		std::optional<AttestationObject> makeCredentials(const UserData& user);
+		std::optional<MakeCredentialResult> makeCredential(const UserData& user);
+		std::optional<GetAssertionResult> getAssertion(const CredentialId& credential_id);
 
 	private:
 		const RelyingParty rp;

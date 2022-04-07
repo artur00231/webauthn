@@ -62,5 +62,8 @@
     <ClInclude Include="WebAuthnExceptions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CredentialId.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
