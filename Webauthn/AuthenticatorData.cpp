@@ -3,6 +3,7 @@
 #include "WebAuthnExceptions.h"
 
 #include "../CBOR/CBOR.h"
+#include "../Crypto/Hash.h"
 
 #include <iterator>
 
@@ -74,6 +75,8 @@ webauthn::AuthenticatorData webauthn::AuthenticatorData::fromBin(const std::vect
 
         p_key.public_key = std::move(*crypto_key);
 
+        attested_credential_data.key = std::move(p_key);
+
         authenticator_data.attested_credential_data = std::move(attested_credential_data);
     }
 
@@ -87,5 +90,51 @@ webauthn::AuthenticatorData webauthn::AuthenticatorData::fromBin(const std::vect
 
 std::vector<std::byte> webauthn::AuthenticatorData::toBin()
 {
-    return std::vector<std::byte>();
+    std::vector<std::byte> data{};
+    
+    //RP_ID hash
+    std::copy(RP_ID_hash.begin(), RP_ID_hash.end(), std::back_inserter(data));
+
+    //Flags
+    std::uint8_t flags{ 0 };
+    //user present
+    flags |= 0b1 * user_present;
+    //user verified 
+    flags |= 0b100 * user_verified;
+    //Attested credential data included
+    flags |= 0b1000000 * bool(attested_credential_data);
+    //Extension data included
+    //TODO
+    flags |= 0b10000000 * false;
+
+    data.push_back(static_cast<std::byte>(flags));
+
+    //Signature counter
+    std::uint32_t counter = sign_counter;
+    data.push_back(static_cast<std::byte>((counter >> 24) & 0xFF));
+    data.push_back(static_cast<std::byte>((counter >> 16) & 0xFF));
+    data.push_back(static_cast<std::byte>((counter >> 8) & 0xFF));
+    data.push_back(static_cast<std::byte>((counter >> 0) & 0xFF));
+
+    if (attested_credential_data)
+    {
+        //aaguid
+        std::copy(attested_credential_data->AAGUID.begin(), attested_credential_data->AAGUID.end(), std::back_inserter(data));
+
+        //credentialId length
+        std::uint16_t length = static_cast<std::uint16_t>(attested_credential_data->credential_id.id.size());
+        data.push_back(static_cast<std::byte>((length >> 8) & 0xFF));
+        data.push_back(static_cast<std::byte>((length >> 0) & 0xFF));
+
+        //credentialId
+        std::copy(attested_credential_data->credential_id.id.begin(), attested_credential_data->credential_id.id.end(), std::back_inserter(data));
+
+        //key
+        if (attested_credential_data->key)
+        {
+            std::copy(attested_credential_data->key->public_key_cbor.begin(), attested_credential_data->key->public_key_cbor.end(), std::back_inserter(data));
+        }
+    }
+
+    return data;
 }

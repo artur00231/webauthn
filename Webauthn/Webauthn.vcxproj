@@ -158,6 +158,7 @@
     <ClCompile Include="AuthenticatorData.cpp" />
     <ClCompile Include="TMPAttestation.cpp" />
     <ClCompile Include="WebAuthn.cpp" />
+    <ClCompile Include="WebAuthnDef.cpp" />
     <ClCompile Include="WebAuthnWinHello.cpp" />
   </ItemGroup>
   <ItemGroup>

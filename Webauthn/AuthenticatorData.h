@@ -26,6 +26,8 @@ namespace webauthn
 		std::array<std::byte, 16> AAGUID{};
 		CredentialId credential_id{};
 		//Public key
+
+		std::optional<PublicKey> key{};
 	};
 
 	class AuthenticatorData

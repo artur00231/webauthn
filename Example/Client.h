@@ -22,11 +22,14 @@ protected:
 	void checkUser();
 	void addUser();
 	void loginUser();
+	void addWebauthn();
 
 private:
 	ServerInterface& server;
 	std::ostream& out{ std::cout };
 	std::istream& in{ std::cin };
+
+	webauthn::RelyingParty RP{ .ID = "example_RP", .name = "The example inc" };
 };
 
 template<typename T>

@@ -46,6 +46,7 @@ webauthn::impl::WebAuthnWinHello::WebAuthnWinHelloDll::WebAuthnWinHelloDll()
 
 	WebAuthNIsUserVerifyingPlatformAuthenticatorAvailable = (WebAuthNIsUserVerifyingPlatformAuthenticatorAvailable_t)GetProcAddress(webauthn_lib, "WebAuthNIsUserVerifyingPlatformAuthenticatorAvailable");
 	WebAuthNAuthenticatorMakeCredential = (WebAuthNAuthenticatorMakeCredential_t)GetProcAddress(webauthn_lib, "WebAuthNAuthenticatorMakeCredential");
+	WebAuthNAuthenticatorGetAssertion = (WebAuthNAuthenticatorGetAssertion_t)GetProcAddress(webauthn_lib, "WebAuthNAuthenticatorGetAssertion");
 	WebAuthNGetErrorName = (WebAuthNGetErrorName_t)GetProcAddress(webauthn_lib, "WebAuthNGetErrorName");
 	WebAuthNFreeAssertion = (WebAuthNFreeAssertion_t)GetProcAddress(webauthn_lib, "WebAuthNFreeAssertion");
 	WebAuthNFreeCredentialAttestation = (WebAuthNFreeCredentialAttestation_t)GetProcAddress(webauthn_lib, "WebAuthNFreeCredentialAttestation");
@@ -141,7 +142,7 @@ std::optional<webauthn::MakeCredentialResult> webauthn::impl::WebAuthnWinHello::
 
 	WEBAUTHN_CREDENTIAL_ATTESTATION* webAuthNCredentialAttestation{};
 
-	auto result = WebAuthNAuthenticatorMakeCredential(Hwindow,
+	auto result = webAuthnWinHelloDll.WebAuthNAuthenticatorMakeCredential(Hwindow,
 		&rpInformation, &userInformation, &pubKeyCredParams, &webAuthNClientData,
 		&webAuthNCredentialOptions, &webAuthNCredentialAttestation);
 
@@ -160,7 +161,7 @@ std::optional<webauthn::MakeCredentialResult> webauthn::impl::WebAuthnWinHello::
 		std::generate_n(std::back_inserter(attestationObject), webAuthNCredentialAttestation->cbAttestationObject,
 			[ptr = webAuthNCredentialAttestation->pbAttestationObject]() mutable { return static_cast<std::byte>(*(ptr++)); });
 
-		WebAuthNFreeCredentialAttestation(webAuthNCredentialAttestation);
+		webAuthnWinHelloDll.WebAuthNFreeCredentialAttestation(webAuthNCredentialAttestation);
 	}
 	else
 	{
@@ -208,7 +209,7 @@ std::optional<webauthn::GetAssertionResult> webauthn::impl::WebAuthnWinHello::ge
 	HWND Hwindow = GetForegroundWindow();
 	auto RP_ID_w = WH::fromASCIIString(rp.ID);
 
-	auto result = WebAuthNAuthenticatorGetAssertion(Hwindow, RP_ID_w.c_str(), &webAuthNClientData, &WebAuthNAssertionOptions, &webAuthNAssertion);
+	auto result = webAuthnWinHelloDll.WebAuthNAuthenticatorGetAssertion(Hwindow, RP_ID_w.c_str(), &webAuthNClientData, &WebAuthNAssertionOptions, &webAuthNAssertion);
 
 	if (result != S_OK || webAuthNAssertion == nullptr)
 	{
@@ -227,6 +228,8 @@ std::optional<webauthn::GetAssertionResult> webauthn::impl::WebAuthnWinHello::ge
 	std::span auth_data_span{ webAuthNAssertion->pbAuthenticatorData, webAuthNAssertion->cbAuthenticatorData };
 	std::transform(auth_data_span.begin(), auth_data_span.end(), std::back_inserter(get_assertion_result.authenticator_data),
 		[](auto x) { return static_cast<std::byte>(x); });
+
+	webAuthnWinHelloDll.WebAuthNFreeAssertion(webAuthNAssertion);
 
 	return get_assertion_result;
 }

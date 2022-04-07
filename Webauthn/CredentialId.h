@@ -3,8 +3,11 @@
 #include <vector>
 #include <cstddef>
 
-class CredentialId
+namespace webauthn
 {
-public:
-	std::vector<std::byte> id{};
-};
+	class CredentialId
+	{
+	public:
+		std::vector<std::byte> id{};
+	};
+}

@@ -17,6 +17,7 @@ namespace webauthn::impl
 		using WebAuthNGetApiVersionNumber_t = decltype(&WebAuthNGetApiVersionNumber);
 		using WebAuthNIsUserVerifyingPlatformAuthenticatorAvailable_t = decltype(&WebAuthNIsUserVerifyingPlatformAuthenticatorAvailable);
 		using WebAuthNAuthenticatorMakeCredential_t = decltype(&WebAuthNAuthenticatorMakeCredential);
+		using WebAuthNAuthenticatorGetAssertion_t = decltype(&WebAuthNAuthenticatorGetAssertion);
 		using WebAuthNGetErrorName_t = decltype(&WebAuthNGetErrorName);
 		using WebAuthNFreeAssertion_t = decltype(&WebAuthNFreeAssertion);
 		using WebAuthNFreeCredentialAttestation_t = decltype(&WebAuthNFreeCredentialAttestation);
@@ -30,6 +31,7 @@ namespace webauthn::impl
 			WebAuthNGetApiVersionNumber_t WebAuthNGetApiVersionNumber{ nullptr };
 			WebAuthNIsUserVerifyingPlatformAuthenticatorAvailable_t WebAuthNIsUserVerifyingPlatformAuthenticatorAvailable{ nullptr };
 			WebAuthNAuthenticatorMakeCredential_t WebAuthNAuthenticatorMakeCredential{ nullptr };
+			WebAuthNAuthenticatorGetAssertion_t WebAuthNAuthenticatorGetAssertion{ nullptr };
 			WebAuthNGetErrorName_t WebAuthNGetErrorName{ nullptr };
 			WebAuthNFreeAssertion_t WebAuthNFreeAssertion{ nullptr };
 			WebAuthNFreeCredentialAttestation_t WebAuthNFreeCredentialAttestation{ nullptr };

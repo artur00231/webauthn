@@ -3,6 +3,7 @@
 #include <vector>
 #include <cstddef>
 #include <string>
+#include <optional>
 
 namespace webauthn
 {
@@ -22,6 +23,8 @@ namespace webauthn
 		std::vector<std::byte> ID{};
 		std::string name{};
 		std::string display_name{};
+
+		static std::optional<std::vector<std::byte>> generateRandomID(std::size_t size);
 	};
 
 	struct MakeCredentialResult

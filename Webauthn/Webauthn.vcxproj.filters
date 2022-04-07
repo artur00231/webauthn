@@ -33,6 +33,9 @@
     <ClCompile Include="AuthenticatorData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="WebAuthnDef.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Attestation.h">

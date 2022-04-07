@@ -11,7 +11,7 @@
 namespace webauthn::crypto::random
 {
 	template<std::size_t N>
-	std::optional<std::array<std::byte, N>> genRandom()
+	inline std::optional<std::array<std::byte, N>> genRandom()
 	{
 		std::array<std::byte, N> bytes{};
 		int rc = RAND_bytes(reinterpret_cast<unsigned char*>(bytes.data()), static_cast<int>(bytes.size()));
@@ -24,7 +24,7 @@ namespace webauthn::crypto::random
 		return { bytes };
 	}
 
-	std::optional<std::vector<std::byte>> genRandom(std::size_t size)
+	inline std::optional<std::vector<std::byte>> genRandom(std::size_t size)
 	{
 		std::vector<std::byte> bytes{};
 		bytes.resize(size);

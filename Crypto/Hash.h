@@ -20,7 +20,7 @@ namespace webauthn::crypto::hash
 		};
 	}
 
-	std::array<std::byte, 20> SHA1(const std::vector<std::byte>& data)
+	inline std::array<std::byte, 20> SHA1(const std::vector<std::byte>& data)
 	{
 		std::array<std::byte, 20> hash{};
 		::SHA1(reinterpret_cast<const unsigned char*>(data.data()), data.size(), reinterpret_cast<unsigned char*>(hash.data()));
@@ -30,7 +30,7 @@ namespace webauthn::crypto::hash
 
 	template<typename In = std::vector<std::byte>>
 	requires helpers::Container<In>
-	std::array<std::byte, SHA256_DIGEST_LENGTH> SHA256(const In& data)
+	inline std::array<std::byte, SHA256_DIGEST_LENGTH> SHA256(const In& data)
 	{
 		std::array<std::byte, SHA256_DIGEST_LENGTH> hash{};
 		::SHA256(reinterpret_cast<const unsigned char*>(data.data()), data.size(), reinterpret_cast<unsigned char*>(hash.data()));
@@ -38,7 +38,7 @@ namespace webauthn::crypto::hash
 		return { hash };
 	}
 
-	std::array<std::byte, SHA512_DIGEST_LENGTH> SHA512(const std::vector<std::byte>& data)
+	inline std::array<std::byte, SHA512_DIGEST_LENGTH> SHA512(const std::vector<std::byte>& data)
 	{
 		std::array<std::byte, SHA512_DIGEST_LENGTH> hash{};
 		::SHA512(reinterpret_cast<const unsigned char*>(data.data()), data.size(), reinterpret_cast<unsigned char*>(hash.data()));
@@ -47,7 +47,7 @@ namespace webauthn::crypto::hash
 	}
 
 	template<std::size_t N = 64>
-	std::array<std::byte, N> PBKDF2(const std::string& passw, const std::vector<std::byte>& salt, int iteration = 20000)
+	inline std::array<std::byte, N> PBKDF2(const std::string& passw, const std::vector<std::byte>& salt, int iteration = 20000)
 	{
 		std::array<std::byte, N> hash{};
 		

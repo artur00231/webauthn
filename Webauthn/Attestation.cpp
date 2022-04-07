@@ -54,4 +54,6 @@ std::unique_ptr<webauthn::Attestation> webauthn::AttestationFactory::praseAttest
 		throw webauthn::exceptions::FormatException(exception.what() +
 		"\nCannot determine attestation format or data is not formatted correctly."s);
 	}
+
+	return {};
 }
