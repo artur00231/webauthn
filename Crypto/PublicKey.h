@@ -14,6 +14,8 @@ namespace webauthn::crypto
 	class PublicKey
 	{
 	public:
+		virtual ~PublicKey() = default;
+
 		virtual std::optional<bool> verify(const std::string& data, const std::string& signature, const COSE::SIGNATURE_HASH hash) const = 0;
 		virtual std::optional<bool> verify(const std::vector<std::byte>& data, const std::vector<std::byte>& signature, const COSE::SIGNATURE_HASH hash) const = 0;
 	};

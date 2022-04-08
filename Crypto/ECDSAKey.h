@@ -18,7 +18,7 @@ namespace webauthn::crypto
 		ECDSAKey(ECDSAKey&&) noexcept;
 		ECDSAKey& operator=(const ECDSAKey&) = delete;
 		ECDSAKey& operator=(ECDSAKey&&) noexcept;
-		~ECDSAKey();
+		virtual ~ECDSAKey();
 
 		static std::optional<ECDSAKey> create(const std::vector<std::byte>& bin_x, const std::vector<std::byte>& bin_y, const COSE::ECDSA_EC ec);
 
