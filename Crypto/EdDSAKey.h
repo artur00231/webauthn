@@ -7,20 +7,20 @@
 #include <vector>
 #include <string>
 
-#include <openssl/ec.h>
+#include <openssl/evp.h>
 
 namespace webauthn::crypto
 {
-	class ECDSAKey : public PublicKey
+	class EdDSAKey : public PublicKey
 	{
 	public:
-		ECDSAKey(const ECDSAKey&) = delete;
-		ECDSAKey(ECDSAKey&&) noexcept;
-		ECDSAKey& operator=(const ECDSAKey&) = delete;
-		ECDSAKey& operator=(ECDSAKey&&) noexcept;
-		virtual ~ECDSAKey();
+		EdDSAKey(const EdDSAKey&) = delete;
+		EdDSAKey(EdDSAKey&&) noexcept;
+		EdDSAKey& operator=(const EdDSAKey&) = delete;
+		EdDSAKey& operator=(EdDSAKey&&) noexcept;
+		virtual ~EdDSAKey();
 
-		static std::optional<ECDSAKey> create(const std::vector<std::byte>& bin_x, const std::vector<std::byte>& bin_y, const COSE::ECDSA_EC ec);
+		static std::optional<EdDSAKey> create(const std::vector<std::byte>& bin_x, const COSE::EdDSA_EC ec);
 
 		std::optional<bool> verify(const std::string& data, const std::string& signature, const COSE::SIGNATURE_HASH hash) const override;
 		std::optional<bool> verify(const std::vector<std::byte>& data, const std::vector<std::byte>& signature, const COSE::SIGNATURE_HASH hash) const override;
@@ -38,9 +38,9 @@ namespace webauthn::crypto
 			const COSE::SIGNATURE_HASH hash) const;
 
 	private:
-		ECDSAKey() = default;
+		EdDSAKey() = default;
 
-		EC_KEY* eckey{ nullptr };
+		EVP_PKEY* pkey{ nullptr };
 		COSE::SIGNATURE_HASH default_hash{ COSE::SIGNATURE_HASH::SHA256 };
 	};
 }

@@ -18,6 +18,8 @@ namespace webauthn::crypto
 
 		virtual std::optional<bool> verify(const std::string& data, const std::string& signature, const COSE::SIGNATURE_HASH hash) const = 0;
 		virtual std::optional<bool> verify(const std::vector<std::byte>& data, const std::vector<std::byte>& signature, const COSE::SIGNATURE_HASH hash) const = 0;
+
+		virtual COSE::SIGNATURE_HASH defaultHash() const noexcept = 0;
 	};
 
 	std::optional<std::unique_ptr<PublicKey>> createPublicKey(const std::vector<std::byte>& cbor);

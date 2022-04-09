@@ -30,6 +30,8 @@ namespace webauthn::crypto
 
 		enum class ECDSA_EC : std::int32_t { P256 = 1, P384 = 2, P521 = 3, secp256k1 = 8 };
 
+		enum class EdDSA_EC : std::int32_t { Ed25519 = 6, Ed448 = 7 };
+
 		enum class SIGNATURE_HASH : std::int32_t { SHA256 = -16, SHA384 = -43, SHA512 = -44 };
 
 		constexpr bool isCOSE_ALGORITHM(std::int32_t value)
