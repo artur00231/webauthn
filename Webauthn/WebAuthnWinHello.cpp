@@ -79,7 +79,8 @@ webauthn::impl::WebAuthnWinHello::~WebAuthnWinHello()
 {
 }
 
-std::optional<webauthn::MakeCredentialResult> webauthn::impl::WebAuthnWinHello::makeCredential(const UserData& user, const RelyingParty& rp)
+std::optional<webauthn::MakeCredentialResult> webauthn::impl::WebAuthnWinHello::makeCredential(const webauthn::UserData& user, const webauthn::RelyingParty& rp,
+	const std::vector<std::byte>& challange, const std::optional<std::string>& password, const webauthn::WebAuthnOptions& options)
 {
 	if (!webAuthnWinHelloDll)
 	{
@@ -109,19 +110,25 @@ std::optional<webauthn::MakeCredentialResult> webauthn::impl::WebAuthnWinHello::
 	userInformation.pbId = userInformation_Id.data();
 
 	WEBAUTHN_COSE_CREDENTIAL_PARAMETERS pubKeyCredParams{};
-	WEBAUTHN_COSE_CREDENTIAL_PARAMETER pubKeyCredParam{};
-	pubKeyCredParam.dwVersion = WEBAUTHN_COSE_CREDENTIAL_PARAMETER_CURRENT_VERSION;
-	pubKeyCredParam.pwszCredentialType = WEBAUTHN_CREDENTIAL_TYPE_PUBLIC_KEY;
-	//ED25519 == -8
-	pubKeyCredParam.lAlg = WEBAUTHN_COSE_ALGORITHM_ECDSA_P256_WITH_SHA256;
-	//pubKeyCredParam.lAlg = WEBAUTHN_COSE_ALGORITHM_RSASSA_PKCS1_V1_5_WITH_SHA256;
-	pubKeyCredParams.pCredentialParameters = &pubKeyCredParam;
-	pubKeyCredParams.cCredentialParameters = 1;
+
+	std::vector<WEBAUTHN_COSE_CREDENTIAL_PARAMETER> pubKeyCredParam{};
+
+	std::ranges::for_each(options.allowed_algorithms, [&pubKeyCredParam](auto x) {
+		pubKeyCredParam.emplace_back();
+		pubKeyCredParam.back().dwVersion = WEBAUTHN_COSE_CREDENTIAL_PARAMETER_CURRENT_VERSION;
+		pubKeyCredParam.back().pwszCredentialType = WEBAUTHN_CREDENTIAL_TYPE_PUBLIC_KEY;
+		pubKeyCredParam.back().lAlg = std::to_underlying(x);
+		});
+
+	pubKeyCredParams.pCredentialParameters = pubKeyCredParam.data();
+	pubKeyCredParams.cCredentialParameters = static_cast<DWORD>(pubKeyCredParam.size());
 
 	WEBAUTHN_CLIENT_DATA webAuthNClientData{};
 	webAuthNClientData.dwVersion = WEBAUTHN_CLIENT_DATA_CURRENT_VERSION;
 	webAuthNClientData.pwszHashAlgId = WEBAUTHN_HASH_ALGORITHM_SHA_256;
-	std::array<std::uint8_t, 32> data{};
+	std::vector<BYTE> data{};
+	std::transform(challange.begin(), challange.end(), std::back_inserter(data),
+		[](auto x) { return static_cast<BYTE>(x); });
 	webAuthNClientData.pbClientDataJSON = data.data();
 	webAuthNClientData.cbClientDataJSON = static_cast<decltype(webAuthNClientData.cbClientDataJSON)>(data.size());
 
@@ -132,8 +139,33 @@ std::optional<webauthn::MakeCredentialResult> webauthn::impl::WebAuthnWinHello::
 	webAuthNCredentialOptions.Extensions = { 0, nullptr };
 	webAuthNCredentialOptions.dwAuthenticatorAttachment = WEBAUTHN_AUTHENTICATOR_ATTACHMENT_ANY;
 	webAuthNCredentialOptions.bRequireResidentKey = false;
-	webAuthNCredentialOptions.dwUserVerificationRequirement = WEBAUTHN_USER_VERIFICATION_REQUIREMENT_DISCOURAGED;
-	webAuthNCredentialOptions.dwAttestationConveyancePreference = WEBAUTHN_ATTESTATION_CONVEYANCE_PREFERENCE_NONE;
+	webAuthNCredentialOptions.dwUserVerificationRequirement = [value = options.user_verification]() {
+		switch (value)
+		{
+		case webauthn::USER_VERIFICATION::REQUIRED:
+			return WEBAUTHN_USER_VERIFICATION_REQUIREMENT_REQUIRED;
+		case webauthn::USER_VERIFICATION::PREFERRED:
+			return WEBAUTHN_USER_VERIFICATION_REQUIREMENT_PREFERRED;
+		case webauthn::USER_VERIFICATION::DISCOURAGED:
+			return WEBAUTHN_USER_VERIFICATION_REQUIREMENT_DISCOURAGED;
+			break;
+		}
+
+		return WEBAUTHN_USER_VERIFICATION_REQUIREMENT_ANY;
+	}();
+	webAuthNCredentialOptions.dwAttestationConveyancePreference = [value = options.attestation]() {
+		switch (value)
+		{
+		case webauthn::ATTESTATION::NONE:
+			return WEBAUTHN_ATTESTATION_CONVEYANCE_PREFERENCE_NONE;
+		case webauthn::ATTESTATION::INDIRECT:
+			return WEBAUTHN_ATTESTATION_CONVEYANCE_PREFERENCE_INDIRECT;
+		case webauthn::ATTESTATION::DIRECT:
+			return WEBAUTHN_ATTESTATION_CONVEYANCE_PREFERENCE_DIRECT;
+		}
+
+		return WEBAUTHN_ATTESTATION_CONVEYANCE_PREFERENCE_ANY;
+	}();
 	webAuthNCredentialOptions.dwFlags = 0;
 	webAuthNCredentialOptions.pCancellationId = nullptr;
 	webAuthNCredentialOptions.pExcludeCredentialList = nullptr;
@@ -171,28 +203,41 @@ std::optional<webauthn::MakeCredentialResult> webauthn::impl::WebAuthnWinHello::
 	return { { attestationObject } };
 }
 
-std::optional<webauthn::GetAssertionResult> webauthn::impl::WebAuthnWinHello::getAssertion(const CredentialId& id, const RelyingParty& rp)
+std::optional<webauthn::GetAssertionResult> webauthn::impl::WebAuthnWinHello::getAssertion(const std::vector<webauthn::CredentialId>& id, const webauthn::RelyingParty& rp,
+	const std::vector<std::byte>& challange, const std::optional<std::string>& password, const webauthn::WebAuthnOptions& options)
 {
-	std::vector<BYTE> credentials_id{};
-	std::transform(id.id.begin(), id.id.end(), std::back_inserter(credentials_id),
-		[](auto x) { return static_cast<BYTE>(x); });
+	std::vector<std::vector<BYTE>> credentials_id{};
+	for (auto&& key_id : id)
+	{
+		credentials_id.emplace_back();
+		std::transform(key_id.id.begin(), key_id.id.end(), std::back_inserter(credentials_id.back()),
+			[](auto x) { return static_cast<BYTE>(x); });
+	}
 
 	WEBAUTHN_CLIENT_DATA webAuthNClientData{};
 	webAuthNClientData.dwVersion = WEBAUTHN_CLIENT_DATA_CURRENT_VERSION;
 	webAuthNClientData.pwszHashAlgId = WEBAUTHN_HASH_ALGORITHM_SHA_256;
-	std::array<std::uint8_t, 32> data{};
+	std::vector<BYTE> data{};
+	std::transform(challange.begin(), challange.end(), std::back_inserter(data),
+		[](auto x) { return static_cast<BYTE>(x); });
 	webAuthNClientData.pbClientDataJSON = data.data();
-	webAuthNClientData.cbClientDataJSON = static_cast<DWORD>(data.size());
+	webAuthNClientData.cbClientDataJSON = static_cast<decltype(webAuthNClientData.cbClientDataJSON)>(data.size());
 
 	BOOL pbU2fAppId = FALSE;
 
-	WEBAUTHN_CREDENTIAL credential{};// = { WEBAUTHN_CREDENTIAL_CURRENT_VERSION, key_handle_len, (uint8_t*)key_handle, WEBAUTHN_CREDENTIAL_TYPE_PUBLIC_KEY };
-	credential.dwVersion = WEBAUTHN_CREDENTIAL_CURRENT_VERSION;
-	credential.cbId = static_cast<DWORD>(credentials_id.size());
-	credential.pbId = credentials_id.data();
-	credential.pwszCredentialType = WEBAUTHN_CREDENTIAL_TYPE_PUBLIC_KEY;
+	std::vector<WEBAUTHN_CREDENTIAL> credentials{};
 
-	WEBAUTHN_CREDENTIALS allowCredentialList = { 1, &credential };
+	for (auto&& key_id : credentials_id)
+	{
+		credentials.emplace_back();
+		credentials.back().dwVersion = WEBAUTHN_CREDENTIAL_CURRENT_VERSION;
+		credentials.back().pwszCredentialType = WEBAUTHN_CREDENTIAL_TYPE_PUBLIC_KEY;
+
+		credentials.back().cbId = static_cast<DWORD>(key_id.size());
+		credentials.back().pbId = key_id.data();
+	}
+
+	WEBAUTHN_CREDENTIALS allowCredentialList = { static_cast<DWORD>(credentials.size()), credentials.data()};
 
 	WEBAUTHN_AUTHENTICATOR_GET_ASSERTION_OPTIONS WebAuthNAssertionOptions{};
 	WebAuthNAssertionOptions.dwVersion = WEBAUTHN_AUTHENTICATOR_GET_ASSERTION_OPTIONS_VERSION_2;

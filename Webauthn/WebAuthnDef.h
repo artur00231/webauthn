@@ -5,6 +5,8 @@
 #include <string>
 #include <optional>
 
+#include "../Crypto/COSE.h"
+
 namespace webauthn
 {
 	struct RelyingParty
@@ -40,5 +42,17 @@ namespace webauthn
 
 		//May not be present in non discoverable credentials
 		std::optional<std::vector<std::byte>> user_id{};
+	};
+
+	enum class USER_VERIFICATION { REQUIRED, PREFERRED, DISCOURAGED };
+	enum class ATTESTATION { NONE, INDIRECT, DIRECT };
+
+	struct WebAuthnOptions
+	{
+		//TODO add EdDSA
+		std::vector<crypto::COSE::COSE_ALGORITHM> allowed_algorithms{ crypto::COSE::COSE_ALGORITHM::ES256 };
+
+		USER_VERIFICATION user_verification{ USER_VERIFICATION::DISCOURAGED };
+		ATTESTATION attestation{ ATTESTATION::NONE };
 	};
 }

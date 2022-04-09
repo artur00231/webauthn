@@ -101,12 +101,17 @@ void Client::loginUser()
 		out << "Wrong login information\n";
 		return;
 	}
+	else if (result.result == ServerInterface::LOGIN_RESULT::SERV_ERR)
+	{
+		out << "Server error\n";
+		return;
+	}
 
 	//Webauthn required
 	webauthn::impl::WebAuthnWinHello whello{};
 	webauthn::WebAuthn webauthn{ RP, whello };
 
-	auto webauthn_result = webauthn.getAssertion(*result.credential_id);
+	auto webauthn_result = webauthn.getAssertion({ *result.credential_id }, *result.challange);
 	if (!webauthn_result)
 	{
 		out << "System error\n";
@@ -164,7 +169,8 @@ void Client::addWebauthn()
 		return;
 	}
 
-	auto result = webauthn.makeCredential(user_data);
+	std::vector<std::byte> challage(32, std::byte(0));
+	auto result = webauthn.makeCredential(user_data, challage);
 
 	if (!result)
 	{

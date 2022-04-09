@@ -14,8 +14,6 @@
 Server::Server(const std::string& db_name) : db_name{ db_name }
 {
 	openDB();
-
-	std::generate_n(std::back_inserter(last_challange), 32, []() { return std::byte(0); });
 }
 
 bool Server::userExists(const std::string& name)
@@ -111,6 +109,14 @@ ServerInterface::LoginResult Server::loginUser(const std::string& name, const st
 				static_cast<std::size_t>(statement.getColumn("RP_ID").getBytes()) };
 			std::copy(RP_ID.begin(), RP_ID.end(), std::back_inserter(last_RP_id));
 
+			last_challange.clear();
+			auto random = webauthn::crypto::random::genRandom(32);
+			if (!random)
+			{
+				return { ServerInterface::LOGIN_RESULT::SERV_ERR, {} };
+			}
+			last_challange = *random;
+
 			auto auth_data_obj = webauthn::AuthenticatorData::fromBin(last_auth_data);
 			if (!auth_data_obj.attested_credential_data)
 			{
@@ -119,7 +125,7 @@ ServerInterface::LoginResult Server::loginUser(const std::string& name, const st
 				return { ServerInterface::LOGIN_RESULT::WRONG_DATA, {} };
 			}
 
-			return { ServerInterface::LOGIN_RESULT::AUTH_REQ, auth_data_obj.attested_credential_data->credential_id };
+			return { ServerInterface::LOGIN_RESULT::AUTH_REQ, auth_data_obj.attested_credential_data->credential_id, last_challange };
 		}
 		else //No webauthn
 		{
@@ -167,6 +173,7 @@ bool Server::performWebauthn(const webauthn::GetAssertionResult& result)
 	last_auth_data.clear();
 	last_RP_id.clear();
 	last_user_id.clear();
+	last_challange.clear();
 
 	return success;
 }

@@ -12,13 +12,14 @@ class ServerInterface
 public:
 	enum class LOGIN_RESULT
 	{
-		SUCCESS, WRONG_DATA, AUTH_REQ
+		SUCCESS, WRONG_DATA, AUTH_REQ, SERV_ERR
 	};
 
 	struct LoginResult
 	{
 		LOGIN_RESULT result{};
 		std::optional<webauthn::CredentialId> credential_id{};
+		std::optional<std::vector<std::byte>> challange{};
 	};
 
 	virtual bool userExists(const std::string& name) = 0;
