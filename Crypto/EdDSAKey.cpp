@@ -32,17 +32,17 @@ std::optional<webauthn::crypto::EdDSAKey> webauthn::crypto::EdDSAKey::create(con
     return EdDSA_key;
 }
 
-std::optional<bool> webauthn::crypto::EdDSAKey::verify(const std::string& data, const std::string& signature, const COSE::SIGNATURE_HASH hash) const
+std::optional<bool> webauthn::crypto::EdDSAKey::verify(const std::string& data, const std::string& signature) const
 {
-    return verify(reinterpret_cast<const unsigned char*>(data.data()), data.size(), reinterpret_cast<const unsigned char*>(signature.data()), signature.size(), hash);
+    return verify(reinterpret_cast<const unsigned char*>(data.data()), data.size(), reinterpret_cast<const unsigned char*>(signature.data()), signature.size());
 }
 
-std::optional<bool> webauthn::crypto::EdDSAKey::verify(const std::vector<std::byte>& data, const std::vector<std::byte>& signature, const COSE::SIGNATURE_HASH hash) const
+std::optional<bool> webauthn::crypto::EdDSAKey::verify(const std::vector<std::byte>& data, const std::vector<std::byte>& signature) const
 {
-    return verify(reinterpret_cast<const unsigned char*>(data.data()), data.size(), reinterpret_cast<const unsigned char*>(signature.data()), signature.size(), hash);
+    return verify(reinterpret_cast<const unsigned char*>(data.data()), data.size(), reinterpret_cast<const unsigned char*>(signature.data()), signature.size());
 }
 
-std::optional<bool> webauthn::crypto::EdDSAKey::verify(const unsigned char* data, std::size_t data_size, const unsigned char* signature, std::size_t signature_size, const COSE::SIGNATURE_HASH hash) const
+std::optional<bool> webauthn::crypto::EdDSAKey::verify(const unsigned char* data, std::size_t data_size, const unsigned char* signature, std::size_t signature_size) const
 {
     std::unique_ptr<EVP_MD_CTX, decltype([](EVP_MD_CTX* ptr) {
         if (ptr) EVP_MD_CTX_free(ptr);})>mdctx{ EVP_MD_CTX_new() };
@@ -69,7 +69,7 @@ std::optional<bool> webauthn::crypto::EdDSAKey::verify(const unsigned char* data
     return {};
 }
 
-webauthn::crypto::EdDSAKey::EdDSAKey(EdDSAKey&& key) noexcept : pkey{ key.pkey }, default_hash{ key.default_hash }
+webauthn::crypto::EdDSAKey::EdDSAKey(EdDSAKey&& key) noexcept : pkey{ key.pkey }
 {
     key.pkey = nullptr;
 }
@@ -78,8 +78,6 @@ webauthn::crypto::EdDSAKey& webauthn::crypto::EdDSAKey::operator=(EdDSAKey&& key
 {
     pkey = key.pkey;
     key.pkey = nullptr;
-
-    default_hash = key.default_hash;
 
     return *this;
 }

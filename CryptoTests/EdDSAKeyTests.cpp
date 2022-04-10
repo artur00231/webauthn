@@ -58,7 +58,7 @@ namespace webauthn::crypto
 		auto key = EdDSAKey::create(x, crypto::COSE::EdDSA_EC::Ed25519);
 		ASSERT_TRUE(key);
 
-		auto success = key->verify(*data_decoded, *signature_decoded, crypto::COSE::SIGNATURE_HASH::SHA256);
+		auto success = key->verify(*data_decoded, *signature_decoded);
 
 		if (!success)
 		{
@@ -85,7 +85,7 @@ namespace webauthn::crypto
 		auto key = EdDSAKey::create(x, crypto::COSE::EdDSA_EC::Ed25519);
 		ASSERT_TRUE(key);
 
-		auto success = key->verify(data, *signature_decoded, crypto::COSE::SIGNATURE_HASH::SHA256);
+		auto success = key->verify(data, *signature_decoded);
 
 		if (!success)
 		{
@@ -112,7 +112,7 @@ namespace webauthn::crypto
 		auto key = EdDSAKey::create(x, crypto::COSE::EdDSA_EC::Ed448);
 		ASSERT_TRUE(key);
 
-		auto success = key->verify(data, *signature_decoded, crypto::COSE::SIGNATURE_HASH::SHA256);
+		auto success = key->verify(data, *signature_decoded);
 
 		if (!success)
 		{

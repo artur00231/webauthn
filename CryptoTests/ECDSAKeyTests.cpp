@@ -108,7 +108,8 @@ namespace webauthn::crypto
 		auto key = ECDSAKey::create(x, y, crypto::COSE::ECDSA_EC::P256);
 		ASSERT_TRUE(key);
 
-		auto success = key->verify(*data_decoded, *signature_decoded, crypto::COSE::SIGNATURE_HASH::SHA256);
+		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA256);
+		auto success = key->verify(*data_decoded, *signature_decoded);
 		ASSERT_TRUE(success);
 		EXPECT_TRUE(*success);
 	}
@@ -135,15 +136,18 @@ namespace webauthn::crypto
 		auto key = ECDSAKey::create(x, y, crypto::COSE::ECDSA_EC::P256);
 		ASSERT_TRUE(key);
 
-		auto success = key->verify(data, *signature_256_decoded, crypto::COSE::SIGNATURE_HASH::SHA256);
+		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA256);
+		auto success = key->verify(data, *signature_256_decoded);
 		ASSERT_TRUE(success);
 		EXPECT_TRUE(*success);
 
-		success = key->verify(data, *signature_384_decoded, crypto::COSE::SIGNATURE_HASH::SHA384);
+		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA384);
+		success = key->verify(data, *signature_384_decoded);
 		ASSERT_TRUE(success);
 		EXPECT_TRUE(*success);
 
-		success = key->verify(data, *signature_512_decoded, crypto::COSE::SIGNATURE_HASH::SHA512);
+		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA512);
+		success = key->verify(data, *signature_512_decoded);
 		ASSERT_TRUE(success);
 		EXPECT_TRUE(*success);
 	}
@@ -170,15 +174,18 @@ namespace webauthn::crypto
 		auto key = ECDSAKey::create(x, y, crypto::COSE::ECDSA_EC::P521);
 		ASSERT_TRUE(key);
 
-		auto success = key->verify(data, *signature_256_decoded, crypto::COSE::SIGNATURE_HASH::SHA256);
+		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA256);
+		auto success = key->verify(data, *signature_256_decoded);
 		ASSERT_TRUE(success);
 		EXPECT_TRUE(*success);
 
-		success = key->verify(data, *signature_384_decoded, crypto::COSE::SIGNATURE_HASH::SHA384);
+		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA384);
+		success = key->verify(data, *signature_384_decoded);
 		ASSERT_TRUE(success);
 		EXPECT_TRUE(*success);
 
-		success = key->verify(data, *signature_512_decoded, crypto::COSE::SIGNATURE_HASH::SHA512);
+		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA512);
+		success = key->verify(data, *signature_512_decoded);
 		ASSERT_TRUE(success);
 		EXPECT_TRUE(*success);
 	}
@@ -205,15 +212,18 @@ namespace webauthn::crypto
 		auto key = ECDSAKey::create(x, y, crypto::COSE::ECDSA_EC::P384);
 		ASSERT_TRUE(key);
 
-		auto success = key->verify(data, *signature_256_decoded, crypto::COSE::SIGNATURE_HASH::SHA256);
+		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA256);
+		auto success = key->verify(data, *signature_256_decoded);
 		ASSERT_TRUE(success);
 		EXPECT_TRUE(*success);
 
-		success = key->verify(data, *signature_384_decoded, crypto::COSE::SIGNATURE_HASH::SHA384);
+		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA384);
+		success = key->verify(data, *signature_384_decoded);
 		ASSERT_TRUE(success);
 		EXPECT_TRUE(*success);
 
-		success = key->verify(data, *signature_512_decoded, crypto::COSE::SIGNATURE_HASH::SHA512);
+		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA512);
+		success = key->verify(data, *signature_512_decoded);
 		ASSERT_TRUE(success);
 		EXPECT_TRUE(*success);
 	}
@@ -240,15 +250,18 @@ namespace webauthn::crypto
 		auto key = ECDSAKey::create(x, y, crypto::COSE::ECDSA_EC::secp256k1);
 		ASSERT_TRUE(key);
 
-		auto success = key->verify(data, *signature_256_decoded, crypto::COSE::SIGNATURE_HASH::SHA256);
+		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA256);
+		auto success = key->verify(data, *signature_256_decoded);
 		ASSERT_TRUE(success);
 		EXPECT_TRUE(*success);
 
-		success = key->verify(data, *signature_384_decoded, crypto::COSE::SIGNATURE_HASH::SHA384);
+		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA384);
+		success = key->verify(data, *signature_384_decoded);
 		ASSERT_TRUE(success);
 		EXPECT_TRUE(*success);
 
-		success = key->verify(data, *signature_512_decoded, crypto::COSE::SIGNATURE_HASH::SHA512);
+		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA512);
+		success = key->verify(data, *signature_512_decoded);
 		ASSERT_TRUE(success);
 		EXPECT_TRUE(*success);
 	}

@@ -22,26 +22,16 @@ namespace webauthn::crypto
 
 		static std::optional<EdDSAKey> create(const std::vector<std::byte>& bin_x, const COSE::EdDSA_EC ec);
 
-		std::optional<bool> verify(const std::string& data, const std::string& signature, const COSE::SIGNATURE_HASH hash) const override;
-		std::optional<bool> verify(const std::vector<std::byte>& data, const std::vector<std::byte>& signature, const COSE::SIGNATURE_HASH hash) const override;
-
-		void setDefaultHash(COSE::SIGNATURE_HASH hash) noexcept {
-			default_hash = hash;
-		}
-
-		COSE::SIGNATURE_HASH defaultHash() const noexcept override {
-			return default_hash;
-		}
+		std::optional<bool> verify(const std::string& data, const std::string& signature) const override;
+		std::optional<bool> verify(const std::vector<std::byte>& data, const std::vector<std::byte>& signature) const override;
 
 	protected:
-		std::optional<bool> verify(const unsigned char* data, std::size_t data_size, const unsigned char* signature, std::size_t signature_size,
-			const COSE::SIGNATURE_HASH hash) const;
+		std::optional<bool> verify(const unsigned char* data, std::size_t data_size, const unsigned char* signature, std::size_t signature_size) const;
 
 	private:
 		EdDSAKey() = default;
 
 		EVP_PKEY* pkey{ nullptr };
-		COSE::SIGNATURE_HASH default_hash{ COSE::SIGNATURE_HASH::SHA256 };
 	};
 }
 

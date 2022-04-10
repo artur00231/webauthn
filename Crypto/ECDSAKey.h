@@ -22,20 +22,19 @@ namespace webauthn::crypto
 
 		static std::optional<ECDSAKey> create(const std::vector<std::byte>& bin_x, const std::vector<std::byte>& bin_y, const COSE::ECDSA_EC ec);
 
-		std::optional<bool> verify(const std::string& data, const std::string& signature, const COSE::SIGNATURE_HASH hash) const override;
-		std::optional<bool> verify(const std::vector<std::byte>& data, const std::vector<std::byte>& signature, const COSE::SIGNATURE_HASH hash) const override;
+		std::optional<bool> verify(const std::string& data, const std::string& signature) const override;
+		std::optional<bool> verify(const std::vector<std::byte>& data, const std::vector<std::byte>& signature) const override;
 
 		void setDefaultHash(COSE::SIGNATURE_HASH hash) noexcept {
 			default_hash = hash;
 		}
 
-		COSE::SIGNATURE_HASH defaultHash() const noexcept override {
+		COSE::SIGNATURE_HASH defaultHash() const noexcept {
 			return default_hash;
 		}
 
 	protected:
-		std::optional<bool> verify(const void* data, std::size_t data_size, const unsigned char* signature, std::size_t signature_size,
-			const COSE::SIGNATURE_HASH hash) const;
+		std::optional<bool> verify(const void* data, std::size_t data_size, const unsigned char* signature, std::size_t signature_size) const;
 
 	private:
 		ECDSAKey() = default;
