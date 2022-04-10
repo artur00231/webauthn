@@ -34,7 +34,7 @@ namespace webauthn::crypto
 		}
 
 	protected:
-		std::optional<bool> verify(const void* data, std::size_t data_size, const unsigned char* signature, std::size_t signature_size,
+		std::optional<bool> verify(const unsigned char* data, std::size_t data_size, const unsigned char* signature, std::size_t signature_size,
 			const COSE::SIGNATURE_HASH hash) const;
 
 	private:
