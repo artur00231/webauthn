@@ -46,11 +46,15 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="PublicKeyParserTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CBOR\CBOR.vcxproj">
+      <Project>{cc078584-d971-4846-88fd-4a16c4bc867c}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Crypto\Crypto.vcxproj">
       <Project>{5221a747-bf3b-4354-9a3b-d1659419142e}</Project>
     </ProjectReference>

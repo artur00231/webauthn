@@ -1,6 +1,7 @@
 #include "PublicKey.h"
 
 #include "ECDSAKey.h"
+#include "EdDSAKey.h"
 
 std::optional<std::unique_ptr<webauthn::crypto::PublicKey>> webauthn::crypto::createPublicKey(const std::vector<std::byte>& cbor)
 {
@@ -12,6 +13,8 @@ std::optional<std::unique_ptr<webauthn::crypto::PublicKey>> webauthn::crypto::cr
 
 std::optional<webauthn::crypto::ECDSAKey> createECDSA(webauthn::CBOR::CBORHandle handle, webauthn::crypto::COSE::SIGNATURE_HASH hash,
     std::optional<webauthn::crypto::COSE::ECDSA_EC> ec = {});
+
+std::optional<webauthn::crypto::EdDSAKey> createEdDSA(webauthn::CBOR::CBORHandle handle);
 
 std::optional<std::unique_ptr<webauthn::crypto::PublicKey>> webauthn::crypto::createPublicKey(CBOR::CBORHandle handle)
 {
@@ -82,6 +85,13 @@ std::optional<std::unique_ptr<webauthn::crypto::PublicKey>> webauthn::crypto::cr
                 return std::make_optional(std::make_unique<webauthn::crypto::ECDSAKey>(std::move(key)));
             });
         break;
+    case COSE::COSE_ALGORITHM::EdDSA:
+        if (!key_type || *key_type != COSE::KEY_TYPE::OKP) return {};
+        return createEdDSA(handle).and_then([](webauthn::crypto::EdDSAKey&& key)
+            {
+                return std::make_optional(std::make_unique<webauthn::crypto::EdDSAKey>(std::move(key)));
+            });
+        break;
 
     default:
         return {};
@@ -140,4 +150,9 @@ std::optional<webauthn::crypto::ECDSAKey> createECDSA(webauthn::CBOR::CBORHandle
     key->setDefaultHash(hash);
 
     return key;
+}
+
+std::optional<webauthn::crypto::EdDSAKey> createEdDSA(webauthn::CBOR::CBORHandle handle)
+{
+    return std::optional<webauthn::crypto::EdDSAKey>{};
 }
