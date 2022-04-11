@@ -1,68 +1,64 @@
 #include "ECDSAKey.h"
 
 #include <memory>
+#include <algorithm>
 
 #include <openssl/ec.h>
 #include <openssl/evp.h>
 #include <openssl/bn.h>
+#include <openssl/param_build.h>
+#include <openssl/core_names.h>
 
 std::optional<webauthn::crypto::ECDSAKey> webauthn::crypto::ECDSAKey::create(const std::vector<std::byte>& bin_x,
     const std::vector<std::byte>& bin_y, const COSE::ECDSA_EC ec)
 {
     ECDSAKey ECDSA_key{};
 
+    std::vector<unsigned char> public_key_data{};
+    public_key_data.push_back(POINT_CONVERSION_UNCOMPRESSED);
+    std::transform(bin_x.begin(), bin_x.end(), std::back_inserter(public_key_data),
+        [](auto x) { return static_cast<unsigned char>(x); });
+    std::transform(bin_y.begin(), bin_y.end(), std::back_inserter(public_key_data),
+        [](auto x) { return static_cast<unsigned char>(x); });
+
+    std::unique_ptr<OSSL_PARAM_BLD, decltype([](OSSL_PARAM_BLD* ptr) {
+            if (ptr) OSSL_PARAM_BLD_free(ptr);})> param_bld{};
+
+    std::unique_ptr<OSSL_PARAM, decltype([](OSSL_PARAM* ptr) {
+            if (ptr) OSSL_PARAM_free(ptr);})> params{};
+
+    std::unique_ptr<EVP_PKEY_CTX, decltype([](EVP_PKEY_CTX* ptr) {
+            if (ptr) EVP_PKEY_CTX_free(ptr);})> ctx{};
+
+    param_bld.reset(OSSL_PARAM_BLD_new());
+    if (param_bld == nullptr) return {};
+
     switch (ec)
     {
     case COSE::ECDSA_EC::P256:
-        ECDSA_key.eckey = EC_KEY_new_by_curve_name(NID_X9_62_prime256v1);
+        if (!OSSL_PARAM_BLD_push_utf8_string(param_bld.get(), "group", "prime256v1", 0)) return {};
         break;
     case COSE::ECDSA_EC::P384:
-        ECDSA_key.eckey = EC_KEY_new_by_curve_name(NID_secp384r1);
+        if (!OSSL_PARAM_BLD_push_utf8_string(param_bld.get(), "group", "secp384r1", 0)) return {};
         break;
     case COSE::ECDSA_EC::P521:
-        ECDSA_key.eckey = EC_KEY_new_by_curve_name(NID_secp521r1);
+        if (!OSSL_PARAM_BLD_push_utf8_string(param_bld.get(), "group", "secp521r1", 0)) return {};
         break;
     case COSE::ECDSA_EC::secp256k1:
-        ECDSA_key.eckey = EC_KEY_new_by_curve_name(NID_secp256k1);
+        if (!OSSL_PARAM_BLD_push_utf8_string(param_bld.get(), "group", "secp256k1", 0)) return {};
         break;
     default:
         return {};
     }
+    if (!OSSL_PARAM_BLD_push_octet_string(param_bld.get(), "pub", public_key_data.data(), public_key_data.size())) return {};
 
-    auto group = EC_KEY_get0_group(ECDSA_key.eckey);
-    if (!group) return {};
+    params.reset(OSSL_PARAM_BLD_to_param(param_bld.get()));
 
-    std::unique_ptr<EC_POINT, decltype([](EC_POINT* ptr) {
-            if (ptr) EC_POINT_free(ptr);
-        })> pub_key{ EC_POINT_new(group) };
+    ctx.reset(EVP_PKEY_CTX_new_from_name(NULL, "EC", NULL));
 
-    if (!pub_key) return {};
-
-    using BN_ptr = std::unique_ptr<BIGNUM, decltype([](BIGNUM* ptr) {
-            if (ptr) BN_free(ptr);
-        })>;
-
-    std::unique_ptr<BN_CTX, decltype([](BN_CTX* ptr) {
-            if (ptr) BN_CTX_free(ptr);
-        })> bn_ctx{ BN_CTX_new() };
-
-    if (!bn_ctx) return {};
-
-    BIGNUM* num{ nullptr };
-    num = BN_bin2bn(reinterpret_cast<const unsigned char*>(bin_x.data()), static_cast<int>(bin_x.size()), nullptr);
-    if (num == nullptr) return {};
-    BN_ptr x{ num };
-
-    num = nullptr;
-    num = BN_bin2bn(reinterpret_cast<const unsigned char*>(bin_y.data()), static_cast<int>(bin_y.size()), nullptr);
-    if (num == nullptr) return {};
-    BN_ptr y{ num };
-
-    auto result = EC_POINT_set_affine_coordinates(group, pub_key.get(), x.get(), y.get(), bn_ctx.get());
-    if (result != 1) return {};
-
-    result = EC_KEY_set_public_key(ECDSA_key.eckey, pub_key.get());
-    if (result != 1) return {};
+    if (ctx == nullptr || params == nullptr) return {};
+    if (EVP_PKEY_fromdata_init(ctx.get()) <= 0) return {};
+    if (EVP_PKEY_fromdata(ctx.get(), &ECDSA_key.p_key, EVP_PKEY_PUBLIC_KEY, params.get()) <= 0) return {};
 
     return ECDSA_key;
 }
@@ -79,13 +75,6 @@ std::optional<bool> webauthn::crypto::ECDSAKey::verify(const std::vector<std::by
 
 std::optional<bool> webauthn::crypto::ECDSAKey::verify(const void* data, std::size_t data_size, const unsigned char* signature, std::size_t signature_size, const COSE::SIGNATURE_HASH hash) const
 {
-    std::unique_ptr<EVP_PKEY, decltype([](EVP_PKEY* ptr) {
-            if (ptr) EVP_PKEY_free(ptr);
-        })> key{ EVP_PKEY_new() };
-
-    auto result = EVP_PKEY_set1_EC_KEY(key.get(), eckey);
-    if (result != 1) return {};
-
     std::unique_ptr<EVP_MD_CTX, decltype([](EVP_MD_CTX* ptr) {
             if (ptr) EVP_MD_CTX_free(ptr);
         })> mdctx{ EVP_MD_CTX_new() };
@@ -106,7 +95,7 @@ std::optional<bool> webauthn::crypto::ECDSAKey::verify(const void* data, std::si
         return {};
     }
 
-    result = EVP_DigestVerifyInit(mdctx.get(), nullptr, hash_type, nullptr, key.get());
+    auto result = EVP_DigestVerifyInit(mdctx.get(), nullptr, hash_type, nullptr, p_key);
     if (result != 1) return {};
 
     result = EVP_DigestVerifyUpdate(mdctx.get(), data, data_size);
@@ -118,27 +107,27 @@ std::optional<bool> webauthn::crypto::ECDSAKey::verify(const void* data, std::si
     {
         return true;
     }
-
+    
     return false;
 }
 
-webauthn::crypto::ECDSAKey::ECDSAKey(ECDSAKey&& key) noexcept : eckey{ key.eckey }
+webauthn::crypto::ECDSAKey::ECDSAKey(ECDSAKey&& key) noexcept : p_key{ key.p_key }
 {
-    key.eckey = nullptr;
+    key.p_key = nullptr;
 }
 
 webauthn::crypto::ECDSAKey& webauthn::crypto::ECDSAKey::operator=(ECDSAKey&& key) noexcept
 {
-    std::swap(eckey, key.eckey);
+    std::swap(p_key, key.p_key);
 
     return *this;
 }
 
 webauthn::crypto::ECDSAKey::~ECDSAKey()
 {
-    if (eckey)
+    if (p_key)
     {
-        EC_KEY_free(eckey);
-        eckey = nullptr;
+        EVP_PKEY_free(p_key);
+        p_key = nullptr;
     }
 }

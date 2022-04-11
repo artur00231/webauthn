@@ -7,7 +7,7 @@
 #include <vector>
 #include <string>
 
-#include <openssl/ec.h>
+#include <openssl/evp.h>
 
 namespace webauthn::crypto
 {
@@ -40,7 +40,7 @@ namespace webauthn::crypto
 	private:
 		ECDSAKey() = default;
 
-		EC_KEY* eckey{ nullptr };
+		EVP_PKEY* p_key{ nullptr };
 		COSE::SIGNATURE_HASH default_hash{ COSE::SIGNATURE_HASH::SHA256 };
 	};
 }
