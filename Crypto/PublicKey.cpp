@@ -11,10 +11,13 @@ std::optional<std::unique_ptr<webauthn::crypto::PublicKey>> webauthn::crypto::cr
     return createPublicKey(handle);
 }
 
-std::optional<webauthn::crypto::ECDSAKey> createECDSA(webauthn::CBOR::CBORHandle handle, webauthn::crypto::COSE::SIGNATURE_HASH hash,
-    std::optional<webauthn::crypto::COSE::ECDSA_EC> ec = {});
+namespace webauthn::crypto
+{
+    static std::optional<webauthn::crypto::ECDSAKey> createECDSA(webauthn::CBOR::CBORHandle handle, webauthn::crypto::COSE::SIGNATURE_HASH hash,
+        std::optional<webauthn::crypto::COSE::ECDSA_EC> ec = {});
 
-std::optional<webauthn::crypto::EdDSAKey> createEdDSA(webauthn::CBOR::CBORHandle handle);
+    static std::optional<webauthn::crypto::EdDSAKey> createEdDSA(webauthn::CBOR::CBORHandle handle);
+}
 
 std::optional<std::unique_ptr<webauthn::crypto::PublicKey>> webauthn::crypto::createPublicKey(CBOR::CBORHandle handle)
 {
@@ -102,7 +105,7 @@ std::optional<std::unique_ptr<webauthn::crypto::PublicKey>> webauthn::crypto::cr
     return {};
 }
 
-std::optional<webauthn::crypto::ECDSAKey> createECDSA(webauthn::CBOR::CBORHandle handle, webauthn::crypto::COSE::SIGNATURE_HASH hash,
+std::optional<webauthn::crypto::ECDSAKey> webauthn::crypto::createECDSA(webauthn::CBOR::CBORHandle handle, webauthn::crypto::COSE::SIGNATURE_HASH hash,
     std::optional<webauthn::crypto::COSE::ECDSA_EC> ec)
 {
     auto map_arr = webauthn::CBOR::getMapArray(handle);
@@ -126,7 +129,7 @@ std::optional<webauthn::crypto::ECDSAKey> createECDSA(webauthn::CBOR::CBORHandle
             auto value = webauthn::CBOR::getIntegral<int>(elem->value);
             if (!value) return {};
 
-            if (!webauthn::crypto::COSE::isCOSE_EC(*value)) return {};
+            if (!webauthn::crypto::COSE::isCOSE_ECDSA_EC(*value)) return {};
 
             ec = static_cast<webauthn::crypto::COSE::ECDSA_EC>(*value);
         }
@@ -152,7 +155,44 @@ std::optional<webauthn::crypto::ECDSAKey> createECDSA(webauthn::CBOR::CBORHandle
     return key;
 }
 
-std::optional<webauthn::crypto::EdDSAKey> createEdDSA(webauthn::CBOR::CBORHandle handle)
+std::optional<webauthn::crypto::EdDSAKey> webauthn::crypto::createEdDSA(webauthn::CBOR::CBORHandle handle)
 {
-    return std::optional<webauthn::crypto::EdDSAKey>{};
+    auto map_arr = webauthn::CBOR::getMapArray(handle);
+    if (!map_arr) return {};
+
+    std::optional<std::vector<std::byte>> bin_x{};
+    std::optional<COSE::EdDSA_EC> ec{};
+
+    //Check for algorithm type
+    for (auto& elem : *map_arr)
+    {
+        auto value = webauthn::CBOR::getIntegral<int>(elem->key);
+
+        if (!value)
+        {
+            continue;
+        }
+
+        if (*value == -1 && !ec)
+        {
+            auto value = webauthn::CBOR::getIntegral<int>(elem->value);
+            if (!value) return {};
+
+            if (!webauthn::crypto::COSE::isCOSE_EdDSA_EC(*value)) return {};
+
+            ec = static_cast<webauthn::crypto::COSE::EdDSA_EC>(*value);
+        }
+
+        if (*value == -2 && !bin_x)
+        {
+            bin_x = std::move(webauthn::CBOR::getByteString(elem->value));
+        }
+    }
+
+    if (!ec || !bin_x) return {};
+
+    auto key = webauthn::crypto::EdDSAKey::create(*bin_x, *ec);
+    if (!key) return {};
+
+    return key;
 }

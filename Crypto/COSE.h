@@ -34,7 +34,7 @@ namespace webauthn::crypto
 
 		enum class SIGNATURE_HASH : std::int32_t { SHA256 = -16, SHA384 = -43, SHA512 = -44 };
 
-		constexpr bool isCOSE_ALGORITHM(std::int32_t value)
+		inline constexpr bool isCOSE_ALGORITHM(std::int32_t value)
 		{
 			constexpr std::array<COSE_ALGORITHM, 9> enum_values = {
 				COSE_ALGORITHM::RS1, COSE_ALGORITHM::RS256, COSE_ALGORITHM::RS384, COSE_ALGORITHM::RS512,
@@ -52,7 +52,7 @@ namespace webauthn::crypto
 			return false;
 		}
 
-		constexpr bool isCOSE_EC(std::int32_t value)
+		inline constexpr bool isCOSE_ECDSA_EC(std::int32_t value)
 		{
 			constexpr std::array<ECDSA_EC, 4> enum_values = {
 				ECDSA_EC::P256, ECDSA_EC::P384, ECDSA_EC::P521, ECDSA_EC::secp256k1 };
@@ -68,7 +68,23 @@ namespace webauthn::crypto
 			return false;
 		}
 
-		constexpr bool isCOSE_KeyType(std::int32_t value)
+		inline constexpr bool isCOSE_EdDSA_EC(std::int32_t value)
+		{
+			constexpr std::array<EdDSA_EC, 2> enum_values = {
+				EdDSA_EC::Ed25519, EdDSA_EC::Ed448 };
+
+			for (auto&& enum_value : enum_values)
+			{
+				if (value == std::to_underlying(enum_value))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		inline constexpr bool isCOSE_KeyType(std::int32_t value)
 		{
 			constexpr std::array<KEY_TYPE, 3> enum_values = {
 				KEY_TYPE::OKP, KEY_TYPE::EC, KEY_TYPE::RSA };
