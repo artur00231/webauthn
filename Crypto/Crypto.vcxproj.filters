@@ -51,6 +51,9 @@
     <ClInclude Include="EdDSAKey.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="RSAKey.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Crypto.cpp">
@@ -72,6 +75,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EdDSAKey.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RSAKey.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

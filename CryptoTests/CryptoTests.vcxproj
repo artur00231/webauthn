@@ -47,6 +47,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="PublicKeyParserTests.cpp" />
+    <ClCompile Include="RSAKeyTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

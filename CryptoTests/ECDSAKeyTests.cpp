@@ -89,6 +89,7 @@ namespace webauthn::crypto
 		static auto signature_5_sha384 = "MEYCIQCMXaSIusOHKPG8TXeFGeXwqTVcH8dANgc2MGVGVUN3dQIhAN/aa2teZcfowXfFhXAZDBTF3iYqymvp5uw3cnddIO+P"s;
 		static auto signature_5_sha512 = "MEUCIA1vZIQMmCSiW+x1D6HCRcHpD2oTVRky72ZmeDE1+PHJAiEAv4LMtr5Km2hmKYaW3DYKL9Z8L1n5m+Yf6CGqOHpMp+A="s;
 
+		//TODO ADD sha1 test!
 	}
 
 	TEST(ECDSAKeyTests, ECDSAKeyP256)
