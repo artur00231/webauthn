@@ -2,8 +2,8 @@
 
 #include <iomanip>
 
-#include "../Webauthn/WebAuthn.h"
-#include "../Webauthn/WebAuthnWinHello.h"
+#include "../WebauthnClient/WebAuthn.h"
+#include "../WebauthnClient/WebAuthnWinHello.h"
 
 void Client::run()
 {

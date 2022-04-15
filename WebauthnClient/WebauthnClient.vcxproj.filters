@@ -15,42 +15,21 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Attestation.cpp">
+    <ClCompile Include="WebAuthn.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TMPAttestation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AttestationObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AuthenticatorData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="WebAuthnDef.cpp">
+    <ClCompile Include="WebAuthnWinHello.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Attestation.h">
+    <ClInclude Include="WebAuthn.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TMPAttestation.h">
+    <ClInclude Include="WebAuthnImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WebAuthnDef.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AttestationObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AuthenticatorData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="WebAuthnExceptions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CredentialId.h">
+    <ClInclude Include="WebAuthnWinHello.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

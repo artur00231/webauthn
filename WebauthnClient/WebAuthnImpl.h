@@ -1,7 +1,7 @@
 #pragma once
 
-#include "WebAuthnDef.h"
-#include "CredentialId.h"
+#include "../Webauthn/WebAuthnDef.h"
+#include "../Webauthn/CredentialId.h"
 
 #include <optional>
 

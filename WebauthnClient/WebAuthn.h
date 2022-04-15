@@ -2,10 +2,9 @@
 
 #include <optional>
 
-#include "WebAuthnDef.h"
+#include "../Webauthn/WebAuthnDef.h"
 #include "WebAuthnImpl.h"
-#include "AttestationObject.h"
-#include "CredentialId.h"
+#include "../Webauthn/CredentialId.h"
 
 namespace webauthn
 {

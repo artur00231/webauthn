@@ -146,20 +146,15 @@
     <ClInclude Include="AuthenticatorData.h" />
     <ClInclude Include="CredentialId.h" />
     <ClInclude Include="TMPAttestation.h" />
-    <ClInclude Include="WebAuthn.h" />
     <ClInclude Include="WebAuthnDef.h" />
     <ClInclude Include="WebAuthnExceptions.h" />
-    <ClInclude Include="WebAuthnImpl.h" />
-    <ClInclude Include="WebAuthnWinHello.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Attestation.cpp" />
     <ClCompile Include="AttestationObject.cpp" />
     <ClCompile Include="AuthenticatorData.cpp" />
     <ClCompile Include="TMPAttestation.cpp" />
-    <ClCompile Include="WebAuthn.cpp" />
     <ClCompile Include="WebAuthnDef.cpp" />
-    <ClCompile Include="WebAuthnWinHello.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CBOR\CBOR.vcxproj">
