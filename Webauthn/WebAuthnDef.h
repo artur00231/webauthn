@@ -29,6 +29,12 @@ namespace webauthn
 		static std::optional<std::vector<std::byte>> generateRandomID(std::size_t size);
 	};
 
+	class CredentialId
+	{
+	public:
+		std::vector<std::byte> id{};
+	};
+
 	struct MakeCredentialResult
 	{
 		std::vector<std::byte> attestation_object{};

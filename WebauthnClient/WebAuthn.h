@@ -4,7 +4,6 @@
 
 #include "../Webauthn/WebAuthnDef.h"
 #include "WebAuthnImpl.h"
-#include "../Webauthn/CredentialId.h"
 
 namespace webauthn
 {

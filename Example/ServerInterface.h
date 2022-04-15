@@ -5,7 +5,6 @@
 #include <optional>
 
 #include "../Webauthn/WebAuthnDef.h"
-#include "../Webauthn/CredentialId.h"
 
 class ServerInterface
 {

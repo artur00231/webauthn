@@ -1,8 +1,6 @@
 #pragma once
 
 #include "../Webauthn/WebAuthnDef.h"
-#include "../Webauthn/CredentialId.h"
-
 #include <optional>
 
 namespace webauthn::impl

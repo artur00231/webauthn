@@ -144,7 +144,6 @@
     <ClInclude Include="Attestation.h" />
     <ClInclude Include="AttestationObject.h" />
     <ClInclude Include="AuthenticatorData.h" />
-    <ClInclude Include="CredentialId.h" />
     <ClInclude Include="TMPAttestation.h" />
     <ClInclude Include="WebAuthnDef.h" />
     <ClInclude Include="WebAuthnExceptions.h" />
