@@ -6,7 +6,7 @@
 #include <openssl/param_build.h>
 #include <openssl/core_names.h>
 
-webauthn::crypto::RSAKey::RSAKey(RSAKey&& key) noexcept : p_key{ key.p_key }, default_hash{ key.default_hash }
+webauthn::crypto::RSAKey::RSAKey(RSAKey&& key) noexcept : p_key{ key.p_key }, default_hash{ key.default_hash }, mgf1_hash{ key.mgf1_hash }, padding{ key.padding }
 {
     key.p_key = nullptr;
 }
@@ -15,6 +15,8 @@ webauthn::crypto::RSAKey& webauthn::crypto::RSAKey::operator=(RSAKey&& key) noex
 {
     std::swap(p_key, key.p_key);
     std::swap(default_hash, key.default_hash);
+    std::swap(mgf1_hash, key.mgf1_hash);
+    std::swap(padding, key.padding);
 
     return *this;
 }
@@ -28,9 +30,46 @@ webauthn::crypto::RSAKey::~RSAKey()
     }
 }
 
-std::optional<webauthn::crypto::RSAKey> webauthn::crypto::RSAKey::create(const std::vector<std::byte>& bin_modulus, const std::vector<std::byte>& bin_exponent)
+std::optional<webauthn::crypto::RSAKey> webauthn::crypto::RSAKey::create(const std::vector<std::byte>& bin_modulus, const std::vector<std::byte>& bin_exponent, COSE::COSE_ALGORITHM rsa_alg)
 {
     RSAKey key{};
+
+    switch (rsa_alg)
+    {
+    case webauthn::crypto::COSE::COSE_ALGORITHM::RS1:
+        key.default_hash = COSE::SIGNATURE_HASH::SHA1;
+        key.padding = Padding::PKCS1_v1_5;
+        break;
+    case webauthn::crypto::COSE::COSE_ALGORITHM::RS256:
+        key.default_hash = COSE::SIGNATURE_HASH::SHA256;
+        key.padding = Padding::PKCS1_v1_5;
+        break;
+    case webauthn::crypto::COSE::COSE_ALGORITHM::RS384:
+        key.default_hash = COSE::SIGNATURE_HASH::SHA384;
+        key.padding = Padding::PKCS1_v1_5;
+        break;
+    case webauthn::crypto::COSE::COSE_ALGORITHM::RS512:
+        key.default_hash = COSE::SIGNATURE_HASH::SHA512;
+        key.padding = Padding::PKCS1_v1_5;
+        break;
+    case webauthn::crypto::COSE::COSE_ALGORITHM::PS512:
+        key.default_hash = COSE::SIGNATURE_HASH::SHA512;
+        key.mgf1_hash = COSE::SIGNATURE_HASH::SHA512;
+        key.padding = Padding::PSS;
+        break;
+    case webauthn::crypto::COSE::COSE_ALGORITHM::PS384:
+        key.default_hash = COSE::SIGNATURE_HASH::SHA384;
+        key.mgf1_hash = COSE::SIGNATURE_HASH::SHA384;
+        key.padding = Padding::PSS;
+        break;
+    case webauthn::crypto::COSE::COSE_ALGORITHM::PS256:
+        key.default_hash = COSE::SIGNATURE_HASH::SHA256;
+        key.mgf1_hash = COSE::SIGNATURE_HASH::SHA256;
+        key.padding = Padding::PSS;
+        break;
+    default:
+        return {};
+    }
 
     std::unique_ptr<OSSL_PARAM_BLD, decltype([](OSSL_PARAM_BLD* ptr) {
             if (ptr) OSSL_PARAM_BLD_free(ptr);})> param_bld{};
@@ -95,6 +134,19 @@ std::optional<bool> webauthn::crypto::RSAKey::verify(const std::vector<std::byte
 
 std::optional<bool> webauthn::crypto::RSAKey::verify(const void* data, std::size_t data_size, const unsigned char* signature, std::size_t signature_size) const
 {
+    switch (padding)
+    {
+    case webauthn::crypto::RSAKey::Padding::PKCS1_v1_5:
+        return verifyPKCS1_v1_5(data, data_size, signature, signature_size);
+    case webauthn::crypto::RSAKey::Padding::PSS:
+        return verifyPSS(data, data_size, signature, signature_size);
+    }
+
+    return {};
+}
+
+std::optional<bool> webauthn::crypto::RSAKey::verifyPKCS1_v1_5(const void* data, std::size_t data_size, const unsigned char* signature, std::size_t signature_size) const
+{
     std::unique_ptr < EVP_MD_CTX, decltype([](EVP_MD_CTX* ptr) {
         if (ptr) EVP_MD_CTX_free(ptr); }) > mdctx{ EVP_MD_CTX_new() };
 
@@ -123,19 +175,97 @@ std::optional<bool> webauthn::crypto::RSAKey::verify(const void* data, std::size
     ctx.reset(EVP_PKEY_CTX_new(p_key, nullptr));
     if (!ctx) return {};
 
-    auto result = EVP_PKEY_verify_init(ctx.get());
+    //ctx_ptr will be freed when mdctx will be freed
+    auto ctx_ptr = ctx.release();
+    auto result = EVP_DigestVerifyInit(mdctx.get(), &ctx_ptr, hash_type, nullptr, p_key);
+    if (result <= 0)  return {};
+
+    result = EVP_PKEY_CTX_set_rsa_padding(ctx_ptr, RSA_PKCS1_PADDING);
     if (result <= 0) return {};
 
-    result = EVP_PKEY_CTX_set_rsa_padding(ctx.get(), RSA_PKCS1_PADDING);
+    result = EVP_PKEY_CTX_set_signature_md(ctx_ptr, hash_type);
     if (result <= 0) return {};
 
-    result = EVP_PKEY_CTX_set_signature_md(ctx.get(), hash_type);
+    result = EVP_DigestVerifyUpdate(mdctx.get(), data, data_size);
     if (result <= 0) return {};
+
+    result = EVP_DigestVerifyFinal(mdctx.get(), signature, signature_size);
+
+    if (result == 1)
+    {
+        return true;
+    }
+
+    if (result == 0)
+    {
+        return false;
+    }
+
+    return {};
+}
+
+std::optional<bool> webauthn::crypto::RSAKey::verifyPSS(const void* data, std::size_t data_size, const unsigned char* signature, std::size_t signature_size) const
+{
+    std::unique_ptr < EVP_MD_CTX, decltype([](EVP_MD_CTX* ptr) {
+        if (ptr) EVP_MD_CTX_free(ptr); }) > mdctx{ EVP_MD_CTX_new() };
+
+    const EVP_MD* hash_type{ nullptr };
+    const EVP_MD* mgf1hash_type{ nullptr };
+    switch (default_hash)
+    {
+    case COSE::SIGNATURE_HASH::SHA256:
+        hash_type = EVP_sha256();
+        break;
+    case COSE::SIGNATURE_HASH::SHA384:
+        hash_type = EVP_sha384();
+        break;
+    case COSE::SIGNATURE_HASH::SHA512:
+        hash_type = EVP_sha512();
+        break;
+    case COSE::SIGNATURE_HASH::SHA1:
+        hash_type = EVP_sha1();
+        break;
+    default:
+        return {};
+    }
+
+    switch (mgf1_hash)
+    {
+    case COSE::SIGNATURE_HASH::SHA256:
+        mgf1hash_type = EVP_sha256();
+        break;
+    case COSE::SIGNATURE_HASH::SHA384:
+        mgf1hash_type = EVP_sha384();
+        break;
+    case COSE::SIGNATURE_HASH::SHA512:
+        mgf1hash_type = EVP_sha512();
+        break;;
+    default:
+        return {};
+    }
+
+    std::unique_ptr<EVP_PKEY_CTX, decltype([](EVP_PKEY_CTX* ptr) {
+       if (ptr) EVP_PKEY_CTX_free(ptr);})> ctx{};
+
+    ctx.reset(EVP_PKEY_CTX_new(p_key, nullptr));
+    if (!ctx) return {};
 
     //ctx_ptr will be freed when mdctx will be freed
     auto ctx_ptr = ctx.release();
-    result = EVP_DigestVerifyInit(mdctx.get(), &ctx_ptr, hash_type, nullptr, p_key);
+    auto result = EVP_DigestVerifyInit(mdctx.get(), &ctx_ptr, hash_type, nullptr, p_key);
     if (result <= 0)  return {};
+
+    result = EVP_PKEY_CTX_set_rsa_padding(ctx_ptr, RSA_PKCS1_PSS_PADDING);
+    if (result <= 0) return {};
+
+    result = EVP_PKEY_CTX_set_rsa_mgf1_md(ctx_ptr, mgf1hash_type);
+    if (result <= 0) return {};
+
+    result = EVP_PKEY_CTX_set_signature_md(ctx_ptr, hash_type);
+    if (result <= 0) return {};
+
+    result = EVP_PKEY_CTX_set_rsa_pss_saltlen(ctx_ptr, RSA_PSS_SALTLEN_AUTO);
+    if (result <= 0) return {};
 
     result = EVP_DigestVerifyUpdate(mdctx.get(), data, data_size);
     if (result <= 0) return {};

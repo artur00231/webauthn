@@ -15,6 +15,9 @@ namespace webauthn::crypto
 			RS256 = -259,
 			RS384 = -258,
 			RS512 = -257,
+			PS512 = -39,
+			PS384 = -38,
+			PS256 = -37,
 
 			//ECDSA
 			ES256K = -47,

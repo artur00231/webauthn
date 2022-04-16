@@ -17,7 +17,7 @@ namespace webauthn::crypto
 		//e8e8a03067e43a255faff34586d87ae7fd7cb758710ba540f354b0e4f53678920500000001 66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925
 		static auto data_1 = "6OigMGfkOiVfr/NFhth65/18t1hxC6VA81Sw5PU2eJIFAAAAAWZoeq34Yr13bI/Bi46fjiAIlxSFbuIzs5AqWR0NXykl"s;
 		static auto sign_1 = "CVhqr9g0fIJdRyaoonfS2LTJrEt98OFkaateeApnXh98r3VvlTM2QdLDb1vZls0nw21um1sK7h1OOG0fD4pKqKPfwEFEaSz7fX15P95amTF9ZFs1gqsogD5SFFPyHJWbVu8+57oC7hzBVtY5Y3HTewDFxKFqU26qo/U89T2L9BU+qsZpgQRbnz8y80I0+VEKqzpq6mZQMvlksDqU9pcjdtyM46IAZsWxGJyA4wP2jhcGNfuqH9/MPCJfMIclFJ4ZbByNQ00qZzHU6qXr3ZQDa8vwJnzkVkLP2jzuV8kwbK0jbYRK3ndX+4kXLvFN8HmP/W4WoaydEv0LanVucqNCoQ=="s;
-		
+
 
 		static auto modulus_2 = "AQEAqlFaiNehCMCkEcdF1DjNLYGtuo5MW1ZqzHuGl6+fhhKtGnf0IooDok+tzQYrGLXyx/aHjL6QR1Q/nlzYZAEgCJHbOt1UoWab3R3baAPIQg5uyZqQJm8jeiNjPMco86/D/NI1rt7Bp86gkTD9tEed7097yIODLcqhPecNNpTJ0tdTtsh5t3DscrL6DXSFyoiPPFDbKVZ8B8tQlaQXGv9T9wwpEaFpKPv7/RL8cq7sA5a0RN4AOKiDwmdfO+/CY50hkEkJuTG+Zpjc06+QLufShMMNJBfPpgzNzgdy2JQeQWD6jjcc0rRSh1GeP1keA0yOfbb4R2rWARhPGe96ZUnRTQ=="s;
 		static auto exponent_2 = "AQAB"s;
@@ -72,6 +72,28 @@ namespace webauthn::crypto
 		static auto sign_7_384 = "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"s;
 		static auto sign_7_512 = "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"s;
 
+
+		static auto modulus_8 = "0g9ZFatyjzrQSCeawDkw8+iuVHdu9YK81PE3zlH1aC7x/R+stKMkcYB9PSMjgZ5AHk8JXFLduHMNtmXQ+s7NfrifSixTZEhkbyqrIkjH+CYy7FYpoy/vqKT9qB6Kj9yvUBNRbcAQ7VC8K2rOaZyuI/yoxv5Uo4ZE+NMCnlJqUMryDDucyJSMO2Th1YIwDXeCA6ScQ4suy9yLcTOCLNE4xeAJwM9wNgmPtvusgR931Zhw+XpjL1ZAzihIuzQ9Y9RmllNqT8FQBJGQ31tbZOksEu0ZPSy+So1S3AXK8f29ARPZIfF6mRafTcRyubjkOTfxZQwJg0mK5kV9IQJfilFf5b5GdMnr9hyhtS+ARlDq3JMm5DWesxwflBsMwSJazipNUPQVPYxTLBPOt/5eGoyKU8GRhvu/Sqa5FP7Oj9t44f5usOjj/CV4W1dP/lsU/wlOT2ZQDd+d+OCR/5Ut/2shVmZnmne65hUxudw/3Me/R5tO5fQGFQpL0UDp8MJrozqTEKohSwrUYm/JKpeICiRK3M7pMiNUB/0g0ktMMNwiZOlo6i1aZGiNg6dmB7U1zNhtEq+I5wrIgRdQWxr/y8bqZnOzmB7NnzKAkE2kuSEWrv6m89xDZQ7pAGql0o7jfxTCu6NsZ1LDhWl8TuAo0PeKCYZg07d19OZ5zcV1dJ7dUfE="s;
+		static auto exponent_8 = "AQAB"s;
+
+		static auto data_8 = "dkjvuyr98w3yt87w34yrc598yatov97y7jyuvw4yn8t9ut8p9yvo7pautjv89yta7u46tj79auatpy4vfy\n"s;
+		static auto sign_8_256 = "hI+XQD2M8mTlmAdhR3/IlbAQZwcsd/J1ZgKNHWbO4cUZCvw3WWYJZkPjqeD2x0sqxxnMUJNffjD03K8Wi/KuYYIv+domAZ6wzDAxAdVAsXpteySGfOBP1UKDQ+gKlxAb/rELwNWC+4nIt5EhNnReUIL0s/Dz8j8W/0YjUjg3J5ovMdfZs1h3BkTlCsawtdDOPNzc9Y0PMQhJSjtOT98pvGX/ewCHklVoILSigcK+kDjNmJhG/OB+qp/Yc+4975IMmNdN+oWkD/Jw8OSD/VtXjBhp2MB89YBpxgRJJJzrqKBnHH+OiZEYyULV9GtxiKnGHvSzyNUTZDyw3e/viS06lYgSPZO/Xz9OEgk8yNRY+3b9+58aRe6kFCukRLyfIRd9GiGHrP9ybs/mFxoWnQXRNcx3THTyJI4ALB1YZuyV2fCeZnFwgx9u++l53tQZylnDvplDUFAjp4GjtJLS/2EJxiZoHjVW/eWNN4qwNTuWg+ORjd5+UOPStULHGT3SrY5TH/fseWvtyyzuWvfmU1fftPh0+XHjVumQzvvuqGzpu+kRPUJtB4WWVr1XfzmkSnl3ReO7tOVEAL/KzPBiPx8YWKtZ6FQ4EE/XL78ITFyk6YgFPior0HafojDTsgVOSArZEdumN2jtNCAimZ5MPMghbL8YvYAEt/EyxdV16LwND2A="s;
+
+
+		static auto modulus_9 = "pOf+DQx9vdn78fA5/P98Pm053hMkZZ1LosUm9F2WzxVsO3Emwuyx+Wc/XXNOM1SZaBfPdVnvqrhua2zMrlR0LSnn1M7xHjfd48svHECZp+3MBtRDA5RsD7Fm/W7RgBsIntHZrbsPN15SBd8MsZA4FnylZopXOGY6MHBVX62xvHCaYCyUXZ3sgM7HGOBzU1ohuqG9vp0Lmw88xAcykwRtWF8MzDoTRcsgr653y2KeW4tjQBghmAc/qRRtm/oMxxEWtW3O7CntUaU76D3exp4QrfFovbi0tLmOkoUNlEM+XOzywDc9nqg+aXCLbKgVEuUVtWXpoefroBJtzPQjUzS3WYtPUGmJw4HiuNQ6VvHjvRiqdUffFdaOlYKb2lDNDs6NtC3rqcu/tzEEbt6lSBjcgyuZbGz5i+dIutaHnSJfz2nqXs1b/ubm/XCh7nDpt6qfItZl16ivlZTJ/37N9sfx2VZgmRbFqXmaDLWFnBWZBG9LIbMJyzCepwXWNrSQQuMZwR2moEV9eX70f7K7Ic91x7Ivli7bgJ6OnE1hlXd2ufjB4P3CN+lsFCrbfwkaqQz7SUGO+sKZnuYkrHhpYmWDN9qSJHFY4kTHMRmm7nE5x63n+yUXoDJytn4ER58jfobvQxvKE9awvfpTNjKx9Q/HC9v14/UKDpw6JkZSroF0UVM="s;
+		static auto exponent_9 = "AQAB"s;
+
+		static auto data_9 = "duiy7r3wy7r63w7842678rc6hy9326rc739av6ry738wyrv78y78tvrh78yrt864eyt798ve46y9wpuatv9oyu8oryhvp4uhtcuc8zsuhb4y4rv97e8tyco740esy7tvio4ehvt79y4\n"s;
+		static auto sign_9_256_256 = "OG3dZd/Lr2IYuneDWPt2H/W4s5czY9KsyqaLYQe4VEFY3UoFqEHRntx9XbCg5yS3313Iz8RKBQV0aacLPzHZuzvs2G7Vg720sWHNboRk0SzNhmzlSTp7ll505l750VnRHCs1jX5R2KSJCADD8EyJGFuL1Gtw1nsQYlaOmQyA0GsqWkIXr2MKrM39E4uQafyDMwRbDzKbz+10mc1SRuhaCyChtdiFs1908ulogxKno4HGnZFxtFIdhKOm9RvYzp7Nvv1ul3L2xpQeOwg1BeZ531fENVVa47dw+tn3OwOuPW7sjya8rq/FS9C5tntPumDSKw35I04oU1y8wOeHBu0eB9mLBK6iWKYPb8ptUjMfVek0hEO9E+kiGZIJf3fft6iso8Pi52uwmeqvP83+A+KBcVDcVch1Jd0CfNhtkQEuRHQ6IUo2MPOK3iezug/2XJMfbi+wKgiSgKxdSRquRVI8KYVqHNwWwq5vWDX5bu8dkYv6DTJNmkBRqcby/m7SYxgftbxqUsoQGmRbNbRoXr+Z5NCiokKgroN3eeqVSrNmNv9S8sroQ/xgPkCLwryz2qPJZ6ANmxMhyJQihpCB5JQ19E9LSTXn1oNkicawXqkv9oGPCmr0TEYeh85NVCjNG9Bx5/CgQX9rhnkXbH8VsKbP+A4wI9oD6lgCVx9/XSpie98="s;
+		static auto sign_9_256_384 = "QxCgeuTs3K6wNJrygCzB9mjE7BgtWMUQYyqXoHNJye9MXtT4qvykMIIegrmqo4lsjBBL9D3ZVS/D+OBKjnii7GVSaT5QWGnKBH2uOKJnk0GnUHV9GCRJyGkx5F9+FemOob/uMszX/KZZ/JlebIKttzP8Hlrj/R7I/V9SzXktETG9Aw9zZBfSHlfsHQ3iPrrC3wUmetVhLoSSdE290LfZAh2U+54799sUaij+QbwXsWzUxG9nB+1JSHCH9/dEd0VG3LKS2YbNXXlq9V78HBAsaZBXpoWqnSHN29v3nzjglH0KfaqwS3t9qS1jFfXzbcLzNLC+G+6NWFkh5zU8pNneegNUk8+vznx2KrtCHNW/MnoNJZnsQQi4gKlODPRdmIYF43ww+VJrQ+fiBydgx+HO5A7P6SjoJNABHwr5lXIZY0m0eBWidOkDrbAppMR9qV5Sl3E/E8t57oN67OdttgS6R3Gooapo/nObRJ3RS68shjcjHeQIasg/L/8HhkDUCkGWvdYrwRy4x+ZAoPRKIp9sSf/RBhrfAPUSIOyOnb3HnH5flEI2DZY1rM25Tq/WpW6qFYcx9lWM2RwhY1+PBcEDSKQT5X/meLmQ5k4IY2KqM/vJv/Q/G/KPfB6NNkDksjVvrLCOvpIho5OatQBdLwR7zn/lWE50uhIkbZgtGfF4FWI="s;
+		static auto sign_9_256_512 = "IhDbt9V7CXh3xAMH+ki/K5dsgKctI3PKOd8tyGBc+ZeMJsGJnd3Xd87UuY8LSeTBYncgDsSk0KbyBRpIH+WizfzqX9I88JBNEm/LUiTmfmWwin+Ml1in6Y4ruSC84Zjg+eSfiWyeqQgf5MlZgjk+H/WK4QvgUaB3x4xvBFRqyAOI29Ydbj1eOdeXH48hqIoNUY5vRCwQ7rG8le2cIht8LlrzyywQRxyZwmFkLYa7FeeQEg3MHwVzRf9CBHGFQmcqDcZW28w6x8x5j5VJLslzvcxyq7OrD922KSmO5Oo+4raqTCG2w9YptSVLepsM4AJPTv5gh08Fv5COfp3AxIpt4ZXKM3D99cVS2xQtzyUCcm6nO+lq6lvdJkhCS49eD89/UchTmzsUPvHGihKSc2ldzCWI03knKlqo0uKNfe5cmwR3ZUeQYPAZwfUtMC7wvsEE0q787UhJqzV39Jc82xezZDl+ogFepQoPc7YXWIUwGOBYx2T78q3Fnevg1g6TK0bTkwjWksgBDgUb5JrzU/mCUJBeXhQKWYAVyyrNs72gmAcgdCMGJfgd3EFT+/q98z55ESMP3q0nK1Uzc8de930df/lG6NlIQ6dEzuE3/AA5hmUQCZprE17rVK22AvBVAjHoliQitf4XguqxUG6vx7sCz/AegvAStEkb3zyJY2gp1Dc="s;
+		static auto sign_9_384_256 = "gVA/eKqGdnAweChhptyYMajPRLyGwQa9kCtB6O9uzejGItBi+NFoQ+lLKPD049I590ILBNYlfu5HwjHfJPqccONMCu5uKMc8HRQ82/E5sBuwoU+QEPLkhj1yTdH1RrUB2myYSeyyZmoIS0z/etXitgga/h2T25zn5n8usYNsXcZq4hMKY4lutrM/MMiCD2lgYPbFM1NRYUyon+ppcIFvNR26UBtVVA0muBDuNdbkd8RXv3FyRYtLgc1vw44vnGMgYUaeTqAGkUFI9qovIsvRkBVkfWcsdF/15DcCIqUmgUwwGVasKEordcWTiXiBaZSuK3o9BMrZkgpS+CJfX1uqiFLe7ts0e46pCSGNXjwxoz/cUpAI2FWKyo+rn1rUn99KP4JpVHORRscgSTl/e7fHCcK6av5IVimgZUdEFlNP/uYk4glTum9ToPB5cVfmUhaSqP0gYQLTln8lm5CnRxJErbHe/aJ6a/BEfyz26pO5vmGU2Au69Aeymi4LesuijJjhKf1/80A1x+cs6MUUmo5pIiTSDvfvrKXq0S1/8IO0foaQUJoNSK00n2FJ9AgnoV3NinFuZgwn18gi9dgZTwsfTLYtrDdqGbkVkeIV4bcOXYK9iFTAjjY5SgEbBDJCMukJ++RbEgKOi/Oe0+Sx0DOqLp6Cyzi/MonWX0nmQzOLtOo="s;
+		static auto sign_9_384_384 = "iC0+qboaQbA9bvHqraqFyn0k8Vr4qmgCWy9Aw3HR9OiS0SGMaZDyorlpIhm9Fl0ix+11lVXGSF8sJQBbnVUZN4e1sGcMNTa/ph4CzcCNpitMvflS6r0OFep0hZblICdEeZt18mQ7f8u+YGqCZNp2l9FqAHfRBUEqS7cowTt7ucQyL8OiHeA9rpA/AiAanjZ9weGdynNZsQv5IPL9dKZejGfTVUQX9MbN2Czit37obSdNvG6LpWk310eirpX1NJGqBhRQzwzRdxseNChOeBErYnNZ+QULPgKtUbobiZjnvwINeGKJ/Aa3DewROfvmTH5vjYRoIjgGkDXGlNk9mBmonN/+lJX18sP5dD4kAT9Ey2+yKzqnJrBi+7FBeOsGg7ZfaI6zJe8lhEaD4LZGTRQOXscZCQDd4KCMjcMtQhfIhg2gLi+Wl+RtqEQ+nnIOES0FKFqrF6JCZHcuoNyfdL09upZHtbVbJqHy64tlbS5V0StsXtulirrQio07HeUHAqGFEe/BPobCUZbqjiTPBvg3cqbbe15J48wq+ddUb9Vrb759EjZv69Y0Gr9bXITGXqp0niDsTW45PWw/qcDolP/ltVyoyO0+QPM0A9Stl0vkaJc1MDxiNZxqPWffCtqB7OFgEOHQDnor6R+TAS4B6MxFlkWlCtAbBHn1J7WQHnIulQ4="s;
+		static auto sign_9_384_512 = "Zccp9pZZd0n9b8kzKcjMzG1ZN11jl1Z12FjTQVfgU9U3fcSTM8i9KW1rueDviQBwT/ZWileAvIQCAONmo6DeHcMjYKnVajqBmxUy1OR4cw2nE0CmAqhT3kxHxtw88ebikLaVYfiORyOKPJpUDgjAU9spph6L9+n2dRR0ugn7KPTjd3OfjWgIbwNI2a2ertY0Y2JZVpHBWuLWp+unt2EGhn3p/JbwUFitVqtPPaKcmMVKERUK4N7BifKSiThx4xHTGbADRhEDJ34vR1Kfa5FAx8isLsQMK4852A8Qs2AXOGFYt5I9qGSXsq6hpgsdqRmJGScDKHsNDiy6OrGBJ/yVMNbQZkxEQhsUPklb6lpTB1dUTGc/dH9FVKwirmUqTqnm8m7xAtJLalcEBRjIG1dwBa6cdPtatoLbyBh+JkyCNWGjgFv275FycHN/8dEBvP7TWk8iB6fgn0Nak+wTNexISFM+yYT/za3bGEEtUPo0eg7VVjZV7Iagt8+KVuZI8GlvbNy2SfX02meK9t0gnIQzHrZo6h6/+B7hgk9nf1j0DlCCeNU4AOh1ImTYnI/ZW0uYidXAE5smCzSTH9KzSan79lJOy3b5kChasucFFnamXhPzTdUvfuyUF8LBM8nY8VdDep6jCwHi2NTzwkSWQhyz3qt7JtV6/+P04EbJWDrRlb8="s;
+		static auto sign_9_512_256 = "jnAV+28Iuhyj3+ADPOlrZTGv+LiI8qo5qo22GjhZjlBVua+y7fIf66v/nSfxyRp8KC/c78TcfyD0NRGO7QF/E+u6fUaBakeJ5qw1bxIEJJ38JYoORDZRHMeCYQ09k5sqAIgPWZd6Cmb121uAve6Ew9qNEJk/LL7xXKrdFqQK91JGaly625/pwchZC9RhdEo2QHUIoqW/bkUZyRq+dEGrkJWSfKrPxEmuG8glNjGqKQhOn9x7zTT9gTVrZY6evaHRwCh6i1SOy6zv8Hjdbxoa8W29wFJoVhLZVUgV/AKM5IpvUY03zqIu2y/W7gAGiVZj0EntJ41Vj2WlldK01IQfOSdRxbZhtOZKl3qeXvW+ZnJV9hHNYit66ev93fqW5VNyWUj2ktsiScXAEwduAgdZRU4z3Yd0+Z+Po8hZmksH9ApQzjzdqR02TRkT6JCnBy8mJ7Sxh65snClzkfksrPcYVuaCmFxuUSXYWYsRo9cX/uCI/d9os1h6yrpYb1HVVhZG0yrVP3vEQJ563o6/btQCD9NjO6jLlUE1YLZMDq+tlZwjxaBCtlgJXP3fMFwnX9U6zO4I4rP7iTRVuKGEcQU4r/WcHhuS5oqSkUS0G7mcf1g6uVGEkCg+jW3iW7OLWso7pEEztCeVRE+erOVOHvqKo1e62KYEvOeJR2HI2Stk63M="s;
+		static auto sign_9_512_384 = "Imh9t/xH9OnIFRMducwPwFLZDxCFXQRDkil3wdhQJt8S9zjNya6WFyoDTNtT/C1//2Ew6ANFg2tX3mYwCGs9OlcvO6OxZWywgVk4Sa5yNfwIhiPCvYVQ7nVwef+zQcp8Pfhp7SiL3kf9SClEj6MqObtzC1OgbOH3af40Qg8+JeLNTt0WYuTAz7ZzRdo4lMxtAY5UMXGI9czblipNBncADzSPqoT1J62t39ri3bDUkGRfvjy0enky9CgVX9bJGERp+hv+NRGWDkqyNT7d01rKecO/WP1FO2k8bxuvRkVCxpmn47w7X0H+/Kr9yeyCZS2V5xgwimkerndANIPtBJ7fvIK0rVQVKfRqZhk396TOziRFf8M7CSE/tcHawoSHuBrYGNp/qAv2SkeOZgf7Vx5msLgI6kXG+wZ/CME0T+sbxHqpuHKIykYGkz6AFNWlqbttzNHpHwnOzuVlLIzfSV04xtAB7cx7APTiF8varzmnlP1ofsrTjMidx5arZkldF5cZbf/o+T9uu1rTKV/knA41x6rteLo6E7u/NEHTuFiCRIW1CduuyFh2cXrQCowgge3tpEsxl0Gc7m8hmbld154trPmw9EbdIKaB3tHMH32gdSSNQkcb+H5O5n3UW7I9kAZsr+WwSy6FOR0J3GobauZzMdXEav6qkOpGD+wdK4SJnRE="s;
+		static auto sign_9_512_512 = "a9fsJ1DH7Sn+x4yK4QU3rPJmcD2cVj1pNLD4VdLAnX89Yv/v786Ezw1NGfQgbK11zqlllLt6JyvFY/yqi2ivZYtszShmVXgW7UT0Lv2fjaobBLABh0SYTLu5Wf7vG5lnVP++v+byvYxo+TtI9iLdr7DAU/R9g9soySRhXu3GMvZDA+ofZ/ta0hy0g+ErrWMT8W0i0J304MpKJyO5/K6G4If0Oeh3Qj6lFRergsINCCFpZfcQ9VfjyV/lQOSosCN2yi86MRSdT0b1pcSj8krwVYLiCOXZoOdWCkgaDw+f5EzXosG7vXD0eQ5MiEtbXhXahak3RLTWDAd0uBUxbTHTgAJQL7rFXjtctLlfaVuAjjSceMwh8tWmGSSiJQz/ufCJBHZmpiWB0XGx6JnAGHn/qPeEN8uhRkwkwmhyZrmaMGn9UY71IDuRpjymlqrBm+E694+44scM2cwZzTyH9YXfxPvDw0j6AsHHpNDcBvcqrvR6e7hCAHH83C9RMZvI6loLRwSkiGK9HTQolnwGQwcgZ3yho0E3hITzpvi07IAefRQOckNuxalEzGXYsfB7hH7DMyrzFv3i3mOJs+FKPQylcTFp+UnFMgAxc1hlpQWUaRjWUePLSv3K6gQQWMH3sGXeQoe3qIAeeGR06HSMflUzJe5Yl9HlghyTMsK50b28cno="s;
+
 	}
 
 	TEST(RSAKeyTests, RSATestsCreate1)
@@ -82,12 +104,7 @@ namespace webauthn::crypto
 		ASSERT_TRUE(modulus);
 		ASSERT_TRUE(exponent);
 
-		auto key = RSAKey::create(*modulus, *exponent);
-
-		if (!key)
-		{
-			crypto::OpenSSLErros::printAllErrors(std::cerr);
-		}
+		auto key = RSAKey::create(*modulus, *exponent, COSE::COSE_ALGORITHM::RS256);
 
 		ASSERT_TRUE(key);
 
@@ -111,12 +128,7 @@ namespace webauthn::crypto
 		ASSERT_TRUE(modulus);
 		ASSERT_TRUE(exponent);
 
-		auto key = RSAKey::create(*modulus, *exponent);
-
-		if (!key)
-		{
-			crypto::OpenSSLErros::printAllErrors(std::cerr);
-		}
+		auto key = RSAKey::create(*modulus, *exponent, COSE::COSE_ALGORITHM::RS256);
 
 		ASSERT_TRUE(key);
 	}
@@ -129,12 +141,7 @@ namespace webauthn::crypto
 		ASSERT_TRUE(modulus);
 		ASSERT_TRUE(exponent);
 
-		auto key = RSAKey::create(*modulus, *exponent);
-
-		if (!key)
-		{
-			crypto::OpenSSLErros::printAllErrors(std::cerr);
-		}
+		auto key = RSAKey::create(*modulus, *exponent, COSE::COSE_ALGORITHM::RS256);
 
 		ASSERT_TRUE(key);
 
@@ -178,12 +185,7 @@ namespace webauthn::crypto
 		ASSERT_TRUE(modulus);
 		ASSERT_TRUE(exponent);
 
-		auto key = RSAKey::create(*modulus, *exponent);
-
-		if (!key)
-		{
-			crypto::OpenSSLErros::printAllErrors(std::cerr);
-		}
+		auto key = RSAKey::create(*modulus, *exponent, COSE::COSE_ALGORITHM::RS256);
 
 		ASSERT_TRUE(key);
 
@@ -227,12 +229,7 @@ namespace webauthn::crypto
 		ASSERT_TRUE(modulus);
 		ASSERT_TRUE(exponent);
 
-		auto key = RSAKey::create(*modulus, *exponent);
-
-		if (!key)
-		{
-			crypto::OpenSSLErros::printAllErrors(std::cerr);
-		}
+		auto key = RSAKey::create(*modulus, *exponent, COSE::COSE_ALGORITHM::RS256);
 
 		ASSERT_TRUE(key);
 
@@ -276,12 +273,7 @@ namespace webauthn::crypto
 		ASSERT_TRUE(modulus);
 		ASSERT_TRUE(exponent);
 
-		auto key = RSAKey::create(*modulus, *exponent);
-
-		if (!key)
-		{
-			crypto::OpenSSLErros::printAllErrors(std::cerr);
-		}
+		auto key = RSAKey::create(*modulus, *exponent, COSE::COSE_ALGORITHM::RS256);
 
 		ASSERT_TRUE(key);
 
@@ -325,12 +317,7 @@ namespace webauthn::crypto
 		ASSERT_TRUE(modulus);
 		ASSERT_TRUE(exponent);
 
-		auto key = RSAKey::create(*modulus, *exponent);
-
-		if (!key)
-		{
-			crypto::OpenSSLErros::printAllErrors(std::cerr);
-		}
+		auto key = RSAKey::create(*modulus, *exponent, COSE::COSE_ALGORITHM::RS256);
 
 		ASSERT_TRUE(key);
 
@@ -359,6 +346,144 @@ namespace webauthn::crypto
 		EXPECT_TRUE(*result);
 
 		sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_7_512);
+		ASSERT_TRUE(sign);
+		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA512);
+		result = key->verify(data, *sign);
+		ASSERT_TRUE(result);
+		EXPECT_TRUE(*result);
+	}
+
+	TEST(RSAKeyTests, RSAKeyCreate2)
+	{
+		auto modulus = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::modulus_8);
+		auto exponent = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::exponent_8);
+
+		ASSERT_TRUE(modulus);
+		ASSERT_TRUE(exponent);
+
+		auto key = RSAKey::create(*modulus, *exponent, COSE::COSE_ALGORITHM::PS256);
+
+		if (!key)
+		{
+			crypto::OpenSSLErros::printAllErrors(std::cerr);
+		}
+
+		ASSERT_TRUE(key);
+
+		std::vector<std::byte> data{};
+		std::ranges::transform(helpers::data_8, std::back_inserter(data), [](auto x) { return static_cast<std::byte>(x); });
+
+		auto sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_8_256);
+		ASSERT_TRUE(sign);
+		auto result = key->verify(data, *sign);
+		ASSERT_TRUE(result);
+		EXPECT_TRUE(*result);
+	}
+
+	TEST(RSAKeyTests, RSAKeyPSS_PS256)
+	{
+		auto modulus = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::modulus_9);
+		auto exponent = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::exponent_9);
+
+		ASSERT_TRUE(modulus);
+		ASSERT_TRUE(exponent);
+
+		auto key = RSAKey::create(*modulus, *exponent, COSE::COSE_ALGORITHM::PS256);
+
+		ASSERT_TRUE(key);
+
+		std::vector<std::byte> data{};
+		std::ranges::transform(helpers::data_9, std::back_inserter(data), [](auto x) { return static_cast<std::byte>(x); });
+
+		auto sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_9_256_256);
+		ASSERT_TRUE(sign);
+		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA256);
+		auto result = key->verify(data, *sign);
+		ASSERT_TRUE(result);
+		EXPECT_TRUE(*result);
+
+		sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_9_256_384);
+		ASSERT_TRUE(sign);
+		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA384);
+		result = key->verify(data, *sign);
+		ASSERT_TRUE(result);
+		EXPECT_TRUE(*result);
+
+		sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_9_256_512);
+		ASSERT_TRUE(sign);
+		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA512);
+		result = key->verify(data, *sign);
+		ASSERT_TRUE(result);
+		EXPECT_TRUE(*result);
+	}
+
+	TEST(RSAKeyTests, RSAKeyPSS_PS384)
+	{
+		auto modulus = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::modulus_9);
+		auto exponent = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::exponent_9);
+
+		ASSERT_TRUE(modulus);
+		ASSERT_TRUE(exponent);
+
+		auto key = RSAKey::create(*modulus, *exponent, COSE::COSE_ALGORITHM::PS384);
+
+		ASSERT_TRUE(key);
+
+		std::vector<std::byte> data{};
+		std::ranges::transform(helpers::data_9, std::back_inserter(data), [](auto x) { return static_cast<std::byte>(x); });
+
+		auto sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_9_384_256);
+		ASSERT_TRUE(sign);
+		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA256);
+		auto result = key->verify(data, *sign);
+		ASSERT_TRUE(result);
+		EXPECT_TRUE(*result);
+
+		sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_9_384_384);
+		ASSERT_TRUE(sign);
+		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA384);
+		result = key->verify(data, *sign);
+		ASSERT_TRUE(result);
+		EXPECT_TRUE(*result);
+
+		sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_9_384_512);
+		ASSERT_TRUE(sign);
+		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA512);
+		result = key->verify(data, *sign);
+		ASSERT_TRUE(result);
+		EXPECT_TRUE(*result);
+	}
+
+	TEST(RSAKeyTests, RSAKeyPSS_PS512)
+	{
+		auto modulus = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::modulus_9);
+		auto exponent = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::exponent_9);
+
+		ASSERT_TRUE(modulus);
+		ASSERT_TRUE(exponent);
+
+		auto key = RSAKey::create(*modulus, *exponent, COSE::COSE_ALGORITHM::PS512);
+
+		ASSERT_TRUE(key);
+
+		std::vector<std::byte> data{};
+		std::ranges::transform(helpers::data_9, std::back_inserter(data), [](auto x) { return static_cast<std::byte>(x); });
+
+		auto sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_9_512_256);
+		ASSERT_TRUE(sign);
+		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA256);
+		auto result = key->verify(data, *sign);
+		ASSERT_TRUE(result);
+		EXPECT_TRUE(*result);
+
+		sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_9_512_384);
+		ASSERT_TRUE(sign);
+		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA384);
+		result = key->verify(data, *sign);
+		ASSERT_TRUE(result);
+		EXPECT_TRUE(*result);
+
+		sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_9_512_512);
 		ASSERT_TRUE(sign);
 		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA512);
 		result = key->verify(data, *sign);
