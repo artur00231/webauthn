@@ -130,11 +130,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="WebAuthn.cpp" />
+    <ClCompile Include="Webauthnlibfido2.cpp" />
     <ClCompile Include="WebAuthnWinHello.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WebAuthn.h" />
     <ClInclude Include="WebAuthnImpl.h" />
+    <ClInclude Include="Webauthnlibfido2.h" />
     <ClInclude Include="WebAuthnWinHello.h" />
   </ItemGroup>
   <ItemGroup>
