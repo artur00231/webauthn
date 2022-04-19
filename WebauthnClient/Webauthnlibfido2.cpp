@@ -210,6 +210,86 @@ std::optional<webauthn::impl::Webauthnlibfido2::fido2_device_info> webauthn::imp
 	return { device_info };
 }
 
+std::optional<std::string> webauthn::impl::Webauthnlibfido2::getUserSelectedDevice(const std::vector<std::string>& paths)
+{
+	if (paths.empty())
+	{
+		error("No devices avaiable");
+		return {};
+	}
+
+	using device_ptr = std::unique_ptr<fido_dev_t, decltype([](fido_dev_t* ptr)
+		{ if (ptr) {
+			//If device is already closed, nothing will happen
+			fido_dev_close(ptr);
+			fido_dev_free(&ptr);
+		}})>;
+
+	std::vector<std::pair<device_ptr, std::string>> fido2_devices{};
+	for (auto&& path : paths)
+	{
+		device_ptr device{ fido_dev_new() };
+		if (!device)
+			return {};
+
+		auto result = fido_dev_open(device.get(), path.c_str());
+		if (result != FIDO_OK)
+		{
+			error(std::format("Cannot open device: {}", path));
+			return {};
+		}
+
+		fido2_devices.emplace_back(std::move(device), path);
+	}
+
+	//Start touch request
+	for (const auto& [fido2_device, path] : fido2_devices)
+	{
+		auto result = fido_dev_get_touch_begin(fido2_device.get());
+		if (result != FIDO_OK)
+		{
+			error(std::format("Cannot open device: {}", path));
+			return {};
+		}
+	}
+
+	std::optional<std::string> selected_path{};
+	bool done{ false };
+
+	auto wait_time_per_round = fido2_devices.size() * wait_time_device; //ms
+	auto max_wait_rounds = max_wait_time * 1000 / wait_time_per_round;
+
+	for (decltype(max_wait_rounds) i = 0; i < max_wait_rounds && !done; i++)
+	{
+		//Find touched device
+		for (const auto& [fido_device, path] : fido2_devices)
+		{
+			int touched{};
+
+			auto result = fido_dev_get_touch_status(fido_device.get(), &touched, wait_time_device);
+			if (result != FIDO_OK)
+			{
+				done = true;
+			}
+
+			if (touched)
+			{
+				selected_path = path;
+				done = true;
+				break;
+			}
+		}
+	}
+
+	//Stop waiting for others
+	for (const auto& [fido_device, path] : fido2_devices)
+	{
+		fido_dev_cancel(fido_device.get());
+	}
+
+	return selected_path;
+}
+
 void webauthn::impl::Webauthnlibfido2::error(std::string error_message)
 {
 	errors.push_back(error_message);

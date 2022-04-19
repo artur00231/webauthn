@@ -62,10 +62,20 @@ namespace webauthn::impl
 		std::optional<std::vector<std::string>> getAvaiableFidoDevices();
 		std::optional<fido2_device_info> getFido2DeviceInfo(const std::string& path);
 
+		std::optional<std::string> getUserSelectedDevice(const std::vector<std::string>& paths);
+
 	protected:
 		void error(std::string error_message);
 
 	private:
+		//Library errors
 		std::vector<std::string> errors{};
+
+		//Error message that can be showed to end user
+		std::optional<std::string> user_error_msg{};
+
+		//Wait time for "getUserSelectedDevice" function
+		inline static constexpr std::size_t max_wait_time = 25; //s
+		inline static constexpr std::size_t wait_time_device = 50; //ms
 	};
 }
