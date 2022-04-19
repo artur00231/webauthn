@@ -5,6 +5,7 @@
 #include <format>
 #include <ranges>
 #include <utility>
+#include <unordered_map>
 
 namespace helpers
 {
@@ -178,35 +179,23 @@ std::optional<webauthn::impl::Webauthnlibfido2::fido2_device_info> webauthn::imp
 		std::back_inserter(device_info.algorithms));
 
 	auto extensions_raw = helpers::getAvaiableExtensions(device_info_raw);
-	std::vector<std::pair<std::string, EXTENSION>> supported_extensions{};
-	std::ranges::copy(SupportedExtensions | std::views::transform([](auto x) { return std::pair{ getExtensionText(x), x }; }), std::back_inserter(supported_extensions));
-	std::ranges::copy(extensions_raw | std::views::transform([&supported_extensions](auto&& x) -> std::optional<EXTENSION> {
-		auto it = std::ranges::find_if(supported_extensions, [&x](auto&& y) { return y.first == x; });
-		if (it == supported_extensions.end())
-		{
-			return {};
-		}
-		else
-		{
-			return it->second;
-		}
-		}) | std::views::filter([](auto&& x) { return static_cast<bool>(x); }) | std::views::transform([](auto&& x) { return *x; }), std::back_inserter(device_info.extensions));
+	std::unordered_map<std::string, std::optional<EXTENSION>> extension_map{};
+	std::ranges::for_each(SupportedExtensions, [&extension_map](auto x) {
+		extension_map[getExtensionText(x)] = x;
+		});
+	std::ranges::for_each(extensions_raw, [&extension_map, &device_info](auto&& x) {
+		extension_map[x].and_then([&device_info](auto&& y) { device_info.extensions.push_back(y); return std::optional<bool>{}; });
+		});
 
 	auto options_raw = helpers::getAvaiableOptions(device_info_raw);
-	std::vector<std::pair<std::string, OPTION>> supported_options{};
-	std::ranges::copy(SupportedOptions | std::views::transform([](auto x) { return std::pair{ getOptionText(x), x }; }), std::back_inserter(supported_options));
-	std::ranges::copy(options_raw | std::views::transform([&supported_options](auto&& x) -> std::optional<std::pair<OPTION, bool>> {
-		auto it = std::ranges::find_if(supported_options, [&x](auto&& y) { return y.first == x.first; });
-		if (it == supported_options.end())
-		{
-			return {};
-		}
-		else
-		{
-			return { { it->second, x.second } };
-		}
-		}) | std::views::filter([](auto&& x) { return static_cast<bool>(x); }) | std::views::transform([](auto&& x) { return *x; }), std::back_inserter(device_info.options));
-
+	std::unordered_map<std::string, std::optional<OPTION>> option_map{};
+	std::ranges::for_each(SupportedOptions, [&option_map](auto x) {
+		option_map[getOptionText(x)] = x;
+		});
+	std::ranges::for_each(options_raw, [&option_map, &device_info](auto&& x) {
+		option_map[x.first].and_then([&device_info, &x](auto&& y) { device_info.options.emplace_back(y, x.second); return std::optional<bool>{}; });
+		});
+	
 	return { device_info };
 }
 
