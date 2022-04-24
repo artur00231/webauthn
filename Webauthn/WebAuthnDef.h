@@ -52,6 +52,8 @@ namespace webauthn
 	};
 
 	enum class USER_VERIFICATION { REQUIRED, PREFERRED, DISCOURAGED };
+
+	//TODO revisit
 	enum class ATTESTATION { NONE, INDIRECT, DIRECT };
 
 	enum class EXTENSION : std::size_t { HMAC_SECRET = 0, CRED_PROTECT = 1 };

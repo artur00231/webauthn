@@ -4,6 +4,7 @@
 
 #include "../WebauthnClient/WebAuthn.h"
 #include "../WebauthnClient/WebAuthnWinHello.h"
+#include "../WebauthnClient/Webauthnlibfido2.h"
 
 void Client::run()
 {
@@ -108,8 +109,9 @@ void Client::loginUser()
 	}
 
 	//Webauthn required
-	webauthn::impl::WebAuthnWinHello whello{};
-	webauthn::WebAuthn webauthn{ RP, whello };
+	webauthn::impl::WebAuthnWinHello impl{};
+	//webauthn::impl::Webauthnlibfido2 impl{};
+	webauthn::WebAuthn webauthn{ RP, impl };
 
 	auto webauthn_result = webauthn.getAssertion({ *result.credential_id }, *result.challange);
 	if (!webauthn_result)
@@ -152,8 +154,10 @@ void Client::addWebauthn()
 		return;
 	}
 
-	webauthn::impl::WebAuthnWinHello whello{};
-	webauthn::WebAuthn webauthn{ RP, whello };
+	//Webauthn required
+	//webauthn::impl::WebAuthnWinHello impl{};
+	webauthn::impl::Webauthnlibfido2 impl{};
+	webauthn::WebAuthn webauthn{ RP, impl };
 
 	webauthn::UserData user_data{};
 	user_data.display_name = user;
@@ -169,8 +173,12 @@ void Client::addWebauthn()
 		return;
 	}
 
+	out << "FIDO2 passw: ";
+	auto fido_passw = standardUserInput<std::string>();
+
 	std::vector<std::byte> challage(32, std::byte(0));
-	auto result = webauthn.makeCredential(user_data, challage);
+	auto result = webauthn.makeCredential(user_data, challage, fido_passw);
+	fido_passw = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
 
 	if (!result)
 	{

@@ -140,6 +140,9 @@
     <ClInclude Include="WebAuthnWinHello.h" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CBOR\CBOR.vcxproj">
+      <Project>{cc078584-d971-4846-88fd-4a16c4bc867c}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Webauthn\Webauthn.vcxproj">
       <Project>{15ad30a3-7f5e-4415-a4bf-999c0e86d508}</Project>
     </ProjectReference>

@@ -70,6 +70,12 @@ namespace webauthn::CBOR
 			return cbor_root;
 		}
 
+		cbor_item_t* release() noexcept {
+			auto root = cbor_root;
+			cbor_root = nullptr;
+			return root;
+		}
+
 		bool good() const noexcept {
 			return cbor_root != nullptr;
 		}
