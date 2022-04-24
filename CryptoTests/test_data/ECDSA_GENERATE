@@ -1,0 +1,24 @@
+touch index.txt iindex.txt iiindex.txt iiiindex.txt iiiiindex.txt
+echo '01' > serial.txt
+echo '01' > sserial.txt
+echo '01' > ssserial.txt
+echo '01' > sssserial.txt
+echo '01' > ssssserial.txt
+
+openssl req -x509 -config ca.cfg -nodes -batch -out ca_cert.pem -outform PEM
+
+openssl req -config cca.cfg -new -nodes -batch -out cca_cert.csr -outform PEM
+openssl req -config ccca.cfg -new -nodes -batch -out ccca_cert.csr -outform PEM
+openssl req -config cccca.cfg -new -nodes -batch -out cccca_cert.csr -outform PEM
+openssl req -config ccccca.cfg -new -nodes -batch -out ccccca_cert.csr -outform PEM
+
+openssl ca -config ca.cfg -policy signing_policy -extensions signing_req -out cca_cert.pem -infiles cca_cert.csr
+openssl ca -config cca.cfg -policy signing_policy -extensions signing_req -out ccca_cert.pem -infiles ccca_cert.csr
+openssl ca -config ccca.cfg -policy signing_policy -extensions signing_req -out cccca_cert.pem -infiles cccca_cert.csr
+openssl ca -config cccca.cfg -policy signing_policy -extensions signing_req -out ccccca_cert.pem -infiles ccccca_cert.csr
+
+openssl x509 -in ca_cert.pem -outform der -out ca_cert.der
+openssl x509 -in cca_cert.pem -outform der -out cca_cert.der
+openssl x509 -in ccca_cert.pem -outform der -out ccca_cert.der
+openssl x509 -in cccca_cert.pem -outform der -out cccca_cert.der
+openssl x509 -in ccccca_cert.pem -outform der -out ccccca_cert.der
