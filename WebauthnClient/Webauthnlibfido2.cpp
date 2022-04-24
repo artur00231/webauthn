@@ -18,6 +18,9 @@ namespace webauthn::impl::helpers
 	using fido_cred_ptr = std::unique_ptr<fido_cred_t, decltype([](fido_cred_t* ptr) {
 		fido_cred_free(&ptr);
 	})>; 
+	using fido_assert_ptr = std::unique_ptr<fido_assert_t, decltype([](fido_assert_t* ptr) {
+		fido_assert_free(&ptr);
+	})>; 
 
 	static std::vector<int> getAvaiablePKAlgorithms(const std::shared_ptr<fido_cbor_info_t> info)
 	{
@@ -186,6 +189,24 @@ namespace webauthn::impl::helpers
 		}
 
 		return {};
+	}
+
+	//TODO change it
+	template<std::ranges::contiguous_range Range>
+	requires std::is_same_v<std::byte, std::iter_value_t<Range>> || std::is_same_v<char, std::iter_value_t<Range>> || std::is_same_v<unsigned char, std::iter_value_t<Range>>
+	std::optional<std::vector<std::byte>> unpackCBORByteString(Range && range)
+	{
+		std::vector<std::byte> data{};
+		std::ranges::transform(range, std::back_inserter(data), [](auto x) { return static_cast<std::byte>(x); });
+
+		auto [handle, load_result] = CBOR::CBORHandle::fromBin(data);
+		if (!handle)
+			return {};
+
+		auto decoded_data = CBOR::getByteString(handle);
+		if (!decoded_data)
+			return {};
+		return *decoded_data;
 	}
 }
 
@@ -434,7 +455,9 @@ std::optional<webauthn::MakeCredentialResult> webauthn::impl::Webauthnlibfido2::
 	if (result != FIDO_OK)
 		return {};
 
-	fido_dev_set_timeout(device.get(), operation_timeout * 1000);
+	result = fido_dev_set_timeout(device.get(), operation_timeout * 1000);
+	if (result != FIDO_OK)
+		return {};
 
 	//EXCLUDED CRIDENSIALS
 	//resut = fido_cred_exclude(cred, credensial, credensial_size)
@@ -499,7 +522,123 @@ std::optional<webauthn::MakeCredentialResult> webauthn::impl::Webauthnlibfido2::
 
 std::optional<webauthn::GetAssertionResult> webauthn::impl::Webauthnlibfido2::getAssertion(const Libfido2Authenticator& authenticator, const std::vector<CredentialId>& id, const RelyingParty& rp, const std::vector<std::byte>& challange, const std::optional<std::string>& password, const WebAuthnOptions& options)
 {
-	return std::optional<GetAssertionResult>();
+	std::unique_ptr<fido_dev_t, decltype([](fido_dev_t* ptr)
+		{ if (ptr)
+			{
+				//If device is already closed, nothing will happen
+				fido_dev_close(ptr);
+				fido_dev_free(&ptr);
+			}
+		})> device{ fido_dev_new() };
+
+	if (!device)
+		return {};
+
+	auto result = fido_dev_open(device.get(), authenticator.getPath().c_str());
+	if (result != FIDO_OK)
+		return {};
+
+	helpers::fido_assert_ptr assert{ fido_assert_new() };
+
+	//CLIENT DATA
+	result = fido_assert_set_clientdata(assert.get(), reinterpret_cast<const unsigned char*>(challange.data()), challange.size());
+	if (result != FIDO_OK)
+		return {};
+
+	//RELYING PARTY
+	//_, id
+	result = fido_assert_set_rp(assert.get(), rp.ID.c_str());
+	if (result != FIDO_OK)
+		return {};
+
+	//ALLOWED CREDENTIALS
+	for (auto&& credential : id)
+	{
+		result = fido_assert_allow_cred(assert.get(), reinterpret_cast<const unsigned char*>(credential.id.data()), credential.id.size());
+		if (result != FIDO_OK)
+			return {};
+	}
+
+	//EXTENSIONS
+	//result = fido_assert_set_extensions(assert, ext);
+	//if (result != FIDO_OK)
+	//	return {};
+
+	//USER PRESENCE
+	result = fido_assert_set_up(assert.get(), [&options](){
+		/*switch (options.user_pre)
+		{
+		default:
+			break;
+		}*/
+
+		return FIDO_OPT_TRUE;
+		}());
+	if (result != FIDO_OK)
+		return {};
+
+	//USER VERIFICATION
+	result = fido_assert_set_uv(assert.get(), [&options]() {
+		switch (options.user_verification)
+		{
+		case USER_VERIFICATION::REQUIRED:
+			return FIDO_OPT_TRUE;
+		case USER_VERIFICATION::DISCOURAGED:
+			return FIDO_OPT_FALSE;
+		default:
+			return FIDO_OPT_OMIT;
+		}
+		}());
+	if (result != FIDO_OK)
+		return {};
+
+	result = fido_dev_set_timeout(device.get(), operation_timeout * 1000);
+	if (result != FIDO_OK)
+		return {};
+
+	result = fido_dev_get_assert(device.get(), assert.get(), password ? password->c_str() : nullptr);
+	if (result == FIDO_ERR_PIN_INVALID)
+	{
+		user_error_msg = invalid_pin_err;
+		std::cerr << invalid_pin_err << "\n";
+	}
+	else if (result == FIDO_ERR_PIN_REQUIRED || result == FIDO_ERR_PIN_NOT_SET)
+	{
+		user_error_msg = no_pin_err;
+		std::cerr << no_pin_err << "\n";
+	}
+	else if (result == FIDO_OK)
+	{
+		GetAssertionResult get_assertion_result{};
+
+		//TODO this fido_dev_get_assert can return muliple assertions!!
+		//For now return onlu first
+		auto x = fido_assert_count(assert.get());
+		if (fido_assert_count(assert.get()) > 0)
+		{
+			result = helpers::unpackCBORByteString(std::span{ fido_assert_authdata_ptr(assert.get(), 0), fido_assert_authdata_len(assert.get(), 0) }).and_then([&get_assertion_result](auto&& data) {
+				get_assertion_result.authenticator_data = std::move(data);
+				return std::make_optional(true);
+				}).value_or(false);
+				if (!result)
+					return {};
+
+			std::ranges::transform(std::span{ fido_assert_sig_ptr(assert.get(), 0), fido_assert_sig_len(assert.get(), 0) }, std::back_inserter(get_assertion_result.signature),
+				[](auto x) { return static_cast<std::byte>(x); });
+
+			if (fido_assert_user_id_len(assert.get(), 0) != 0)
+			{
+				get_assertion_result.user_id = decltype(get_assertion_result.user_id){};
+				std::ranges::transform(std::span{ fido_assert_user_id_ptr(assert.get(), 0), fido_assert_user_id_len(assert.get(), 0) }, std::back_inserter(*(get_assertion_result.user_id)),
+					[](auto x) { return static_cast<std::byte>(x); });
+			}
+			
+
+			return get_assertion_result;
+		}
+	}
+
+	return {};
 }
 
 const std::string webauthn::impl::Webauthnlibfido2::no_fido2_devices_err{ "No FIDO2 authenticator found" };

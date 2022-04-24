@@ -109,11 +109,15 @@ void Client::loginUser()
 	}
 
 	//Webauthn required
-	webauthn::impl::WebAuthnWinHello impl{};
-	//webauthn::impl::Webauthnlibfido2 impl{};
+	//webauthn::impl::WebAuthnWinHello impl{};
+	webauthn::impl::Webauthnlibfido2 impl{};
 	webauthn::WebAuthn webauthn{ RP, impl };
 
-	auto webauthn_result = webauthn.getAssertion({ *result.credential_id }, *result.challange);
+	out << "FIDO2 passw: ";
+	auto fido_passw = standardUserInput<std::string>();
+	auto webauthn_result = webauthn.getAssertion({ *result.credential_id }, *result.challange, fido_passw);
+	fido_passw = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+
 	if (!webauthn_result)
 	{
 		out << "System error\n";
