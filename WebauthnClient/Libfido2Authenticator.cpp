@@ -255,6 +255,10 @@ webauthn::impl::Libfido2Authenticator::MakeCredentialLibfido2Result webauthn::im
 		std::ranges::transform(std::span{ fido_cred_attstmt_ptr(credential.get()), fido_cred_attstmt_len(credential.get()) }, std::back_inserter(created_credential.attestation_statement),
 			[](auto x) { return static_cast<std::byte>(x); });
 	}
+	else
+	{
+		fido_dev_cancel(device.get());
+	}
 
 	return created_credential;
 }
@@ -346,6 +350,10 @@ webauthn::impl::Libfido2Authenticator::GetAssertionLibfido2Result webauthn::impl
 			std::ranges::transform(std::span{ fido_assert_authdata_ptr(assert.get(), i), fido_assert_authdata_len(assert.get(), i) }, std::back_inserter(assert_datas.cbor_authdata),
 				[](auto x) { return static_cast<std::byte>(x); });
 		}
+	}
+	else
+	{
+		fido_dev_cancel(device.get());
 	}
 
 	return get_assertion;
