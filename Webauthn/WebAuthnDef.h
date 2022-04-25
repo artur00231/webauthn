@@ -111,5 +111,7 @@ namespace webauthn
 		USER_VERIFICATION user_verification{ USER_VERIFICATION::DISCOURAGED };
 		USER_PRESENCE user_presence{ USER_PRESENCE::DEFAULT };
 		ATTESTATION attestation{ ATTESTATION::NONE };
+
+		int timeout{ 25'000 }; //ms
 	};
 }

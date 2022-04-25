@@ -178,7 +178,13 @@ std::optional<webauthn::GetAssertionResult> webauthn::impl::Webauthnlibfido2::ge
 	//Start library
 	fido_init(FIDO_DISABLE_U2F_FALLBACK);
 
-	auto authenticator_to_use = getSuitableDevice(options);
+	std::optional<Libfido2Authenticator> authenticator_to_use{};
+
+	if (auto_authenticator_get_assert)
+		authenticator_to_use = getSuitableDeviceForAssertion(id, rp, options);
+
+	if (!authenticator_to_use)
+		authenticator_to_use = getSuitableDevice(options);
 
 	//Make credential using libfido2
 	auto assertion = authenticator_to_use->getAssertion(Libfido2Token{}, id, rp, challange, password, options);
@@ -345,21 +351,16 @@ std::optional<webauthn::impl::Libfido2Authenticator> webauthn::impl::Webauthnlib
 	//Search for appropriate FIDO2 authenticator 
 	auto authenticators = getAvaiableFidoDevices();
 	if (!authenticators)
-	{
 		return {};
-	}
 
-	if (authenticators->size() == 0)
+	if (authenticators->empty())
 	{
 		user_error_msg = no_fido2_devices_err;
 		return {};
 	}
 
 	//Fiter authenticators
-	//Algorithms
-	auto to_remove = std::ranges::remove_if(*authenticators, [&options](auto& authenticator) { return !authenticator.chooseAlgoritm(options.allowed_algorithms); });
-	if (std::size(to_remove) != 0)
-		authenticators->erase(std::begin(to_remove), std::end(to_remove));
+	authenticators = filterAuthenticators(*authenticators, options);
 
 	std::vector<Libfido2Authenticator> winhello_authenticators{};
 	std::vector<Libfido2Authenticator> standard_authenticators{};
@@ -396,6 +397,48 @@ std::optional<webauthn::impl::Libfido2Authenticator> webauthn::impl::Webauthnlib
 	}
 
 	return authenticator_to_use;
+}
+
+std::optional<webauthn::impl::Libfido2Authenticator> webauthn::impl::Webauthnlibfido2::getSuitableDeviceForAssertion(const std::vector<CredentialId>& id, const RelyingParty& rp, WebAuthnOptions options)
+{
+	//Search for appropriate FIDO2 authenticator 
+	auto authenticators = getAvaiableFidoDevices();
+	if (!authenticators)
+		return {};
+
+	//Fiter authenticators
+	authenticators = filterAuthenticators(*authenticators, options);
+	if (authenticators->empty())
+		return {};
+
+	std::vector<std::byte> challenge(32, std::byte{ 0 });
+	options.user_presence = USER_PRESENCE::DISCOURAGED;
+	options.user_verification = USER_VERIFICATION::PREFERRED;
+	options.timeout = 100;
+
+	std::optional<Libfido2Authenticator> authenticator_to_use{};
+
+	for (Libfido2Authenticator& authenticator : *authenticators)
+	{
+		auto assertion = authenticator.getAssertion(Libfido2Token{}, id, rp, challenge, {}, options);
+
+		if (assertion.success == FIDO_ERR_PIN_REQUIRED || assertion.success == FIDO_OK)
+		{
+			authenticator_to_use = authenticator;
+		}
+	}
+
+	return authenticator_to_use;
+}
+
+std::vector<webauthn::impl::Libfido2Authenticator> webauthn::impl::Webauthnlibfido2::filterAuthenticators(std::vector<Libfido2Authenticator> authenticators, const WebAuthnOptions& options)
+{
+	//Algorithms
+	auto to_remove = std::ranges::remove_if(authenticators, [&options](auto& authenticator) { return !authenticator.chooseAlgoritm(options.allowed_algorithms); });
+	if (std::size(to_remove) != 0)
+		authenticators.erase(std::begin(to_remove), std::end(to_remove));
+	
+	return authenticators;
 }
 
 const std::string webauthn::impl::Webauthnlibfido2::no_fido2_devices_err{ "No FIDO2 authenticator found" };

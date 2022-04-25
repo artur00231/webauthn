@@ -36,6 +36,8 @@ namespace webauthn::impl
 		std::optional<std::vector<Libfido2Authenticator>> getAvaiableFidoDevices();
 		std::optional<Libfido2Authenticator> getUserSelectedDevice(const std::vector<Libfido2Authenticator>& authenticators);
 		std::optional<Libfido2Authenticator> getSuitableDevice(const WebAuthnOptions& options);
+		std::optional<Libfido2Authenticator> getSuitableDeviceForAssertion(const std::vector<CredentialId>& id, const RelyingParty& rp, WebAuthnOptions options);
+		std::vector<Libfido2Authenticator> filterAuthenticators(std::vector<Libfido2Authenticator> authenticators, const WebAuthnOptions& options);
 
 	private:
 		//Error message that can be showed to end user
@@ -48,6 +50,8 @@ namespace webauthn::impl
 
 		//User will be asked to select authenticator, even if there is just one good authenticator
 		inline static constexpr bool force_always_user_select{ false };
+		//Allow automatic authenticator selection for getAssertion
+		inline static constexpr bool auto_authenticator_get_assert{ true };
 
 		const static std::string no_fido2_devices_err;
 		const static std::string no_good_fido2_devices_err;

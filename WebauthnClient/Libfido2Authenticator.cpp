@@ -105,7 +105,7 @@ namespace webauthn::impl::helpers
 	}
 }
 
-std::optional<webauthn::impl::Libfido2Authenticator> webauthn::impl::Libfido2Authenticator::createLibfido2Authenticator(std::string path, Libfido2Token token, int operation_timeout)
+std::optional<webauthn::impl::Libfido2Authenticator> webauthn::impl::Libfido2Authenticator::createLibfido2Authenticator(std::string path, Libfido2Token token)
 {
 	auto device = helpers::openFido2Device(path);
 	if (!device)
@@ -125,7 +125,6 @@ std::optional<webauthn::impl::Libfido2Authenticator> webauthn::impl::Libfido2Aut
 	Libfido2Authenticator authenticator{};
 
 	authenticator.path = path;
-	authenticator.operation_timeout = operation_timeout;
 
 	authenticator.has_pin = fido_dev_has_pin(device.get());
 	authenticator.has_uv = fido_dev_has_uv(device.get());
@@ -205,7 +204,7 @@ webauthn::impl::Libfido2Authenticator::MakeCredentialLibfido2Result webauthn::im
 		return { .success = success };
 	
 	//TIMEOUT
-	if (auto success = fido_dev_set_timeout(device.get(), operation_timeout * 1000); success != FIDO_OK)
+	if (auto success = fido_dev_set_timeout(device.get(), options.timeout); success != FIDO_OK)
 		return { .success = success };
 
 	//EXCLUDED CRIDENSIALS
@@ -321,7 +320,7 @@ webauthn::impl::Libfido2Authenticator::GetAssertionLibfido2Result webauthn::impl
 		return { .success = success };
 
 	//TIMEOUT
-	if (auto success = fido_dev_set_timeout(device.get(), operation_timeout * 1000); success != FIDO_OK)
+	if (auto success = fido_dev_set_timeout(device.get(), options.timeout); success != FIDO_OK)
 		return { .success = success };
 
 
@@ -344,7 +343,7 @@ webauthn::impl::Libfido2Authenticator::GetAssertionLibfido2Result webauthn::impl
 			std::ranges::transform(std::span{ fido_assert_sig_ptr(assert.get(), i), fido_assert_sig_len(assert.get(), i) }, std::back_inserter(assert_datas.signature),
 				[](auto x) { return static_cast<std::byte>(x); });
 
-			std::ranges::transform(std::span{ fido_assert_authdata_ptr(assert.get(), i), fido_assert_authdata_ptr(assert.get(), i) }, std::back_inserter(assert_datas.cbor_authdata),
+			std::ranges::transform(std::span{ fido_assert_authdata_ptr(assert.get(), i), fido_assert_authdata_len(assert.get(), i) }, std::back_inserter(assert_datas.cbor_authdata),
 				[](auto x) { return static_cast<std::byte>(x); });
 		}
 	}

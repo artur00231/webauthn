@@ -52,12 +52,13 @@ namespace webauthn::impl
 		};
 
 		//Returns empty optional if something went wrong, or authenticator wasn't fido2 compatible
-		static std::optional<Libfido2Authenticator> createLibfido2Authenticator(std::string path, Libfido2Token token, int operation_timeout = 25);
+		static std::optional<Libfido2Authenticator> createLibfido2Authenticator(std::string path, Libfido2Token token);
 
 		MakeCredentialLibfido2Result makeCredential(Libfido2Token token, const UserData& user, const RelyingParty& rp,
 			const std::vector<std::byte>& challange, const std::optional<std::string>& password, const WebAuthnOptions& options);
 		GetAssertionLibfido2Result getAssertion(Libfido2Token token, const std::vector<CredentialId>& id, const RelyingParty& rp,
 			const std::vector<std::byte>& challange, const std::optional<std::string>& password, const WebAuthnOptions& options);
+
 
 		std::string getPath() const { return path; }
 		Supported getSupported() const noexcept { return supported; };
@@ -104,8 +105,6 @@ namespace webauthn::impl
 
 		//Supported options
 		std::vector<std::pair<OPTION, bool>> options{};
-
-		int operation_timeout{ 25 }; //s
 
 		//Return error, even if libfido2 library error is not critical
 		static constexpr const bool aggresive_errors{ true };
