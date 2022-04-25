@@ -2,6 +2,7 @@
 
 #include "ECDSAKey.h"
 #include "EdDSAKey.h"
+#include "RSAKey.h"
 
 std::optional<std::unique_ptr<webauthn::crypto::PublicKey>> webauthn::crypto::createPublicKey(const std::vector<std::byte>& cbor)
 {
@@ -17,6 +18,8 @@ namespace webauthn::crypto
         std::optional<webauthn::crypto::COSE::ECDSA_EC> ec = {});
 
     static std::optional<webauthn::crypto::EdDSAKey> createEdDSA(webauthn::CBOR::CBORHandle handle);
+
+    static std::optional<webauthn::crypto::RSAKey> createRSA(webauthn::CBOR::CBORHandle handle, COSE::COSE_ALGORITHM rsa_algorithm);
 }
 
 std::optional<std::unique_ptr<webauthn::crypto::PublicKey>> webauthn::crypto::createPublicKey(CBOR::CBORHandle handle)
@@ -93,6 +96,19 @@ std::optional<std::unique_ptr<webauthn::crypto::PublicKey>> webauthn::crypto::cr
         return createEdDSA(handle).and_then([](webauthn::crypto::EdDSAKey&& key)
             {
                 return std::make_optional(std::make_unique<webauthn::crypto::EdDSAKey>(std::move(key)));
+            });
+        break;
+    case COSE::COSE_ALGORITHM::RS1: [[fallthrough]];
+    case COSE::COSE_ALGORITHM::RS256: [[fallthrough]];
+    case COSE::COSE_ALGORITHM::RS384: [[fallthrough]];
+    case COSE::COSE_ALGORITHM::RS512: [[fallthrough]];
+    case COSE::COSE_ALGORITHM::PS256: [[fallthrough]];
+    case COSE::COSE_ALGORITHM::PS384: [[fallthrough]];
+    case COSE::COSE_ALGORITHM::PS512:
+        if (!key_type || *key_type != COSE::KEY_TYPE::RSA) return {};
+        return createRSA(handle, *alg).and_then([](webauthn::crypto::RSAKey&& key)
+            {
+                return std::make_optional(std::make_unique<webauthn::crypto::RSAKey>(std::move(key)));
             });
         break;
 
@@ -192,6 +208,44 @@ std::optional<webauthn::crypto::EdDSAKey> webauthn::crypto::createEdDSA(webauthn
     if (!ec || !bin_x) return {};
 
     auto key = webauthn::crypto::EdDSAKey::create(*bin_x, *ec);
+    if (!key) return {};
+
+    return key;
+}
+
+std::optional<webauthn::crypto::RSAKey> webauthn::crypto::createRSA(webauthn::CBOR::CBORHandle handle, COSE::COSE_ALGORITHM rsa_algorithm)
+{
+    auto map_arr = webauthn::CBOR::getMapArray(handle);
+    if (!map_arr) return {};
+
+    std::optional<std::vector<std::byte>> modulus{};
+    std::optional<std::vector<std::byte>> exponent{};
+    std::optional<COSE::COSE_ALGORITHM> algorithm{};
+
+    //Check for algorithm type
+    for (auto& elem : *map_arr)
+    {
+        auto value = webauthn::CBOR::getIntegral<int>(elem->key);
+
+        if (!value)
+        {
+            continue;
+        }
+
+        if (*value == -1 && !modulus)
+        {
+            modulus = std::move(webauthn::CBOR::getByteString(elem->value));
+        }
+
+        if (*value == -2 && !exponent)
+        {
+            exponent = std::move(webauthn::CBOR::getByteString(elem->value));
+        }
+    }
+
+    if (!modulus || !exponent) return {};
+
+    auto key = webauthn::crypto::RSAKey::create(*modulus, *exponent, rsa_algorithm);
     if (!key) return {};
 
     return key;

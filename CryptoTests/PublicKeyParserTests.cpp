@@ -3,6 +3,7 @@
 #include "../Crypto/PublicKey.h"
 #include "../Crypto/ECDSAKey.h"
 #include "../Crypto/EdDSAKey.h"
+#include "../Crypto/RSAKey.h"
 #include "../Crypto/Base64.h"
 
 #include "../CBOR/CBOR.h"
@@ -16,6 +17,8 @@ namespace webauthn::crypto
 		static const auto key1 = "pQECAyYgASFYIMew+rUTR8zsD6KkkrUTdYrEk7DXxoL50v0MMBf6LIKpIlggpEOcY7WTRQesM/jNtGOSxBjzd4uMIl3erIF6PbWT9hY="s;
 
 		static const auto key2 = "pAEBAycgBiFYINbENIRGqvF8wIwPDt7DC2ojhV8RwBD/c3OQuzloCqIe"s;
+
+		static const auto key3 = "pAEDAzkBACBZAQDbplnM48H8PEgkTSHXy+w1Me6lMCYnPOeV/r7EvRNoGJHbQLzZiJ1mCkKA49slDmFew/JBg8ok5ZAzWU8vBtnxVBbwTc2j00jh6DBlwTAUyrlNW9GLAWZnhv2WeyhW9n2IoqXZDKpw4nW28N9C4MnkgRU3jsNnoBFWXts3BB5kAZ1OibN+sRIYe3VZcUvEjcOwheIcUBYUR3GhytkPLZoa+ptm13pDNYykNLLc5AyawxuAiWy/4OUtWrzw5aF0fXhJ0p04RYTpfmu1fnSzw1P1f7HxrgUr03yzlWlQ+IQksAXEwj5EL5iGvPD3zLeNA29+qnZ1lQ5jETg6bpgB0zqtIUMBAAE="s;
 	}
 
 	TEST(PublicKeyParserTests, ECDSAES256)
@@ -49,5 +52,21 @@ namespace webauthn::crypto
 		auto ecdsa = dynamic_cast<EdDSAKey*>(key->get());
 
 		ASSERT_TRUE(ecdsa);
+	}
+
+	TEST(PublicKeyParserTests, RS256)
+	{
+		auto cbor_data = base64::fromBase64Fix<std::vector<std::byte>>(helpers::key3);
+		ASSERT_TRUE(cbor_data);
+
+		auto [cbor, load_result] = CBOR::CBORHandle::fromBin(*cbor_data);
+		ASSERT_TRUE(cbor);
+
+		auto key = crypto::createPublicKey(cbor);
+		ASSERT_TRUE(key);
+
+		auto rsa = dynamic_cast<RSAKey*>(key->get());
+
+		ASSERT_TRUE(rsa);
 	}
 }
