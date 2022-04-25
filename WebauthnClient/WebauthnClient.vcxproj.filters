@@ -24,6 +24,9 @@
     <ClCompile Include="Webauthnlibfido2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Libfido2Authenticator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WebAuthn.h">
@@ -36,6 +39,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Webauthnlibfido2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Libfido2Authenticator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Libfido2Token.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

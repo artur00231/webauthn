@@ -129,11 +129,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Libfido2Authenticator.cpp" />
     <ClCompile Include="WebAuthn.cpp" />
     <ClCompile Include="Webauthnlibfido2.cpp" />
     <ClCompile Include="WebAuthnWinHello.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Libfido2Authenticator.h" />
+    <ClInclude Include="Libfido2Token.h" />
     <ClInclude Include="WebAuthn.h" />
     <ClInclude Include="WebAuthnImpl.h" />
     <ClInclude Include="Webauthnlibfido2.h" />

@@ -51,7 +51,10 @@ namespace webauthn
 		std::optional<std::vector<std::byte>> user_id{};
 	};
 
+	//TODO revisit
 	enum class USER_VERIFICATION { REQUIRED, PREFERRED, DISCOURAGED };
+
+	enum class USER_PRESENCE { DEFAULT, REQUIRED, DISCOURAGED };
 
 	//TODO revisit
 	enum class ATTESTATION { NONE, INDIRECT, DIRECT };
@@ -106,6 +109,7 @@ namespace webauthn
 		std::vector<crypto::COSE::COSE_ALGORITHM> allowed_algorithms{ crypto::COSE::COSE_ALGORITHM::ES256 };
 
 		USER_VERIFICATION user_verification{ USER_VERIFICATION::DISCOURAGED };
+		USER_PRESENCE user_presence{ USER_PRESENCE::DEFAULT };
 		ATTESTATION attestation{ ATTESTATION::NONE };
 	};
 }
