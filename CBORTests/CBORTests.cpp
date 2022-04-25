@@ -20,7 +20,7 @@ namespace webauthn::CBOR
 				if (x >= 'A' && x <= 'F')
 					return (x - 'A' + 10);
 				if (x >= 'a' && x <= 'f')
-					return (x - 'A' + 10);
+					return (x - 'a' + 10);
 
 				throw std::runtime_error{ R"("fromHex" Invalid character)" };
 			};
@@ -59,6 +59,14 @@ namespace webauthn::CBOR
 		}
 		*/
 		static auto ex_CBOR_map_array1 = hexToBin("A4008317203718188318FF381838FF1901008319FFFF39010039FFFF1A00010000831AFFFFFFFF3A000100003AFFFFFFFF");
+
+		static auto indefinite_map1 = hexToBin("BF0102FF");
+		static auto indefinite_map2 = hexToBin("BF0102");
+		static auto indefinite_array1 = hexToBin("9F01FF");
+		static auto indefinite_array2 = hexToBin("9F01");
+
+		static auto bin_array = hexToBin("4500010203FF");
+		static auto bin_array_raw = std::vector<std::byte>{ std::byte{ 0x00 }, std::byte{ 0x01 }, std::byte{ 0x02 }, std::byte{ 0x03 }, std::byte{ 0xFF } };
 
 	}
 
@@ -309,5 +317,58 @@ namespace webauthn::CBOR
 		}
 
 		EXPECT_EQ(expected_keys, keys);
+	}
+
+	TEST(CBOR_TEST, CBOR_Map1)
+	{
+		using namespace std::string_literals;
+		auto [cbor, result] = CBORHandle::fromBin(helpers::indefinite_map1);
+
+		ASSERT_TRUE(cbor);
+
+		auto map_array = getMapArray(cbor);
+		ASSERT_FALSE(map_array);
+		ASSERT_TRUE(cbor_isa_map(cbor));
+	}
+
+	TEST(CBOR_TEST, CBOR_Map2)
+	{
+		using namespace std::string_literals;
+		auto [cbor, result] = CBORHandle::fromBin(helpers::indefinite_map2);
+
+		ASSERT_FALSE(cbor);
+	}
+
+	TEST(CBOR_TEST, CBOR_Array1)
+	{
+		using namespace std::string_literals;
+		auto [cbor, result] = CBORHandle::fromBin(helpers::indefinite_array1);
+
+		ASSERT_TRUE(cbor);
+
+		auto map_array = getMapArray(cbor);
+		ASSERT_FALSE(map_array);
+		ASSERT_TRUE(cbor_isa_array(cbor));
+	}
+
+	TEST(CBOR_TEST, CBOR_Array2)
+	{
+		using namespace std::string_literals;
+		auto [cbor, result] = CBORHandle::fromBin(helpers::indefinite_array2);
+
+		ASSERT_FALSE(cbor);
+	}
+
+	TEST(CBOR_TEST, CBOR_BinArray1)
+	{
+		using namespace std::string_literals;
+		auto [cbor, result] = CBORHandle::fromBin(helpers::bin_array);
+
+		ASSERT_TRUE(cbor);
+
+		auto byte_array = getByteString(cbor);
+		ASSERT_TRUE(byte_array);
+
+		EXPECT_EQ(byte_array, helpers::bin_array_raw);
 	}
 }

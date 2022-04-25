@@ -97,7 +97,7 @@ namespace webauthn::CBOR
 		bool is_positive = cbor_isa_uint(item);
 		auto uint_value = cbor_get_int(item);
 
-		//Chek if T is has same sign
+		//Chek if T has same sign
 
 		if (std::is_unsigned_v<T> && !is_positive)
 		{
