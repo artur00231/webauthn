@@ -12,9 +12,9 @@ namespace webauthn::crypto
 		{
 			//RSA
 			RS1 = -65535,
-			RS256 = -259,
+			RS256 = -257,
 			RS384 = -258,
-			RS512 = -257,
+			RS512 = -259,
 			PS512 = -39,
 			PS384 = -38,
 			PS256 = -37,
