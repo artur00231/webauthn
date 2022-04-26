@@ -50,11 +50,7 @@ namespace webauthn::impl::helpers
 		std::vector<std::string> extensions_str{};
 
 		const auto extensions = std::span{ extensions_ptr, extensions_length };
-
-		for (const auto& extension : extensions)
-		{
-			extensions_str.push_back(extension);
-		}
+		std::ranges::transform(extensions, std::back_inserter(extensions_str), [](auto ptr) { return std::string{ ptr }; });
 
 		return extensions_str;
 	}
@@ -180,6 +176,7 @@ webauthn::impl::Libfido2Authenticator::MakeCredentialLibfido2Result webauthn::im
 	helpers::fido_cred_ptr credential{ fido_cred_new() };
 	if (!credential)
 		return { .success = FIDO_ERR_INTERNAL };
+
 	//TYPE
 	//ONY ACCEPTED: COSE_ES256, COSE_RS256,  COSE_EDDSA
 	if (!getChosenAlgorithm())

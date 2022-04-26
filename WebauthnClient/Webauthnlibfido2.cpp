@@ -388,6 +388,10 @@ std::optional<webauthn::impl::Libfido2Authenticator> webauthn::impl::Webauthnlib
 
 	for (Libfido2Authenticator& authenticator : *authenticators)
 	{
+		//Winhello can cause problems
+		if (authenticator.winhello())
+			continue;
+
 		auto assertion = authenticator.getAssertion(Libfido2Token{}, id, rp, challenge, {}, options);
 
 		if (assertion.success == FIDO_ERR_PIN_REQUIRED || assertion.success == FIDO_OK)
