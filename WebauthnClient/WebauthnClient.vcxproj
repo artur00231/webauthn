@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{8ecfbba0-746d-40a3-8c49-3d5740c77c1a}</ProjectGuid>
-    <RootNamespace>Example</RootNamespace>
+    <ProjectGuid>{52705c91-5724-4cc3-9d74-a37990d6e5c3}</ProjectGuid>
+    <RootNamespace>WebauthnClient</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -40,13 +40,13 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -70,18 +70,6 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
-  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -141,21 +129,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Client.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Server.cpp" />
+    <ClCompile Include="Libfido2Authenticator.cpp" />
+    <ClCompile Include="WebAuthn.cpp" />
+    <ClCompile Include="Webauthnlibfido2.cpp" />
+    <ClCompile Include="WebAuthnWinHello.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Client.h" />
-    <ClInclude Include="Server.h" />
-    <ClInclude Include="ServerInterface.h" />
+    <ClInclude Include="Libfido2Authenticator.h" />
+    <ClInclude Include="Libfido2Token.h" />
+    <ClInclude Include="WebAuthn.h" />
+    <ClInclude Include="WebAuthnImpl.h" />
+    <ClInclude Include="Webauthnlibfido2.h" />
+    <ClInclude Include="WebAuthnWinHello.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Crypto\Crypto.vcxproj">
-      <Project>{5221a747-bf3b-4354-9a3b-d1659419142e}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\WebauthnClient\WebauthnClient.vcxproj">
-      <Project>{52705c91-5724-4cc3-9d74-a37990d6e5c3}</Project>
+    <ProjectReference Include="..\CBOR\CBOR.vcxproj">
+      <Project>{cc078584-d971-4846-88fd-4a16c4bc867c}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Webauthn\Webauthn.vcxproj">
       <Project>{15ad30a3-7f5e-4415-a4bf-999c0e86d508}</Project>

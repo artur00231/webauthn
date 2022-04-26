@@ -109,13 +109,13 @@ ServerInterface::LoginResult Server::loginUser(const std::string& name, const st
 				static_cast<std::size_t>(statement.getColumn("RP_ID").getBytes()) };
 			std::copy(RP_ID.begin(), RP_ID.end(), std::back_inserter(last_RP_id));
 
-			last_challange.clear();
+			last_challenge.clear();
 			auto random = webauthn::crypto::random::genRandom(32);
 			if (!random)
 			{
 				return { ServerInterface::LOGIN_RESULT::SERV_ERR, {} };
 			}
-			last_challange = *random;
+			last_challenge = *random;
 
 			auto auth_data_obj = webauthn::AuthenticatorData::fromBin(last_auth_data);
 			if (!auth_data_obj.attested_credential_data)
@@ -125,7 +125,7 @@ ServerInterface::LoginResult Server::loginUser(const std::string& name, const st
 				return { ServerInterface::LOGIN_RESULT::WRONG_DATA, {} };
 			}
 
-			return { ServerInterface::LOGIN_RESULT::AUTH_REQ, auth_data_obj.attested_credential_data->credential_id, last_challange };
+			return { ServerInterface::LOGIN_RESULT::AUTH_REQ, auth_data_obj.attested_credential_data->credential_id, last_challenge };
 		}
 		else //No webauthn
 		{
@@ -146,7 +146,7 @@ bool Server::performWebauthn(const webauthn::GetAssertionResult& result)
 		std::vector<std::byte> to_verify{};
 		std::copy(result.authenticator_data.begin(), result.authenticator_data.end(), std::back_inserter(to_verify));
 
-		auto challage_hash = webauthn::crypto::hash::SHA256(last_challange);
+		auto challage_hash = webauthn::crypto::hash::SHA256(last_challenge);
 		std::copy(challage_hash.begin(), challage_hash.end(), std::back_inserter(to_verify));
 
 		//TODO change it later
@@ -173,7 +173,7 @@ bool Server::performWebauthn(const webauthn::GetAssertionResult& result)
 	last_auth_data.clear();
 	last_RP_id.clear();
 	last_user_id.clear();
-	last_challange.clear();
+	last_challenge.clear();
 
 	return success;
 }

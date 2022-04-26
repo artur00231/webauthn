@@ -15,39 +15,36 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Attestation.cpp">
+    <ClCompile Include="WebAuthn.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TMPAttestation.cpp">
+    <ClCompile Include="WebAuthnWinHello.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AttestationObject.cpp">
+    <ClCompile Include="Webauthnlibfido2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AuthenticatorData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="WebAuthnDef.cpp">
+    <ClCompile Include="Libfido2Authenticator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Attestation.h">
+    <ClInclude Include="WebAuthn.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TMPAttestation.h">
+    <ClInclude Include="WebAuthnImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WebAuthnDef.h">
+    <ClInclude Include="WebAuthnWinHello.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AttestationObject.h">
+    <ClInclude Include="Webauthnlibfido2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AuthenticatorData.h">
+    <ClInclude Include="Libfido2Authenticator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WebAuthnExceptions.h">
+    <ClInclude Include="Libfido2Token.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

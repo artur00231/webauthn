@@ -5,7 +5,6 @@
 #include <optional>
 
 #include "../Webauthn/WebAuthnDef.h"
-#include "../Webauthn/CredentialId.h"
 
 class ServerInterface
 {
@@ -19,7 +18,7 @@ public:
 	{
 		LOGIN_RESULT result{};
 		std::optional<webauthn::CredentialId> credential_id{};
-		std::optional<std::vector<std::byte>> challange{};
+		std::optional<std::vector<std::byte>> challenge{};
 	};
 
 	virtual bool userExists(const std::string& name) = 0;

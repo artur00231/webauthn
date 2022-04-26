@@ -2,10 +2,8 @@
 
 #include <optional>
 
-#include "WebAuthnDef.h"
+#include "../Webauthn/WebAuthnDef.h"
 #include "WebAuthnImpl.h"
-#include "AttestationObject.h"
-#include "CredentialId.h"
 
 namespace webauthn
 {
@@ -14,12 +12,12 @@ namespace webauthn
 	public:
 		WebAuthn(const RelyingParty rp, impl::WebAuthnImpl& impl) : rp{ rp }, impl{ impl } {}
 
-		std::optional<MakeCredentialResult> makeCredential(const UserData& user, const std::vector<std::byte>& challange,
+		std::optional<MakeCredentialResult> makeCredential(const UserData& user, const std::vector<std::byte>& challenge,
 			const std::optional<std::string>& password = {});
 
 		//For server-side credentials credential_id.size != 0
 		//For discoverable credentials credential_id.size == 0
-		std::optional<GetAssertionResult> getAssertion(const std::vector<CredentialId>& credential_id, const std::vector<std::byte>& challange,
+		std::optional<GetAssertionResult> getAssertion(const std::vector<CredentialId>& credential_id, const std::vector<std::byte>& challenge,
 			const std::optional<std::string>& password = {});
 
 

@@ -48,10 +48,10 @@ namespace webauthn::impl
 		virtual ~WebAuthnWinHello();
 
 		std::optional<MakeCredentialResult> makeCredential(const UserData& user, const RelyingParty& rp,
-			const std::vector<std::byte>& challange, const std::optional<std::string>& password, const WebAuthnOptions& options) override;
+			const std::vector<std::byte>& challenge, const std::optional<std::string>& password, const WebAuthnOptions& options) override;
 
 		std::optional<GetAssertionResult> getAssertion(const std::vector<CredentialId>& id, const RelyingParty& rp,
-			const std::vector<std::byte>& challange, const std::optional<std::string>& password, const WebAuthnOptions& options) override;
+			const std::vector<std::byte>& challenge, const std::optional<std::string>& password, const WebAuthnOptions& options) override;
 
 	private:
 		WebAuthnWinHelloDll webAuthnWinHelloDll{};

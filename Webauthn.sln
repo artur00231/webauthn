@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CBORTests", "CBORTests\CBOR
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WebauthnTests", "WebauthnTests\WebauthnTests.vcxproj", "{CE761257-2A2F-42A8-AE7E-AF80CB5C31A9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WebauthnClient", "WebauthnClient\WebauthnClient.vcxproj", "{52705C91-5724-4CC3-9D74-A37990D6E5C3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -81,6 +83,14 @@ Global
 		{CE761257-2A2F-42A8-AE7E-AF80CB5C31A9}.Release|x64.Build.0 = Release|x64
 		{CE761257-2A2F-42A8-AE7E-AF80CB5C31A9}.Release|x86.ActiveCfg = Release|Win32
 		{CE761257-2A2F-42A8-AE7E-AF80CB5C31A9}.Release|x86.Build.0 = Release|Win32
+		{52705C91-5724-4CC3-9D74-A37990D6E5C3}.Debug|x64.ActiveCfg = Debug|x64
+		{52705C91-5724-4CC3-9D74-A37990D6E5C3}.Debug|x64.Build.0 = Debug|x64
+		{52705C91-5724-4CC3-9D74-A37990D6E5C3}.Debug|x86.ActiveCfg = Debug|Win32
+		{52705C91-5724-4CC3-9D74-A37990D6E5C3}.Debug|x86.Build.0 = Debug|Win32
+		{52705C91-5724-4CC3-9D74-A37990D6E5C3}.Release|x64.ActiveCfg = Release|x64
+		{52705C91-5724-4CC3-9D74-A37990D6E5C3}.Release|x64.Build.0 = Release|x64
+		{52705C91-5724-4CC3-9D74-A37990D6E5C3}.Release|x86.ActiveCfg = Release|Win32
+		{52705C91-5724-4CC3-9D74-A37990D6E5C3}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

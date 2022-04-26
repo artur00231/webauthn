@@ -6,9 +6,8 @@
 #include <optional>
 #include <memory>
 
-#include "CredentialId.h"
-
 #include "../Crypto/PublicKey.h"
+#include "WebAuthnDef.h"
 
 namespace webauthn
 {
