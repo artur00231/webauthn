@@ -171,7 +171,7 @@ std::optional<webauthn::impl::Libfido2Authenticator> webauthn::impl::Libfido2Aut
 	return authenticator;
 }
 
-webauthn::impl::Libfido2Authenticator::MakeCredentialLibfido2Result webauthn::impl::Libfido2Authenticator::makeCredential(Libfido2Token token, const UserData& user, const RelyingParty& rp, const std::vector<std::byte>& challange, const std::optional<std::string>& password, const WebAuthnOptions& options)
+webauthn::impl::Libfido2Authenticator::MakeCredentialLibfido2Result webauthn::impl::Libfido2Authenticator::makeCredential(Libfido2Token token, const UserData& user, const RelyingParty& rp, const std::vector<std::byte>& challenge, const std::optional<std::string>& password, const WebAuthnOptions& options)
 {
 	auto device = helpers::openFido2Device(path);
 	if (!device)
@@ -189,7 +189,7 @@ webauthn::impl::Libfido2Authenticator::MakeCredentialLibfido2Result webauthn::im
 		return { .success = success };
 
 	//CLIENT DATA
-	if (auto success = fido_cred_set_clientdata(credential.get(), reinterpret_cast<const unsigned char*>(challange.data()), challange.size()); success != FIDO_OK)
+	if (auto success = fido_cred_set_clientdata(credential.get(), reinterpret_cast<const unsigned char*>(challenge.data()), challenge.size()); success != FIDO_OK)
 		return { .success = success };
 
 	//RELYING PARTY
@@ -263,7 +263,7 @@ webauthn::impl::Libfido2Authenticator::MakeCredentialLibfido2Result webauthn::im
 	return created_credential;
 }
 
-webauthn::impl::Libfido2Authenticator::GetAssertionLibfido2Result webauthn::impl::Libfido2Authenticator::getAssertion(Libfido2Token token, const std::vector<CredentialId>& id, const RelyingParty& rp, const std::vector<std::byte>& challange, const std::optional<std::string>& password, const WebAuthnOptions& options)
+webauthn::impl::Libfido2Authenticator::GetAssertionLibfido2Result webauthn::impl::Libfido2Authenticator::getAssertion(Libfido2Token token, const std::vector<CredentialId>& id, const RelyingParty& rp, const std::vector<std::byte>& challenge, const std::optional<std::string>& password, const WebAuthnOptions& options)
 {
 	auto device = helpers::openFido2Device(path);
 	if (!device)
@@ -274,7 +274,7 @@ webauthn::impl::Libfido2Authenticator::GetAssertionLibfido2Result webauthn::impl
 		return { .success = FIDO_ERR_INTERNAL };
 
 	//CLIENT DATA
-	if (auto success = fido_assert_set_clientdata(assert.get(), reinterpret_cast<const unsigned char*>(challange.data()), challange.size()); success != FIDO_OK)
+	if (auto success = fido_assert_set_clientdata(assert.get(), reinterpret_cast<const unsigned char*>(challenge.data()), challenge.size()); success != FIDO_OK)
 		return { .success = success };
 
 	//RELYING PARTY

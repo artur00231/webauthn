@@ -138,7 +138,7 @@ namespace webauthn::impl::helpers
 	}
 }
 
-std::optional<webauthn::MakeCredentialResult> webauthn::impl::Webauthnlibfido2::makeCredential(const UserData& user, const RelyingParty& rp, const std::vector<std::byte>& challange, const std::optional<std::string>& password, const WebAuthnOptions& options)
+std::optional<webauthn::MakeCredentialResult> webauthn::impl::Webauthnlibfido2::makeCredential(const UserData& user, const RelyingParty& rp, const std::vector<std::byte>& challenge, const std::optional<std::string>& password, const WebAuthnOptions& options)
 {
 	//Start library
 	fido_init(FIDO_DISABLE_U2F_FALLBACK);
@@ -146,7 +146,7 @@ std::optional<webauthn::MakeCredentialResult> webauthn::impl::Webauthnlibfido2::
 	auto authenticator_to_use = getSuitableDevice(options);
 
 	//Make credential using libfido2
-	auto credential = authenticator_to_use->makeCredential(Libfido2Token{}, user, rp, challange, password, options);
+	auto credential = authenticator_to_use->makeCredential(Libfido2Token{}, user, rp, challenge, password, options);
 
 	if (credential.success == FIDO_ERR_PIN_INVALID)
 	{
@@ -173,7 +173,7 @@ std::optional<webauthn::MakeCredentialResult> webauthn::impl::Webauthnlibfido2::
 	return {};
 }
 
-std::optional<webauthn::GetAssertionResult> webauthn::impl::Webauthnlibfido2::getAssertion(const std::vector<CredentialId>& id, const RelyingParty& rp, const std::vector<std::byte>& challange, const std::optional<std::string>& password, const WebAuthnOptions& options)
+std::optional<webauthn::GetAssertionResult> webauthn::impl::Webauthnlibfido2::getAssertion(const std::vector<CredentialId>& id, const RelyingParty& rp, const std::vector<std::byte>& challenge, const std::optional<std::string>& password, const WebAuthnOptions& options)
 {
 	//Start library
 	fido_init(FIDO_DISABLE_U2F_FALLBACK);
@@ -187,7 +187,7 @@ std::optional<webauthn::GetAssertionResult> webauthn::impl::Webauthnlibfido2::ge
 		authenticator_to_use = getSuitableDevice(options);
 
 	//Make credential using libfido2
-	auto assertion = authenticator_to_use->getAssertion(Libfido2Token{}, id, rp, challange, password, options);
+	auto assertion = authenticator_to_use->getAssertion(Libfido2Token{}, id, rp, challenge, password, options);
 
 	if (assertion.success == FIDO_ERR_PIN_INVALID)
 	{

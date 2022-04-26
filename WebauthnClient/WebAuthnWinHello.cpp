@@ -80,7 +80,7 @@ webauthn::impl::WebAuthnWinHello::~WebAuthnWinHello()
 }
 
 std::optional<webauthn::MakeCredentialResult> webauthn::impl::WebAuthnWinHello::makeCredential(const webauthn::UserData& user, const webauthn::RelyingParty& rp,
-	const std::vector<std::byte>& challange, const std::optional<std::string>& password, const webauthn::WebAuthnOptions& options)
+	const std::vector<std::byte>& challenge, const std::optional<std::string>& password, const webauthn::WebAuthnOptions& options)
 {
 	if (!webAuthnWinHelloDll)
 	{
@@ -127,7 +127,7 @@ std::optional<webauthn::MakeCredentialResult> webauthn::impl::WebAuthnWinHello::
 	webAuthNClientData.dwVersion = WEBAUTHN_CLIENT_DATA_CURRENT_VERSION;
 	webAuthNClientData.pwszHashAlgId = WEBAUTHN_HASH_ALGORITHM_SHA_256;
 	std::vector<BYTE> data{};
-	std::transform(challange.begin(), challange.end(), std::back_inserter(data),
+	std::transform(challenge.begin(), challenge.end(), std::back_inserter(data),
 		[](auto x) { return static_cast<BYTE>(x); });
 	webAuthNClientData.pbClientDataJSON = data.data();
 	webAuthNClientData.cbClientDataJSON = static_cast<decltype(webAuthNClientData.cbClientDataJSON)>(data.size());
@@ -204,7 +204,7 @@ std::optional<webauthn::MakeCredentialResult> webauthn::impl::WebAuthnWinHello::
 }
 
 std::optional<webauthn::GetAssertionResult> webauthn::impl::WebAuthnWinHello::getAssertion(const std::vector<webauthn::CredentialId>& id, const webauthn::RelyingParty& rp,
-	const std::vector<std::byte>& challange, const std::optional<std::string>& password, const webauthn::WebAuthnOptions& options)
+	const std::vector<std::byte>& challenge, const std::optional<std::string>& password, const webauthn::WebAuthnOptions& options)
 {
 	std::vector<std::vector<BYTE>> credentials_id{};
 	for (auto&& key_id : id)
@@ -218,7 +218,7 @@ std::optional<webauthn::GetAssertionResult> webauthn::impl::WebAuthnWinHello::ge
 	webAuthNClientData.dwVersion = WEBAUTHN_CLIENT_DATA_CURRENT_VERSION;
 	webAuthNClientData.pwszHashAlgId = WEBAUTHN_HASH_ALGORITHM_SHA_256;
 	std::vector<BYTE> data{};
-	std::transform(challange.begin(), challange.end(), std::back_inserter(data),
+	std::transform(challenge.begin(), challenge.end(), std::back_inserter(data),
 		[](auto x) { return static_cast<BYTE>(x); });
 	webAuthNClientData.pbClientDataJSON = data.data();
 	webAuthNClientData.cbClientDataJSON = static_cast<decltype(webAuthNClientData.cbClientDataJSON)>(data.size());

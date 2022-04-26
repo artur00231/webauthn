@@ -25,10 +25,10 @@ namespace webauthn::impl
 		virtual ~Webauthnlibfido2() = default;
 
 		std::optional<MakeCredentialResult> makeCredential(const UserData& user, const RelyingParty& rp,
-			const std::vector<std::byte>& challange, const std::optional<std::string>& password, const WebAuthnOptions& options) override;
+			const std::vector<std::byte>& challenge, const std::optional<std::string>& password, const WebAuthnOptions& options) override;
 
 		std::optional<GetAssertionResult> getAssertion(const std::vector<CredentialId>& id, const RelyingParty& rp,
-			const std::vector<std::byte>& challange, const std::optional<std::string>& password, const WebAuthnOptions& options) override;
+			const std::vector<std::byte>& challenge, const std::optional<std::string>& password, const WebAuthnOptions& options) override;
 
 		inline static constexpr std::size_t max_num_of_authenticators{ 64 };
 

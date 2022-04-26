@@ -115,7 +115,7 @@ void Client::loginUser()
 
 	out << "FIDO2 passw: ";
 	auto fido_passw = standardUserInput<std::string>();
-	auto webauthn_result = webauthn.getAssertion({ *result.credential_id }, *result.challange, fido_passw);
+	auto webauthn_result = webauthn.getAssertion({ *result.credential_id }, *result.challenge, fido_passw);
 	fido_passw = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
 
 	if (!webauthn_result)
