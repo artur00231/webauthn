@@ -22,15 +22,10 @@ namespace webauthn::impl::helpers
 		fido_assert_free(&ptr);
 	})>; 
 
-	//TODO clean it!!!!!!!!!!!
 	std::optional<std::vector<std::byte>> makeAttestationObject(Libfido2Authenticator::MakeCredentialLibfido2Result&& credential, bool include_attestation)
 	{
-		static constexpr std::size_t AAGUID_offset = 37;
-		static constexpr std::size_t AAGUID_size = 16;
-
-		static constexpr std::size_t max_return_vector_size = /*2^*/28; //~268.4MB
-
 		using namespace std::string_literals;
+
 		if (credential.format.empty())
 			return {};
 
@@ -57,77 +52,50 @@ namespace webauthn::impl::helpers
 
 		credential.authenticator_data = authenticator_data.toBin();
 
+		//Map must have map_size items inserted into
+		static constexpr std::size_t map_size = 3;
+
+		CBOR::CBORHandle handle{ CBOR::cbor_new_definite_map(map_size) };
+		auto push_to_cbor = [&handle](const char* key, CBOR::cbor_item_t* value) {
+			CBOR::cbor_map_add(handle,
+				CBOR::cbor_pair{
+					.key = CBOR::cbor_move(CBOR::cbor_build_string(key)),
+					.value = CBOR::cbor_move(value)
+				});
+		};
+
 		//Create AttestationObject
 		//MAP 3
 		// fmt
 		// attStmt 
 		// authData
-		CBOR::CBORHandle handle{ CBOR::cbor_new_definite_map(3) };
-		CBOR::cbor_map_add(handle,
-			CBOR::cbor_pair{
-				.key = CBOR::cbor_move(CBOR::cbor_build_string("fmt")),
-				.value = CBOR::cbor_move(CBOR::cbor_build_string(credential.format.c_str()))
-		});
+		push_to_cbor("fmt", CBOR::cbor_build_string(credential.format.c_str()));
+
 		if (credential.attestation_statement.empty())
 		{
-			CBOR::cbor_map_add(handle,
-				CBOR::cbor_pair{
-					.key = CBOR::cbor_move(CBOR::cbor_build_string("attStmt")),
-					.value = CBOR::cbor_move(CBOR::cbor_new_definite_map(0))
-				});
+			push_to_cbor("attStmt", CBOR::cbor_new_definite_map(0));
 		}
 		else
 		{
 			auto [attStmt_handle, load_result] = CBOR::CBORHandle::fromBin(credential.attestation_statement);
-			if (load_result.error.code != CBOR::CBOR_ERR_NONE)
+			if (!attStmt_handle)
 			{
 				return {};
 			}
 
-			CBOR::cbor_map_add(handle,
-				CBOR::cbor_pair{
-					.key = CBOR::cbor_move(CBOR::cbor_build_string("attStmt")),
-					.value = CBOR::cbor_move(attStmt_handle.release())
-				});
+			push_to_cbor("attStmt", attStmt_handle.release());
 		}
 
-		CBOR::cbor_map_add(handle,
-			CBOR::cbor_pair{
-				.key = CBOR::cbor_move(CBOR::cbor_build_string("authData")),
-				.value = CBOR::cbor_move(CBOR::cbor_build_bytestring(reinterpret_cast<const unsigned char*>(credential.authenticator_data.data()), credential.authenticator_data.size()))
-			});
+		push_to_cbor("authData", CBOR::cbor_build_bytestring(reinterpret_cast<const unsigned char*>(credential.authenticator_data.data()), credential.authenticator_data.size()));
 
-		std::vector<std::byte> attestation_object{};
-		attestation_object.resize(128);
-
-		//Try for sizes in [2**8, 2**9, 2**10, ..., 2**]
-		for (std::size_t i = 8; i <= max_return_vector_size; i++)
-		{
-			auto attestation_objec_real_size = CBOR::cbor_serialize(handle, reinterpret_cast<unsigned char*>(attestation_object.data()), attestation_object.size());
-			if (attestation_objec_real_size != 0)
-			{
-				//It's OK
-				attestation_object.resize(attestation_objec_real_size);
-				return attestation_object;
-			}
-
-			auto old_size = attestation_object.size();
-			attestation_object.clear();
-			attestation_object.resize(old_size * 2);
-		}
-
-		return {};
+		return CBOR::toBin(handle);
 	}
 
-	//TODO change it
 	template<std::ranges::contiguous_range Range>
-	requires std::is_same_v<std::byte, std::iter_value_t<Range>> || std::is_same_v<char, std::iter_value_t<Range>> || std::is_same_v<unsigned char, std::iter_value_t<Range>>
+	requires CBOR::helpers::Byte<std::iter_value_t<Range>>
 	std::optional<std::vector<std::byte>> unpackCBORByteString(Range && range)
 	{
-		std::vector<std::byte> data{};
-		std::ranges::transform(range, std::back_inserter(data), [](auto x) { return static_cast<std::byte>(x); });
-
-		auto [handle, load_result] = CBOR::CBORHandle::fromBin(data);
+		auto [handle, load_result] = CBOR::CBORHandle::fromBin(range);
 		if (!handle)
 			return {};
 
