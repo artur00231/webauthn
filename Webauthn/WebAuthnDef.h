@@ -6,7 +6,7 @@
 #include <optional>
 #include <array>
 
-#include "../Crypto/COSE.h"
+#include <COSE.h>
 
 namespace webauthn
 {

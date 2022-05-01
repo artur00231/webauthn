@@ -3,9 +3,7 @@
 #include "WebAuthnExceptions.h"
 #include "Attestation.h"
 #include "AuthenticatorData.h"
-#include "../CBORLib/CBORLib.h"
-
-#include <format>
+#include <CBORLib.h>
 
 webauthn::AttestationObject webauthn::AttestationObject::fromCbor(const std::vector<std::byte>& data)
 {
@@ -17,13 +15,13 @@ webauthn::AttestationObject webauthn::AttestationObject::fromCbor(const std::vec
 
 	if (!attestation_object_raw)
 	{
-		throw exceptions::FormatException{ std::format("Invalid format: E:{}; L:{}", std::to_underlying(result.error.code), result.error.position)};
+		throw exceptions::FormatException{ "Invalid format: E:" + std::to_string(std::to_underlying(result.error.code)) + "; L:" + std::to_string(result.error.position)};
 	}
 
 	auto map_arr = CBOR::getMapArray(attestation_object_raw);
 	if (!map_arr)
 	{
-		throw exceptions::FormatException{ std::format("Invalid format: not map") };
+		throw exceptions::FormatException{ "Invalid format: not map" };
 	}
 	for (auto&& map_elem : *map_arr)
 	{
@@ -35,7 +33,7 @@ webauthn::AttestationObject webauthn::AttestationObject::fromCbor(const std::vec
 			const auto format = CBOR::getString(map_elem->value).and_then([](std::string_view text) {
 				return AttestationFactory::getFormat(text);
 				}).or_else([]() -> std::optional<Attestation::Format> {
-					throw exceptions::DataException{ std::format("Invalid value of fmt") };
+					throw exceptions::DataException{ "Invalid value of fmt" };
 				});
 
 			attestation_object.format = *format;
@@ -46,7 +44,7 @@ webauthn::AttestationObject webauthn::AttestationObject::fromCbor(const std::vec
 			
 			if (!data) 
 			{
-				throw exceptions::DataException{ std::format("Invalid value of authData") };
+				throw exceptions::DataException{ "Invalid value of authData" };
 			}
 
 			attestation_object.authenticator_data = AuthenticatorData::fromBin(*data);

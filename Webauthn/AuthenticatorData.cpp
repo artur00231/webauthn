@@ -2,8 +2,8 @@
 
 #include "WebAuthnExceptions.h"
 
-#include "../CBORLib/CBORLib.h"
-#include "../Crypto/Hash.h"
+#include <CBORLib.h>
+#include <Hash.h>
 
 #include <iterator>
 

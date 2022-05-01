@@ -3,7 +3,7 @@
 #include "Attestation.h"
 #include "../Crypto/COSE.h"
 
-#include <nlohmann/json.hpp>
+//#include <nlohmann/json.hpp>
 #include <cstddef>
 #include <vector>
 
@@ -23,7 +23,7 @@ namespace webauthn
 		std::vector<std::uint8_t> pub_area{};
 
 
-		static TMPAttestation parseJSON(const nlohmann::json& data);
+		//static TMPAttestation parseJSON(const nlohmann::json& data);
 
 		virtual bool canAttest() const override { return true; }
 	};

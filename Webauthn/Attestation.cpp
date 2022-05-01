@@ -4,7 +4,7 @@
 #include "TMPAttestation.h"
 
 
-#include <nlohmann/json.hpp>
+//#include <nlohmann/json.hpp>
 
 std::optional<webauthn::Attestation::Format> webauthn::AttestationFactory::getFormat(std::string_view fmt)
 {
@@ -18,7 +18,7 @@ std::optional<webauthn::Attestation::Format> webauthn::AttestationFactory::getFo
 
 std::unique_ptr<webauthn::Attestation> webauthn::AttestationFactory::praseAttestation(const std::vector<::std::byte>& cbor)
 {
-	using namespace std::string_literals;
+	/*using namespace std::string_literals;
 
 	nlohmann::json attestation_object_raw{};
 	try {
@@ -54,6 +54,6 @@ std::unique_ptr<webauthn::Attestation> webauthn::AttestationFactory::praseAttest
 		throw webauthn::exceptions::FormatException(exception.what() +
 		"\nCannot determine attestation format or data is not formatted correctly."s);
 	}
-
+	*/
 	return {};
 }

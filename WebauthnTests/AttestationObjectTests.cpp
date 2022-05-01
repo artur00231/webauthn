@@ -1,8 +1,8 @@
 #include "pch.h"
 
-#include "../Webauthn/AttestationObject.h"
-#include "../Crypto/Base64.h"
-#include "../Crypto/Hash.h"
+#include <AttestationObject.h>
+#include <Base64.h>
+#include <Hash.h>
 
 #include <iostream>
 

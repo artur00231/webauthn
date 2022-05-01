@@ -1,7 +1,7 @@
 #include "TMPAttestation.h"
 
 #include "WebAuthnExceptions.h"
-
+/*
 webauthn::TMPAttestation webauthn::TMPAttestation::parseJSON(const nlohmann::json& data)
 {
     try {
@@ -51,3 +51,4 @@ webauthn::TMPAttestation webauthn::TMPAttestation::parseJSON(const nlohmann::jso
         throw webauthn::exceptions::FormatException(exception.what());
     }
 }
+*/
