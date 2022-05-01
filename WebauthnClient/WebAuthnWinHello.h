@@ -5,7 +5,7 @@
 #include "WebAuthnImpl.h"
 
 #include <Windows.h>
-#include <webauthn.h>
+#include "../windows_webauthn/webauthn/webauthn.h"
 
 #include <memory>
 
