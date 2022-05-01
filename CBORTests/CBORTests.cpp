@@ -5,7 +5,7 @@
 #include <set>
 #include <string_view>
 
-#include "../CBORLib/CBORLib.h"
+#include <CBORLib.h>
 
 namespace webauthn::CBOR
 {
