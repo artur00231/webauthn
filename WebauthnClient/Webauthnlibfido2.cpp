@@ -1,6 +1,6 @@
 #include "Webauthnlibfido2.h"
 
-#include "../CBOR/CBOR.h"
+#include "../CBORLib/CBORLib.h"
 #include "../Webauthn/AuthenticatorData.h"
 
 //TODO delete it

@@ -6,7 +6,7 @@
 #include "../Crypto/RSAKey.h"
 #include "../Crypto/Base64.h"
 
-#include "../CBOR/CBOR.h"
+#include "../CBORLib/CBORLib.h"
 
 namespace webauthn::crypto
 {

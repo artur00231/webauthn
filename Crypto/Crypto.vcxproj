@@ -166,7 +166,7 @@
     <ClCompile Include="x509Cert.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CBOR\CBOR.vcxproj">
+    <ProjectReference Include="..\CBORLib\CBORLib.vcxproj">
       <Project>{cc078584-d971-4846-88fd-4a16c4bc867c}</Project>
     </ProjectReference>
   </ItemGroup>
