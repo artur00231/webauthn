@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Webauthn/WebAuthnDef.h"
+#include <WebAuthnDef.h>
 #include <optional>
 
 namespace webauthn::impl

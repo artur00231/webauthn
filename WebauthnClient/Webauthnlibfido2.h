@@ -10,8 +10,6 @@
 #include <ranges>
 #include <iterator>
 
-#include <format>
-
 namespace webauthn::impl
 {
 	class Webauthnlibfido2 : public WebAuthnImpl

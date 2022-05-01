@@ -2,9 +2,9 @@
 
 #include <iomanip>
 
-#include "../WebauthnClient/WebAuthn.h"
-#include "../WebauthnClient/WebAuthnWinHello.h"
-#include "../WebauthnClient/Webauthnlibfido2.h"
+#include <WebAuthn.h>
+#include <WebAuthnWinHello.h>
+#include <Webauthnlibfido2.h>
 
 void Client::run()
 {

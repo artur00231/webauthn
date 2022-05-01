@@ -2,7 +2,7 @@
 
 #include <optional>
 
-#include "../Webauthn/WebAuthnDef.h"
+#include <WebAuthnDef.h>
 #include "WebAuthnImpl.h"
 
 namespace webauthn

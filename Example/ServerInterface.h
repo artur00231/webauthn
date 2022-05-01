@@ -4,7 +4,7 @@
 #include <vector>
 #include <optional>
 
-#include "../Webauthn/WebAuthnDef.h"
+#include <WebAuthnDef.h>
 
 class ServerInterface
 {

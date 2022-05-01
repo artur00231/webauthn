@@ -1,15 +1,15 @@
 #include "Webauthnlibfido2.h"
 
-#include "../CBORLib/CBORLib.h"
-#include "../Webauthn/AuthenticatorData.h"
+#include <CBORLib.h>
+#include <AuthenticatorData.h>
 
 //TODO delete it
 #include <iostream>
 
 #include <fido.h>
 #include <memory>
-#include <format>
 #include <ranges>
+#include <algorithm>
 #include <utility>
 #include <unordered_map>
 

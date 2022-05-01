@@ -5,11 +5,11 @@
 #include <ranges>
 #include <span>
 
-#include "../Crypto/Hash.h"
-#include "../Crypto/Random.h"
+#include <Hash.h>
+#include <Random.h>
 
-#include "../Webauthn/AttestationObject.h"
-#include "../Webauthn/WebAuthnExceptions.h"
+#include <AttestationObject.h>
+#include <WebAuthnExceptions.h>
 
 Server::Server(const std::string& db_name) : db_name{ db_name }
 {

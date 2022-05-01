@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Libfido2Token.h"
-#include "../Crypto/COSE.h"
-#include "../Webauthn/WebAuthnDef.h"
+#include <COSE.h>
+#include <WebAuthnDef.h>
 
 #include <ranges>
 
