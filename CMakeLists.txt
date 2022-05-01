@@ -26,3 +26,5 @@ ENDIF()
 # Include sub-projects.
 add_subdirectory(CBORLib)
 add_subdirectory(CBORTests)
+add_subdirectory(Crypto)
+add_subdirectory(CryptoTests)

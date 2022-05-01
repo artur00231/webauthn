@@ -1,9 +1,9 @@
 #include "pch.h"
 
-#include "../Crypto/RSAKey.h"
-#include "../Crypto/Base64.h"
-#include "../Crypto/hash.h"
-#include "../Crypto//OpenSSLErros.h"
+#include <RSAKey.h>
+#include <Base64.h>
+#include <hash.h>
+#include <OpenSSLErros.h>
 
 namespace webauthn::crypto
 {

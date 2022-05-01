@@ -1,10 +1,10 @@
 #include "pch.h"
 
-#include "../Crypto/EdDSAKey.h"
-#include "../Crypto/Base64.h"
-#include "../Crypto/hash.h"
+#include <EdDSAKey.h>
+#include <Base64.h>
+#include <hash.h>
 
-#include "../Crypto/OpenSSLErros.h"
+#include <OpenSSLErros.h>
 
 namespace webauthn::crypto
 {

@@ -1,5 +1,7 @@
 #include "RSAKey.h"
 
+#include <limits>
+
 #include <openssl/rsa.h>
 #include <openssl/evp.h>
 #include <openssl/bn.h>

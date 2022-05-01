@@ -1,9 +1,10 @@
 #include "pch.h"
 
-#include "../Crypto/Hash.h"
+#include <Hash.h>
 
 #include <ranges>
 #include <array>
+#include <cstring>
 
 namespace webauthn::crypto
 {

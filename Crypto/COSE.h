@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <array>
+#include <utility>
 
 namespace webauthn::crypto
 {

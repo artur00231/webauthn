@@ -1,7 +1,7 @@
 #include "pch.h"
 
-#include "../Crypto/CertificateValidator.h"
-#include "../Crypto/x509Cert.h"
+#include <CertificateValidator.h>
+#include <x509Cert.h>
 
 #include <filesystem>
 #include <fstream>

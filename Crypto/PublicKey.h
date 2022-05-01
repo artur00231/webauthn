@@ -7,7 +7,7 @@
 #include <memory>
 
 #include "COSE.h"
-#include "../CBORLib/CBORLib.h"
+#include <CBORLib.h>
 
 namespace webauthn::crypto
 {

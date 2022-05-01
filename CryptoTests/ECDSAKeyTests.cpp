@@ -1,7 +1,7 @@
 #include "pch.h"
 
-#include "../Crypto/ECDSAKey.h"
-#include "../Crypto/Base64.h"
+#include <ECDSAKey.h>
+#include <Base64.h>
 
 namespace webauthn::crypto
 {

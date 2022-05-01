@@ -1,12 +1,12 @@
 #include "pch.h"
 
-#include "../Crypto/PublicKey.h"
-#include "../Crypto/ECDSAKey.h"
-#include "../Crypto/EdDSAKey.h"
-#include "../Crypto/RSAKey.h"
-#include "../Crypto/Base64.h"
+#include <PublicKey.h>
+#include <ECDSAKey.h>
+#include <EdDSAKey.h>
+#include <RSAKey.h>
+#include <Base64.h>
 
-#include "../CBORLib/CBORLib.h"
+#include <CBORLib.h>
 
 namespace webauthn::crypto
 {
