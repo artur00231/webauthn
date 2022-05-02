@@ -247,6 +247,7 @@ std::optional<webauthn::impl::Libfido2Authenticator> webauthn::impl::Webauthnlib
 	}
 
 	using device_ptr = std::unique_ptr<fido_dev_t, decltype([](fido_dev_t* ptr) {
+		fido_dev_close(ptr);
 		fido_dev_free(&ptr); })>;
 
 	std::vector<std::pair<device_ptr, std::reference_wrapper<const Libfido2Authenticator>>> fido2_devices;
