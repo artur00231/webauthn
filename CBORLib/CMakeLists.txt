@@ -11,4 +11,4 @@ add_library(CBORLib
 
 target_link_libraries(CBORLib PRIVATE ${LIBCBOR_LIBRARY})
 
-target_include_directories(CBORLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(CBORLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${LIBCBOR_INCLUDE_DIR})
