@@ -2,7 +2,7 @@
 
 #include <EdDSAKey.h>
 #include <Base64.h>
-#include <hash.h>
+#include <Hash.h>
 
 #include <OpenSSLErros.h>
 

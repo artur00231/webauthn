@@ -2,7 +2,7 @@
 
 #include <RSAKey.h>
 #include <Base64.h>
-#include <hash.h>
+#include <Hash.h>
 #include <OpenSSLErros.h>
 
 namespace webauthn::crypto
