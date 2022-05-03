@@ -1,5 +1,4 @@
 
-find_package(SQLite3 REQUIRED)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -15,4 +14,4 @@ add_executable(Example
 	main.cpp
 )
 
-target_link_libraries(Example PRIVATE Webauthn WebauthnClient CBORLib Crypto SQLiteCpp ${SQLite3_LIBRARY})
+target_link_libraries(Example PRIVATE Webauthn WebauthnClient CBORLib Crypto SQLiteCpp)

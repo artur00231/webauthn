@@ -1,6 +1,10 @@
 
 find_package(OpenSSL REQUIRED)
 
+IF (${OPENSSL_VERSION} LESS 3.0.0)
+	message(FATAL_ERROR "This library requires at leasst OpenSSL 3.0.0")
+ENDIF()
+
 add_library(Crypto
 	CertificateValidator.cpp
 	Crypto.cpp
