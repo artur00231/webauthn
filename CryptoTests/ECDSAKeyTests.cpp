@@ -94,8 +94,8 @@ namespace webauthn::crypto
 
 	TEST(ECDSAKeyTests, ECDSAKeyP256)
 	{
-		auto data_decoded = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::data_1);
-		auto signature_decoded = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::signature_1);
+		auto data_decoded = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::data_1);
+		auto signature_decoded = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::signature_1);
 
 		ASSERT_TRUE(data_decoded);
 		ASSERT_TRUE(signature_decoded);
@@ -120,9 +120,9 @@ namespace webauthn::crypto
 		std::vector<std::byte> data{};
 		std::ranges::transform(helpers::data_2, std::back_inserter(data), [](auto x) { return static_cast<std::byte>(x); });
 
-		auto signature_256_decoded = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::signature_2_sha256);
-		auto signature_384_decoded = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::signature_2_sha384);
-		auto signature_512_decoded = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::signature_2_sha512);
+		auto signature_256_decoded = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::signature_2_sha256);
+		auto signature_384_decoded = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::signature_2_sha384);
+		auto signature_512_decoded = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::signature_2_sha512);
 
 		ASSERT_TRUE(signature_256_decoded);
 		ASSERT_TRUE(signature_384_decoded);
@@ -158,9 +158,9 @@ namespace webauthn::crypto
 		std::vector<std::byte> data{};
 		std::ranges::transform(helpers::data_3, std::back_inserter(data), [](auto x) { return static_cast<std::byte>(x); });
 
-		auto signature_256_decoded = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::signature_3_sha256);
-		auto signature_384_decoded = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::signature_3_sha384);
-		auto signature_512_decoded = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::signature_3_sha512);
+		auto signature_256_decoded = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::signature_3_sha256);
+		auto signature_384_decoded = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::signature_3_sha384);
+		auto signature_512_decoded = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::signature_3_sha512);
 
 		ASSERT_TRUE(signature_256_decoded);
 		ASSERT_TRUE(signature_384_decoded);
@@ -196,9 +196,9 @@ namespace webauthn::crypto
 		std::vector<std::byte> data{};
 		std::ranges::transform(helpers::data_4, std::back_inserter(data), [](auto x) { return static_cast<std::byte>(x); });
 
-		auto signature_256_decoded = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::signature_4_sha256);
-		auto signature_384_decoded = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::signature_4_sha384);
-		auto signature_512_decoded = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::signature_4_sha512);
+		auto signature_256_decoded = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::signature_4_sha256);
+		auto signature_384_decoded = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::signature_4_sha384);
+		auto signature_512_decoded = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::signature_4_sha512);
 
 		ASSERT_TRUE(signature_256_decoded);
 		ASSERT_TRUE(signature_384_decoded);
@@ -234,9 +234,9 @@ namespace webauthn::crypto
 		std::vector<std::byte> data{};
 		std::ranges::transform(helpers::data_5, std::back_inserter(data), [](auto x) { return static_cast<std::byte>(x); });
 
-		auto signature_256_decoded = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::signature_5_sha256);
-		auto signature_384_decoded = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::signature_5_sha384);
-		auto signature_512_decoded = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::signature_5_sha512);
+		auto signature_256_decoded = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::signature_5_sha256);
+		auto signature_384_decoded = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::signature_5_sha384);
+		auto signature_512_decoded = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::signature_5_sha512);
 
 		ASSERT_TRUE(signature_256_decoded);
 		ASSERT_TRUE(signature_384_decoded);

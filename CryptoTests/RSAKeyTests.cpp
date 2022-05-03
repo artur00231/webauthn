@@ -98,8 +98,8 @@ namespace webauthn::crypto
 
 	TEST(RSAKeyTests, RSATestsCreate1)
 	{
-		auto modulus = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::modulus_1);
-		auto exponent = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::exponent_1);
+		auto modulus = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::modulus_1);
+		auto exponent = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::exponent_1);
 
 		ASSERT_TRUE(modulus);
 		ASSERT_TRUE(exponent);
@@ -108,8 +108,8 @@ namespace webauthn::crypto
 
 		ASSERT_TRUE(key);
 
-		auto data = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::data_1);
-		auto sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_1);
+		auto data = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::data_1);
+		auto sign = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::sign_1);
 
 		ASSERT_TRUE(data);
 		ASSERT_TRUE(sign);
@@ -122,8 +122,8 @@ namespace webauthn::crypto
 
 	TEST(RSAKeyTests, RSAKeyTestsCreate2)
 	{
-		auto modulus = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::modulus_2);
-		auto exponent = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::exponent_2);
+		auto modulus = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::modulus_2);
+		auto exponent = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::exponent_2);
 
 		ASSERT_TRUE(modulus);
 		ASSERT_TRUE(exponent);
@@ -135,8 +135,8 @@ namespace webauthn::crypto
 
 	TEST(RSAKeyTests, RSAKey2048_PKCS1_v1_5)
 	{
-		auto modulus = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::modulus_3);
-		auto exponent = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::exponent_3);
+		auto modulus = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::modulus_3);
+		auto exponent = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::exponent_3);
 
 		ASSERT_TRUE(modulus);
 		ASSERT_TRUE(exponent);
@@ -148,28 +148,28 @@ namespace webauthn::crypto
 		std::vector<std::byte> data{};
 		std::ranges::transform(helpers::data_3, std::back_inserter(data), [](auto x) { return static_cast<std::byte>(x); });
 
-		auto sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_3_1);
+		auto sign = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::sign_3_1);
 		ASSERT_TRUE(sign);
 		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA1);
 		auto result = key->verify(data, *sign);
 		ASSERT_TRUE(result);
 		EXPECT_TRUE(*result);
 
-		sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_3_256);
+		sign = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::sign_3_256);
 		ASSERT_TRUE(sign);
 		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA256);
 		result = key->verify(data, *sign);
 		ASSERT_TRUE(result);
 		EXPECT_TRUE(*result);
 
-		sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_3_384);
+		sign = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::sign_3_384);
 		ASSERT_TRUE(sign);
 		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA384);
 		result = key->verify(data, *sign);
 		ASSERT_TRUE(result);
 		EXPECT_TRUE(*result);
 
-		sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_3_512);
+		sign = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::sign_3_512);
 		ASSERT_TRUE(sign);
 		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA512);
 		result = key->verify(data, *sign);
@@ -179,8 +179,8 @@ namespace webauthn::crypto
 
 	TEST(RSAKeyTests, RSAKey3072_PKCS1_v1_5)
 	{
-		auto modulus = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::modulus_4);
-		auto exponent = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::exponent_4);
+		auto modulus = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::modulus_4);
+		auto exponent = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::exponent_4);
 
 		ASSERT_TRUE(modulus);
 		ASSERT_TRUE(exponent);
@@ -192,28 +192,28 @@ namespace webauthn::crypto
 		std::vector<std::byte> data{};
 		std::ranges::transform(helpers::data_4, std::back_inserter(data), [](auto x) { return static_cast<std::byte>(x); });
 
-		auto sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_4_1);
+		auto sign = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::sign_4_1);
 		ASSERT_TRUE(sign);
 		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA1);
 		auto result = key->verify(data, *sign);
 		ASSERT_TRUE(result);
 		EXPECT_TRUE(*result);
 
-		sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_4_256);
+		sign = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::sign_4_256);
 		ASSERT_TRUE(sign);
 		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA256);
 		result = key->verify(data, *sign);
 		ASSERT_TRUE(result);
 		EXPECT_TRUE(*result);
 
-		sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_4_384);
+		sign = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::sign_4_384);
 		ASSERT_TRUE(sign);
 		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA384);
 		result = key->verify(data, *sign);
 		ASSERT_TRUE(result);
 		EXPECT_TRUE(*result);
 
-		sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_4_512);
+		sign = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::sign_4_512);
 		ASSERT_TRUE(sign);
 		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA512);
 		result = key->verify(data, *sign);
@@ -223,8 +223,8 @@ namespace webauthn::crypto
 
 	TEST(RSAKeyTests, RSAKey4096_PKCS1_v1_5)
 	{
-		auto modulus = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::modulus_5);
-		auto exponent = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::exponent_5);
+		auto modulus = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::modulus_5);
+		auto exponent = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::exponent_5);
 
 		ASSERT_TRUE(modulus);
 		ASSERT_TRUE(exponent);
@@ -236,28 +236,28 @@ namespace webauthn::crypto
 		std::vector<std::byte> data{};
 		std::ranges::transform(helpers::data_5, std::back_inserter(data), [](auto x) { return static_cast<std::byte>(x); });
 
-		auto sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_5_1);
+		auto sign = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::sign_5_1);
 		ASSERT_TRUE(sign);
 		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA1);
 		auto result = key->verify(data, *sign);
 		ASSERT_TRUE(result);
 		EXPECT_TRUE(*result);
 
-		sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_5_256);
+		sign = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::sign_5_256);
 		ASSERT_TRUE(sign);
 		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA256);
 		result = key->verify(data, *sign);
 		ASSERT_TRUE(result);
 		EXPECT_TRUE(*result);
 
-		sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_5_384);
+		sign = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::sign_5_384);
 		ASSERT_TRUE(sign);
 		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA384);
 		result = key->verify(data, *sign);
 		ASSERT_TRUE(result);
 		EXPECT_TRUE(*result);
 
-		sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_5_512);
+		sign = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::sign_5_512);
 		ASSERT_TRUE(sign);
 		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA512);
 		result = key->verify(data, *sign);
@@ -267,8 +267,8 @@ namespace webauthn::crypto
 
 	TEST(RSAKeyTests, RSAKey8192_PKCS1_v1_5)
 	{
-		auto modulus = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::modulus_6);
-		auto exponent = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::exponent_6);
+		auto modulus = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::modulus_6);
+		auto exponent = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::exponent_6);
 
 		ASSERT_TRUE(modulus);
 		ASSERT_TRUE(exponent);
@@ -280,28 +280,28 @@ namespace webauthn::crypto
 		std::vector<std::byte> data{};
 		std::ranges::transform(helpers::data_6, std::back_inserter(data), [](auto x) { return static_cast<std::byte>(x); });
 
-		auto sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_6_1);
+		auto sign = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::sign_6_1);
 		ASSERT_TRUE(sign);
 		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA1);
 		auto result = key->verify(data, *sign);
 		ASSERT_TRUE(result);
 		EXPECT_TRUE(*result);
 
-		sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_6_256);
+		sign = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::sign_6_256);
 		ASSERT_TRUE(sign);
 		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA256);
 		result = key->verify(data, *sign);
 		ASSERT_TRUE(result);
 		EXPECT_TRUE(*result);
 
-		sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_6_384);
+		sign = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::sign_6_384);
 		ASSERT_TRUE(sign);
 		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA384);
 		result = key->verify(data, *sign);
 		ASSERT_TRUE(result);
 		EXPECT_TRUE(*result);
 
-		sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_6_512);
+		sign = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::sign_6_512);
 		ASSERT_TRUE(sign);
 		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA512);
 		result = key->verify(data, *sign);
@@ -311,8 +311,8 @@ namespace webauthn::crypto
 
 	TEST(RSAKeyTests, RSAKey15360_PKCS1_v1_5)
 	{
-		auto modulus = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::modulus_7);
-		auto exponent = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::exponent_7);
+		auto modulus = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::modulus_7);
+		auto exponent = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::exponent_7);
 
 		ASSERT_TRUE(modulus);
 		ASSERT_TRUE(exponent);
@@ -324,28 +324,28 @@ namespace webauthn::crypto
 		std::vector<std::byte> data{};
 		std::ranges::transform(helpers::data_7, std::back_inserter(data), [](auto x) { return static_cast<std::byte>(x); });
 
-		auto sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_7_1);
+		auto sign = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::sign_7_1);
 		ASSERT_TRUE(sign);
 		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA1);
 		auto result = key->verify(data, *sign);
 		ASSERT_TRUE(result);
 		EXPECT_TRUE(*result);
 
-		sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_7_256);
+		sign = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::sign_7_256);
 		ASSERT_TRUE(sign);
 		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA256);
 		result = key->verify(data, *sign);
 		ASSERT_TRUE(result);
 		EXPECT_TRUE(*result);
 
-		sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_7_384);
+		sign = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::sign_7_384);
 		ASSERT_TRUE(sign);
 		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA384);
 		result = key->verify(data, *sign);
 		ASSERT_TRUE(result);
 		EXPECT_TRUE(*result);
 
-		sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_7_512);
+		sign = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::sign_7_512);
 		ASSERT_TRUE(sign);
 		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA512);
 		result = key->verify(data, *sign);
@@ -355,8 +355,8 @@ namespace webauthn::crypto
 
 	TEST(RSAKeyTests, RSAKeyCreate2)
 	{
-		auto modulus = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::modulus_8);
-		auto exponent = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::exponent_8);
+		auto modulus = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::modulus_8);
+		auto exponent = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::exponent_8);
 
 		ASSERT_TRUE(modulus);
 		ASSERT_TRUE(exponent);
@@ -373,7 +373,7 @@ namespace webauthn::crypto
 		std::vector<std::byte> data{};
 		std::ranges::transform(helpers::data_8, std::back_inserter(data), [](auto x) { return static_cast<std::byte>(x); });
 
-		auto sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_8_256);
+		auto sign = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::sign_8_256);
 		ASSERT_TRUE(sign);
 		auto result = key->verify(data, *sign);
 		ASSERT_TRUE(result);
@@ -382,8 +382,8 @@ namespace webauthn::crypto
 
 	TEST(RSAKeyTests, RSAKeyPSS_PS256)
 	{
-		auto modulus = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::modulus_9);
-		auto exponent = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::exponent_9);
+		auto modulus = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::modulus_9);
+		auto exponent = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::exponent_9);
 
 		ASSERT_TRUE(modulus);
 		ASSERT_TRUE(exponent);
@@ -395,21 +395,21 @@ namespace webauthn::crypto
 		std::vector<std::byte> data{};
 		std::ranges::transform(helpers::data_9, std::back_inserter(data), [](auto x) { return static_cast<std::byte>(x); });
 
-		auto sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_9_256_256);
+		auto sign = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::sign_9_256_256);
 		ASSERT_TRUE(sign);
 		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA256);
 		auto result = key->verify(data, *sign);
 		ASSERT_TRUE(result);
 		EXPECT_TRUE(*result);
 
-		sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_9_256_384);
+		sign = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::sign_9_256_384);
 		ASSERT_TRUE(sign);
 		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA384);
 		result = key->verify(data, *sign);
 		ASSERT_TRUE(result);
 		EXPECT_TRUE(*result);
 
-		sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_9_256_512);
+		sign = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::sign_9_256_512);
 		ASSERT_TRUE(sign);
 		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA512);
 		result = key->verify(data, *sign);
@@ -419,8 +419,8 @@ namespace webauthn::crypto
 
 	TEST(RSAKeyTests, RSAKeyPSS_PS384)
 	{
-		auto modulus = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::modulus_9);
-		auto exponent = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::exponent_9);
+		auto modulus = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::modulus_9);
+		auto exponent = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::exponent_9);
 
 		ASSERT_TRUE(modulus);
 		ASSERT_TRUE(exponent);
@@ -432,21 +432,21 @@ namespace webauthn::crypto
 		std::vector<std::byte> data{};
 		std::ranges::transform(helpers::data_9, std::back_inserter(data), [](auto x) { return static_cast<std::byte>(x); });
 
-		auto sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_9_384_256);
+		auto sign = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::sign_9_384_256);
 		ASSERT_TRUE(sign);
 		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA256);
 		auto result = key->verify(data, *sign);
 		ASSERT_TRUE(result);
 		EXPECT_TRUE(*result);
 
-		sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_9_384_384);
+		sign = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::sign_9_384_384);
 		ASSERT_TRUE(sign);
 		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA384);
 		result = key->verify(data, *sign);
 		ASSERT_TRUE(result);
 		EXPECT_TRUE(*result);
 
-		sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_9_384_512);
+		sign = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::sign_9_384_512);
 		ASSERT_TRUE(sign);
 		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA512);
 		result = key->verify(data, *sign);
@@ -456,8 +456,8 @@ namespace webauthn::crypto
 
 	TEST(RSAKeyTests, RSAKeyPSS_PS512)
 	{
-		auto modulus = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::modulus_9);
-		auto exponent = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::exponent_9);
+		auto modulus = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::modulus_9);
+		auto exponent = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::exponent_9);
 
 		ASSERT_TRUE(modulus);
 		ASSERT_TRUE(exponent);
@@ -469,21 +469,21 @@ namespace webauthn::crypto
 		std::vector<std::byte> data{};
 		std::ranges::transform(helpers::data_9, std::back_inserter(data), [](auto x) { return static_cast<std::byte>(x); });
 
-		auto sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_9_512_256);
+		auto sign = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::sign_9_512_256);
 		ASSERT_TRUE(sign);
 		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA256);
 		auto result = key->verify(data, *sign);
 		ASSERT_TRUE(result);
 		EXPECT_TRUE(*result);
 
-		sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_9_512_384);
+		sign = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::sign_9_512_384);
 		ASSERT_TRUE(sign);
 		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA384);
 		result = key->verify(data, *sign);
 		ASSERT_TRUE(result);
 		EXPECT_TRUE(*result);
 
-		sign = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::sign_9_512_512);
+		sign = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::sign_9_512_512);
 		ASSERT_TRUE(sign);
 		key->setDefaultHash(COSE::SIGNATURE_HASH::SHA512);
 		result = key->verify(data, *sign);

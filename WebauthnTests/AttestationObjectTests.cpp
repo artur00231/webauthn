@@ -20,8 +20,8 @@ namespace webauthn
 	{
 		using namespace std::string_literals;
 
-		auto decoded = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::attestation_object);
-		auto decoded_key_id = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::attestation_object_key_id);
+		auto decoded = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::attestation_object);
+		auto decoded_key_id = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::attestation_object_key_id);
 
 		ASSERT_TRUE(decoded.has_value());
 		ASSERT_TRUE(decoded_key_id.has_value());

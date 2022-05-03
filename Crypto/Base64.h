@@ -1,130 +1,131 @@
 #pragma once
 
-#include <openssl/evp.h>
-
 #include <vector>
-#include <cstddef>
 #include <string>
 #include <exception>
 #include <optional>
 #include <algorithm>
+#include <iterator>
+#include <ranges>
+#include <span>
+#include <cctype>
 
-namespace webauthn::crypto::base64
+namespace webauthn::crypto
 {
-	namespace helpers
+	namespace base64_helpers
 	{
+		template<typename T>
+		static inline constexpr bool is_byte()
+		{
+			using clear_T = std::remove_cv_t<T>;
+			return std::is_same_v<clear_T, std::byte> || std::is_same_v<clear_T, char> || std::is_same_v<clear_T, unsigned char>;
+		}
+
+		template<typename T>
+		concept Byte = requires(T t)
+		{
+			is_byte<T>;
+		};
+
 		template<typename T>
 		concept Container = requires(T a)
 		{
-			{ std::declval<T>().data() };
-			{ std::declval<T>().size() } -> std::convertible_to<std::size_t>;
-		};
-
-		template<typename T>
-		concept Copyable = requires(T a)
-		{
-			{ std::declval<T>().begin() };
-			{ std::declval<T>().end() };
-			std::is_convertible_v<typename T::value_type, char>;
-		};
-
-		template<typename T>
-		concept Resizeable = requires(T a)
-		{
-			{ std::declval<T>().resize(std::declval<std::size_t>()) };
+			{ a.push_back(std::declval<typename T::value_type>()) };
+			std::is_destructible_v<T>;
+			requires Byte<typename T::value_type>;
 		};
 	}
 
-	template<typename In, typename Out = std::string>
-	requires helpers::Container<std::add_const_t<In>> && helpers::Container<Out> && helpers::Resizeable<Out> && std::default_initializable<Out>
-	Out toBase64(const In& data)
+	class base64
 	{
-		auto predicted_size = (data.size() / 3 + 1) * 4 + 1 /*NULL termination*/;
-		Out out{};
-		out.resize(predicted_size);
+	public:
+		template<typename Out = std::string, typename Range>
+			requires base64_helpers::Container<Out> && std::ranges::contiguous_range<Range> && base64_helpers::Byte<std::iter_value_t<Range>>
+		static inline Out toBase64(Range&& range);
 
-		std::size_t length = EVP_EncodeBlock(reinterpret_cast<unsigned char*>(out.data()), 
-			reinterpret_cast<const unsigned char*>(data.data()), static_cast<int>(data.size()));
+		template<typename Out = std::vector<std::byte>, typename Range>
+			requires base64_helpers::Container<Out> && std::ranges::contiguous_range<Range> && base64_helpers::Byte<std::iter_value_t<Range>>
+		static inline std::optional<Out> fromBase64(Range&& range);
 
-		if (predicted_size < length + 1)
+		template<typename Out = std::vector<std::byte>, typename Range>
+			requires base64_helpers::Container<Out>  && std::ranges::contiguous_range<Range> && base64_helpers::Byte<std::iter_value_t<Range>>
+		static inline std::optional<Out> fromBase64Url(Range&& data);
+	private:
+		static std::string toBase64_internal(const std::span<const unsigned char>& data);
+		static std::optional<std::vector<std::byte>> fromBase64_internal(const std::span<const unsigned char>& data);
+	};
+
+	template<typename Out, typename Range>
+	requires base64_helpers::Container<Out> && std::ranges::contiguous_range<Range> && base64_helpers::Byte<std::iter_value_t<Range>>
+	inline Out base64::toBase64(Range&& range)
+	{
+		auto base64_encoded = toBase64_internal({ reinterpret_cast<const unsigned char*>(std::data(range)), std::size(range) });
+
+		if constexpr (std::is_same_v<Out, decltype(base64_encoded)>)
 		{
-			//Oh no
-			//We just wrote somewhere where we are not supposed to
-
-			//Uncomment std::terminate() to stop execution
-			//std::terminate();
+			return base64_encoded;
 		}
+		else
+		{
+			Out out{};
+			std::ranges::transform(base64_encoded, std::back_inserter(out), [](auto&& x) { return static_cast<Out::value_type>(x); });
 
-		out.resize(length);
-		return out;
+			return out;
+		}
 	}
 
-	template<typename Out, typename In = std::string>
-		requires helpers::Container<std::add_const_t<In>> && helpers::Container<Out>&& helpers::Resizeable<Out> && std::default_initializable<Out>
-	std::optional<Out> fromBase64(const In& data)
+	template<typename Out, typename Range>
+		requires base64_helpers::Container<Out> && std::ranges::contiguous_range<Range> && base64_helpers::Byte<std::iter_value_t<Range>>
+	inline std::optional<Out> base64::fromBase64(Range&& range)
 	{
-		if (data.size() % 4 != 0)
-		{
+		auto binary_data = fromBase64_internal(std::span{ reinterpret_cast<const unsigned char*>(std::data(range)), std::size(range) });
+		if (!binary_data)
 			return {};
-		}
 
-		auto predicted_size = (data.size() / 4) * 3;
-		Out out{};
-		out.resize(predicted_size);
-
-		int length = EVP_DecodeBlock(reinterpret_cast<unsigned char*>(out.data()),
-			reinterpret_cast<const unsigned char*>(data.data()), static_cast<int>(data.size()));
-
-		if (length == 0 || length == -1)
+		if constexpr (std::is_same_v<Out, decltype(binary_data)>)
 		{
-			return {};
+			return std::make_optional(std::move(binary_data));
 		}
-
-		if (predicted_size < length)
+		else
 		{
-			//Oh no
-			//We just wrote somewhere where we are not supposed to
+			Out out{};
+			std::ranges::transform(*binary_data, std::back_inserter(out), [](auto&& x) { return static_cast<Out::value_type>(x); });
 
-			//Uncomment std::terminate() to stop execution
-			std::terminate();
+			return std::make_optional(std::move(out));
 		}
-
-		out.resize(length);
-		return out;
 	}
 
-	template<typename Out, typename In = std::string>
-		requires helpers::Copyable<std::add_const_t<In>>&& helpers::Container<Out>&& helpers::Resizeable<Out>&& std::default_initializable<Out>
-	std::optional<Out> fromBase64Fix(const In& data)
+	template<typename Out, typename Range>
+		requires base64_helpers::Container<Out> && std::ranges::contiguous_range<Range> && base64_helpers::Byte<std::iter_value_t<Range>>
+	inline std::optional<Out> base64::fromBase64Url(Range&& data)
 	{
-		std::vector<char> data_fixed{};
-		std::copy_if(data.begin(), data.end(), std::back_inserter(data_fixed), [](auto x) { return x != '='; });
-
-		auto diff = 4 - data_fixed.size() % 4;
-		diff = diff == 4 ? 0 : diff;
-
-		for (decltype(diff) i = 0; i < diff; i++)
-		{
-			data_fixed.push_back('=');
-		}
-
-		std::for_each(data_fixed.begin(), data_fixed.end(), [](char& x) {
-				if (x == '-') { 
-					x = '+';
-				} else if (x == '_') { 
-					x = '/';
-				} 
+		std::vector<std::iter_value_t<Range>> data_fixed{};
+		std::ranges::transform(data | std::views::filter([](auto x) {
+			switch (x)
+			{
+			case '\n': [[fallthrough]];
+			case ' ':
+				return false;
+			default:
+				return true;
+			}
+			}), std::back_inserter(data_fixed), [](auto x) {
+			switch (x)
+			{
+			case '-':
+				return '+';
+			case '_':
+				return '/';
+			case '.':
+				return '=';
+			default:
+				return x;
+			}
 			});
 
-		auto result = fromBase64<Out>(data_fixed);
+		auto padding_size = (4 - (data_fixed.size() % 4)) % 4;
+		while (padding_size --> 0) data_fixed.push_back(static_cast<std::iter_value_t<Range>>('='));
 
-		if (!result.has_value())
-		{
-			return {};
-		}
-
-		result->resize(result->size() - diff);
-
-		return result;
+		return fromBase64<Out>(data_fixed);
 	}
 }

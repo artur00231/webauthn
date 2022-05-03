@@ -23,7 +23,7 @@ namespace webauthn::crypto
 
 	TEST(PublicKeyParserTests, ECDSAES256)
 	{
-		auto cbor_data = base64::fromBase64Fix<std::vector<std::byte>>(helpers::key1);
+		auto cbor_data = base64::fromBase64Url<std::vector<std::byte>>(helpers::key1);
 		ASSERT_TRUE(cbor_data);
 
 		auto [cbor, load_result] = CBOR::CBORHandle::fromBin(*cbor_data);
@@ -40,7 +40,7 @@ namespace webauthn::crypto
 
 	TEST(PublicKeyParserTests, EdDSAEd25519)
 	{
-		auto cbor_data = base64::fromBase64Fix<std::vector<std::byte>>(helpers::key2);
+		auto cbor_data = base64::fromBase64Url<std::vector<std::byte>>(helpers::key2);
 		ASSERT_TRUE(cbor_data);
 
 		auto [cbor, load_result] = CBOR::CBORHandle::fromBin(*cbor_data);
@@ -56,7 +56,7 @@ namespace webauthn::crypto
 
 	TEST(PublicKeyParserTests, RS256)
 	{
-		auto cbor_data = base64::fromBase64Fix<std::vector<std::byte>>(helpers::key3);
+		auto cbor_data = base64::fromBase64Url<std::vector<std::byte>>(helpers::key3);
 		ASSERT_TRUE(cbor_data);
 
 		auto [cbor, load_result] = CBOR::CBORHandle::fromBin(*cbor_data);

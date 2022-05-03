@@ -6,6 +6,7 @@ IF (${OPENSSL_VERSION} LESS 3.0.0)
 ENDIF()
 
 add_library(Crypto
+	Base64.cpp
 	CertificateValidator.cpp
 	Crypto.cpp
 	ECDSAKey.cpp

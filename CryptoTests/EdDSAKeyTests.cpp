@@ -45,8 +45,8 @@ namespace webauthn::crypto
 
 	TEST(EdDSAKeyTests, EdDSAKeyCreate1)
 	{
-		auto data_decoded = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::data_1);
-		auto signature_decoded = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::signature_1);
+		auto data_decoded = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::data_1);
+		auto signature_decoded = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::signature_1);
 
 		ASSERT_TRUE(data_decoded);
 		ASSERT_TRUE(signature_decoded);
@@ -74,7 +74,7 @@ namespace webauthn::crypto
 		std::vector<std::byte> data{};
 		std::ranges::transform(helpers::data_2, std::back_inserter(data), [](auto x) { return static_cast<std::byte>(x); });
 
-		auto signature_decoded = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::signature_2);
+		auto signature_decoded = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::signature_2);
 
 		ASSERT_TRUE(signature_decoded);
 
@@ -101,7 +101,7 @@ namespace webauthn::crypto
 		std::vector<std::byte> data{};
 		std::ranges::transform(helpers::data_3, std::back_inserter(data), [](auto x) { return static_cast<std::byte>(x); });
 
-		auto signature_decoded = crypto::base64::fromBase64Fix<std::vector<std::byte>>(helpers::signature_3);
+		auto signature_decoded = crypto::base64::fromBase64Url<std::vector<std::byte>>(helpers::signature_3);
 
 		ASSERT_TRUE(signature_decoded);
 
