@@ -11,6 +11,7 @@ add_library(Crypto
 	Crypto.cpp
 	ECDSAKey.cpp
 	EdDSAKey.cpp
+	Hash.cpp
 	OpenSSLErros.cpp
 	PublicKey.cpp
 	RSAKey.cpp
