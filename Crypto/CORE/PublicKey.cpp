@@ -4,7 +4,7 @@
 #include "EdDSAKey.h"
 #include "RSAKey.h"
 
-std::optional<std::unique_ptr<webauthn::crypto::PublicKey>> webauthn::crypto::createPublicKey(const std::vector<std::byte>& cbor)
+std::optional<std::unique_ptr<webauthn::crypto::PublicKey>> webauthn::crypto::PublicKey::createPublicKey(const std::vector<std::byte>& cbor)
 {
     auto [handle, result] = CBOR::CBORHandle::fromBin(cbor);
     if (!handle) return {};
@@ -22,7 +22,7 @@ namespace webauthn::crypto
     static std::optional<webauthn::crypto::RSAKey> createRSA(webauthn::CBOR::CBORHandle handle, COSE::COSE_ALGORITHM rsa_algorithm);
 }
 
-std::optional<std::unique_ptr<webauthn::crypto::PublicKey>> webauthn::crypto::createPublicKey(CBOR::CBORHandle handle)
+std::optional<std::unique_ptr<webauthn::crypto::PublicKey>> webauthn::crypto::PublicKey::createPublicKey(CBOR::CBORHandle handle)
 {
     auto map_arr = CBOR::getMapArray(handle);
     if (!map_arr) return {};

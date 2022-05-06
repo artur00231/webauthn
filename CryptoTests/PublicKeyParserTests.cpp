@@ -29,7 +29,7 @@ namespace webauthn::crypto
 		auto [cbor, load_result] = CBOR::CBORHandle::fromBin(*cbor_data);
 		ASSERT_TRUE(cbor);
 
-		auto key = crypto::createPublicKey(cbor);
+		auto key = crypto::PublicKey::createPublicKey(cbor);
 		ASSERT_TRUE(key);
 
 		auto ecdsa = dynamic_cast<ECDSAKey*>(key->get());
@@ -46,7 +46,7 @@ namespace webauthn::crypto
 		auto [cbor, load_result] = CBOR::CBORHandle::fromBin(*cbor_data);
 		ASSERT_TRUE(cbor);
 
-		auto key = crypto::createPublicKey(cbor);
+		auto key = crypto::PublicKey::createPublicKey(cbor);
 		ASSERT_TRUE(key);
 
 		auto ecdsa = dynamic_cast<EdDSAKey*>(key->get());
@@ -62,7 +62,7 @@ namespace webauthn::crypto
 		auto [cbor, load_result] = CBOR::CBORHandle::fromBin(*cbor_data);
 		ASSERT_TRUE(cbor);
 
-		auto key = crypto::createPublicKey(cbor);
+		auto key = crypto::PublicKey::createPublicKey(cbor);
 		ASSERT_TRUE(key);
 
 		auto rsa = dynamic_cast<RSAKey*>(key->get());

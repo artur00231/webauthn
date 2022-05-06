@@ -9,6 +9,10 @@
 #include "COSE.h"
 #include <CBORLib.h>
 
+#ifdef PUBLICKEY_CRYPTO_FORCE_FULL
+#undef PUBLICKEY_CRYPTO_LITE
+#endif // !PUBLICKEY_CRYPTO_FORCE_FULL
+
 namespace webauthn::crypto
 {
 	class PublicKey
@@ -18,8 +22,10 @@ namespace webauthn::crypto
 
 		virtual std::optional<bool> verify(const std::string& data, const std::string& signature) const = 0;
 		virtual std::optional<bool> verify(const std::vector<std::byte>& data, const std::vector<std::byte>& signature) const = 0;
-	};
 
-	std::optional<std::unique_ptr<PublicKey>> createPublicKey(const std::vector<std::byte>& cbor);
-	std::optional<std::unique_ptr<PublicKey>> createPublicKey(CBOR::CBORHandle handle);
+#ifndef PUBLICKEY_CRYPTO_LITE
+		static std::optional<std::unique_ptr<PublicKey>> createPublicKey(const std::vector<std::byte>& cbor);
+		static std::optional<std::unique_ptr<PublicKey>> createPublicKey(CBOR::CBORHandle handle);
+#endif // !PUBLICKEY_CRYPTO_LITE
+	};
 }

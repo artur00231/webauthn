@@ -6,6 +6,8 @@
 #include <WebAuthnWinHello.h>
 #include <Webauthnlibfido2.h>
 
+#include <Random.h>
+
 void Client::run()
 {
 	bool done{ false };
@@ -167,7 +169,7 @@ void Client::addWebauthn()
 	user_data.display_name = user;
 	user_data.name = user;
 
-	if (!webauthn::UserData::generateRandomID(32).and_then(
+	if (!webauthn::crypto::random::genRandom(32).and_then(
 		[&user_data](auto&& x) {
 			user_data.ID = std::move(x);
 			return std::make_optional(true);

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Attestation.h"
-#include "../Crypto/COSE.h"
+#include <COSE.h>
 
 //#include <nlohmann/json.hpp>
 #include <cstddef>

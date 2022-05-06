@@ -26,8 +26,6 @@ namespace webauthn
 		std::vector<std::byte> ID{};
 		std::string name{};
 		std::string display_name{};
-
-		static std::optional<std::vector<std::byte>> generateRandomID(std::size_t size);
 	};
 
 	class CredentialId

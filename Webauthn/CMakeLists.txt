@@ -7,6 +7,7 @@ add_library(Webauthn
 	WebAuthnDef.cpp
 )
 
-target_link_libraries(Webauthn PRIVATE CBORLib Crypto)
+target_link_libraries(Webauthn PRIVATE CBORLib CryptoLite)
+target_link_libraries(Webauthn PUBLIC CryptoLite)
 
 target_include_directories(Webauthn PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
