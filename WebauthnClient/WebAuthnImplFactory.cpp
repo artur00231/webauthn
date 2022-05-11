@@ -109,13 +109,20 @@ std::unique_ptr<webauthn::impl::WebAuthnImpl> webauthn::WebAuthnImplFactory::cre
 {
     using namespace std::string_literals;
 
-    if (!implementation || *implementation == "internal"s)
+    if (!implementation)
     {
         return helpers::createInternalWebAuthnImpl();
     }
     else
     {
-
+        if (*implementation == "internal"s)
+        { 
+            return helpers::createInternalWebAuthnImpl();
+        }
+        else
+        {
+            return helpers::createWebAuthnImplFromName(*implementation);
+        }
     }
 
     return {};
