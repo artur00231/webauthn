@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.8)
+cmake_minimum_required (VERSION 3.15)
 
 project ("Webauthn")
 
@@ -20,6 +20,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/")
 
+if (MSVC)
+    add_compile_options(/W4)
+else()
+    add_compile_options(-pedantic -Wall -Wextra -Wno-unused)
+endif()
+
 # Include sub-projects.
 add_subdirectory(CBORLib)
 add_subdirectory(CBORTests)
@@ -29,4 +35,6 @@ add_subdirectory(Webauthn)
 add_subdirectory(WebauthnTests)
 add_subdirectory(WebauthnClient)
 
-add_subdirectory(Example)
+if (${BUILD_EXAMPLE})
+	add_subdirectory(Example)
+endif()
