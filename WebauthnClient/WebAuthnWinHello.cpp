@@ -63,6 +63,36 @@ webauthn::impl::WebAuthnWinHello::WebAuthnWinHelloDll::WebAuthnWinHelloDll()
 	this->isAvaiable = isAvaiable;
 }
 
+webauthn::impl::WebAuthnWinHello::WebAuthnWinHelloDll::WebAuthnWinHelloDll(WebAuthnWinHelloDll&& other) noexcept
+{
+	std::swap(WebAuthNGetApiVersionNumber, other.WebAuthNGetApiVersionNumber);
+	std::swap(WebAuthNIsUserVerifyingPlatformAuthenticatorAvailable, other.WebAuthNIsUserVerifyingPlatformAuthenticatorAvailable);
+	std::swap(WebAuthNAuthenticatorMakeCredential, other.WebAuthNAuthenticatorMakeCredential);
+	std::swap(WebAuthNAuthenticatorGetAssertion, other.WebAuthNAuthenticatorGetAssertion);
+	std::swap(WebAuthNGetErrorName, other.WebAuthNGetErrorName);
+	std::swap(WebAuthNFreeAssertion, other.WebAuthNFreeAssertion);
+	std::swap(WebAuthNFreeCredentialAttestation, other.WebAuthNFreeCredentialAttestation);
+
+	std::swap(webauthn_lib, other.webauthn_lib);
+	std::swap(isAvaiable, other.isAvaiable);
+}
+
+webauthn::impl::WebAuthnWinHello::WebAuthnWinHelloDll& webauthn::impl::WebAuthnWinHello::WebAuthnWinHelloDll::operator=(WebAuthnWinHelloDll&& other) noexcept
+{
+	std::swap(WebAuthNGetApiVersionNumber, other.WebAuthNGetApiVersionNumber);
+	std::swap(WebAuthNIsUserVerifyingPlatformAuthenticatorAvailable, other.WebAuthNIsUserVerifyingPlatformAuthenticatorAvailable);
+	std::swap(WebAuthNAuthenticatorMakeCredential, other.WebAuthNAuthenticatorMakeCredential);
+	std::swap(WebAuthNAuthenticatorGetAssertion, other.WebAuthNAuthenticatorGetAssertion);
+	std::swap(WebAuthNGetErrorName, other.WebAuthNGetErrorName);
+	std::swap(WebAuthNFreeAssertion, other.WebAuthNFreeAssertion);
+	std::swap(WebAuthNFreeCredentialAttestation, other.WebAuthNFreeCredentialAttestation);
+
+	std::swap(webauthn_lib, other.webauthn_lib);
+	std::swap(isAvaiable, other.isAvaiable);
+
+	return *this;
+}
+
 webauthn::impl::WebAuthnWinHello::WebAuthnWinHelloDll::~WebAuthnWinHelloDll()
 {
 	if (webauthn_lib)
@@ -73,6 +103,17 @@ webauthn::impl::WebAuthnWinHello::WebAuthnWinHelloDll::~WebAuthnWinHelloDll()
 
 webauthn::impl::WebAuthnWinHello::WebAuthnWinHello()
 {
+}
+
+webauthn::impl::WebAuthnWinHello::WebAuthnWinHello(WebAuthnWinHello&& other) noexcept : webAuthnWinHelloDll{ std::move(other.webAuthnWinHelloDll) }
+{
+}
+
+webauthn::impl::WebAuthnWinHello& webauthn::impl::WebAuthnWinHello::operator=(WebAuthnWinHello&& other) noexcept
+{
+	std::swap(webAuthnWinHelloDll, other.webAuthnWinHelloDll);
+
+	return *this;
 }
 
 webauthn::impl::WebAuthnWinHello::~WebAuthnWinHello()

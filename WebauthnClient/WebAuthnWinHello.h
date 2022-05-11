@@ -26,6 +26,10 @@ namespace webauthn::impl
 		{
 		public:
 			WebAuthnWinHelloDll();
+			WebAuthnWinHelloDll(const WebAuthnWinHelloDll&) = delete;
+			WebAuthnWinHelloDll(WebAuthnWinHelloDll&&) noexcept;
+			WebAuthnWinHelloDll& operator=(const WebAuthnWinHelloDll&) = delete;
+			WebAuthnWinHelloDll& operator=(WebAuthnWinHelloDll&&) noexcept;
 			~WebAuthnWinHelloDll();
 
 			WebAuthNGetApiVersionNumber_t WebAuthNGetApiVersionNumber{ nullptr };
@@ -45,6 +49,10 @@ namespace webauthn::impl
 		};
 
 		WebAuthnWinHello();
+		WebAuthnWinHello(const WebAuthnWinHello&) = delete;
+		WebAuthnWinHello(WebAuthnWinHello&&) noexcept;
+		WebAuthnWinHello& operator=(const WebAuthnWinHello&) = delete;
+		WebAuthnWinHello& operator=(WebAuthnWinHello&&) noexcept;
 		virtual ~WebAuthnWinHello();
 
 		std::optional<MakeCredentialResult> makeCredential(const UserData& user, const RelyingParty& rp,
