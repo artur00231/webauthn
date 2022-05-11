@@ -1,15 +1,22 @@
 #include "Client.h"
 
 #include <iomanip>
+#include <algorithm>
 
 #include <WebAuthn.h>
-#include <WebAuthnWinHello.h>
-#include <Webauthnlibfido2.h>
+#include <WebAuthnImplFactory.h>
 
 #include <Random.h>
 
 void Client::run()
 {
+	std::cout << "Avaiable webauthn implementations:\n";
+	auto avaiable_impl = webauthn::WebAuthnImplFactory::getAvaiableImplementations();
+	std::ranges::for_each(avaiable_impl, [](auto&& x) {
+		std::cout << "\t" << x << "\n";
+		});
+	std::cout << "\n\n";
+
 	bool done{ false };
 	while (!done)
 	{
@@ -111,9 +118,13 @@ void Client::loginUser()
 	}
 
 	//Webauthn required
-	//webauthn::impl::WebAuthnWinHello impl{};
-	webauthn::impl::Webauthnlibfido2 impl{};
-	webauthn::WebAuthn webauthn{ RP, impl };
+	auto impl = webauthn::WebAuthnImplFactory::createWebAuthnImpl();
+	if (!impl)
+	{
+		out << "System error\n";
+		return;
+	}
+	webauthn::WebAuthn webauthn{ RP, *impl };
 
 	out << "FIDO2 passw: ";
 	auto fido_passw = standardUserInput<std::string>();
@@ -161,9 +172,13 @@ void Client::addWebauthn()
 	}
 
 	//Webauthn required
-	//webauthn::impl::WebAuthnWinHello impl{};
-	webauthn::impl::Webauthnlibfido2 impl{};
-	webauthn::WebAuthn webauthn{ RP, impl };
+	auto impl = webauthn::WebAuthnImplFactory::createWebAuthnImpl();
+	if (!impl)
+	{
+		out << "System error\n";
+		return;
+	}
+	webauthn::WebAuthn webauthn{ RP, *impl };
 
 	webauthn::UserData user_data{};
 	user_data.display_name = user;

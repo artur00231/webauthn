@@ -4,6 +4,7 @@ include(${CMAKE_MODULE_PATH}FindLibFIDO2.cmake)
 add_library(WebauthnClient
 	Libfido2Authenticator.cpp
 	WebAuthn.cpp
+	WebAuthnImplFactory.cpp
 	Webauthnlibfido2.cpp
 	WebAuthnWinHello.cpp
 )
