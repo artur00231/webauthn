@@ -150,8 +150,6 @@ bool Server::performWebauthn(const webauthn::GetAssertionResult& result)
 		auto challage_hash = webauthn::crypto::hash::SHA256(last_challenge);
 		std::copy(challage_hash.begin(), challage_hash.end(), std::back_inserter(to_verify));
 
-		//TODO change it later
-		auth_data.attested_credential_data->key->public_key = std::move(*webauthn::crypto::PublicKey::createPublicKey(auth_data.attested_credential_data->key->public_key_cbor));
 		auto verify_result = auth_data.attested_credential_data->key->public_key->verify(to_verify, result.signature);
 
 		if (verify_result && *verify_result)

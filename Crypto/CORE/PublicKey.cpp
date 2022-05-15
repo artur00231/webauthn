@@ -1,8 +1,14 @@
 #include "PublicKey.h"
 
+#ifdef PUBLICKEY_CRYPTO_FORCE_FULL
+#undef PUBLICKEY_CRYPTO_LITE
+#endif // !PUBLICKEY_CRYPTO_FORCE_FULL
+
+#ifndef PUBLICKEY_CRYPTO_LITE
 #include "ECDSAKey.h"
 #include "EdDSAKey.h"
 #include "RSAKey.h"
+#endif // !PUBLICKEY_CRYPTO_LITE
 
 std::optional<std::unique_ptr<webauthn::crypto::PublicKey>> webauthn::crypto::PublicKey::createPublicKey(const std::vector<std::byte>& cbor)
 {
@@ -12,6 +18,7 @@ std::optional<std::unique_ptr<webauthn::crypto::PublicKey>> webauthn::crypto::Pu
     return createPublicKey(handle);
 }
 
+#ifndef PUBLICKEY_CRYPTO_LITE
 namespace webauthn::crypto
 {
     static std::optional<webauthn::crypto::ECDSAKey> createECDSA(webauthn::CBOR::CBORHandle handle, webauthn::crypto::COSE::SIGNATURE_HASH hash,
@@ -250,3 +257,9 @@ std::optional<webauthn::crypto::RSAKey> webauthn::crypto::createRSA(webauthn::CB
 
     return key;
 }
+#else
+    std::optional<std::unique_ptr<webauthn::crypto::PublicKey>> webauthn::crypto::PublicKey::createPublicKey(CBOR::CBORHandle handle)
+    {
+        return std::make_unique(EmptyPublicKey{});
+    }
+#endif // !PUBLICKEY_CRYPTO_LITE

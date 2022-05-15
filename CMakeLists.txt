@@ -15,6 +15,13 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
+FetchContent_Declare(
+	tl_expected
+	# Specify the commit you depend on and update it regularly.
+	URL https://github.com/TartanLlama/expected/archive/96d547c03d2feab8db64c53c3744a9b4a7c8f2c5.zip
+)
+FetchContent_MakeAvailable(tl_expected)
+
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 

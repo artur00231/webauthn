@@ -66,14 +66,17 @@ webauthn::AuthenticatorData webauthn::AuthenticatorData::fromBin(const std::vect
         PublicKey p_key{};
         p_key.public_key_cbor = public_key_data;
 
-        /*auto crypto_key = crypto::createPublicKey(key_raw);
-        if (!crypto_key)
+        auto crypto_key = crypto::PublicKey::createPublicKey(key_raw);
+        if (!crypto_key || !*crypto_key)
         {
             throw exceptions::DataException("Cannot read public key");
         }
 
-        p_key.public_key = std::move(*crypto_key);
-        */
+        if (**crypto_key)
+        {
+            p_key.public_key = std::move(*crypto_key);
+        }
+        
         attested_credential_data.key = std::move(p_key);
         
         authenticator_data.attested_credential_data = std::move(attested_credential_data);
