@@ -32,7 +32,7 @@ namespace webauthn
 
 		EXPECT_TRUE(attestation_object.authenticator_data.user_present);
 		EXPECT_TRUE(attestation_object.authenticator_data.user_verified);
-		EXPECT_EQ(attestation_object.authenticator_data.sign_counter, 4);
+		EXPECT_EQ(attestation_object.authenticator_data.sign_counter, 4u);
 
 		auto RP_ID_hash = crypto::hash::SHA256("test_application"s);
 		EXPECT_EQ(attestation_object.authenticator_data.RP_ID_hash, RP_ID_hash);

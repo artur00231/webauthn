@@ -26,7 +26,7 @@ webauthn::AttestationObject webauthn::AttestationObject::fromCbor(const std::vec
 	for (auto&& map_elem : *map_arr)
 	{
 		//We expect only strings as keys
-		auto key = CBOR::getString(map_elem->key);
+		const auto key = CBOR::getString(map_elem->key);
 
 		if (key == "fmt")
 		{
@@ -40,14 +40,14 @@ webauthn::AttestationObject webauthn::AttestationObject::fromCbor(const std::vec
 		}
 		else if (key == "authData")
 		{
-			auto data = CBOR::getByteString(map_elem->value);
+			const auto value = CBOR::getByteString(map_elem->value);
 			
-			if (!data) 
+			if (!value)
 			{
 				throw exceptions::DataException{ "Invalid value of authData" };
 			}
 
-			attestation_object.authenticator_data = AuthenticatorData::fromBin(*data);
+			attestation_object.authenticator_data = AuthenticatorData::fromBin(*value);
 		}
 		else
 		{

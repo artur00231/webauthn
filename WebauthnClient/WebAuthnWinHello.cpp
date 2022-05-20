@@ -51,16 +51,16 @@ webauthn::impl::WebAuthnWinHello::WebAuthnWinHelloDll::WebAuthnWinHelloDll()
 	WebAuthNFreeAssertion = (WebAuthNFreeAssertion_t)GetProcAddress(webauthn_lib, "WebAuthNFreeAssertion");
 	WebAuthNFreeCredentialAttestation = (WebAuthNFreeCredentialAttestation_t)GetProcAddress(webauthn_lib, "WebAuthNFreeCredentialAttestation");
 
-	BOOL isAvaiable{};
+	BOOL is_avaiable{};
 
-	auto result = WebAuthNIsUserVerifyingPlatformAuthenticatorAvailable(&isAvaiable);
+	auto result = WebAuthNIsUserVerifyingPlatformAuthenticatorAvailable(&is_avaiable);
 
 	if (result != S_OK)
 	{
-		isAvaiable = false;
+		is_avaiable = false;
 	}
 
-	this->isAvaiable = isAvaiable;
+	this->isAvaiable = is_avaiable;
 }
 
 webauthn::impl::WebAuthnWinHello::WebAuthnWinHelloDll::WebAuthnWinHelloDll(WebAuthnWinHelloDll&& other) noexcept
@@ -121,7 +121,7 @@ webauthn::impl::WebAuthnWinHello::~WebAuthnWinHello()
 }
 
 std::optional<webauthn::MakeCredentialResult> webauthn::impl::WebAuthnWinHello::makeCredential(const webauthn::UserData& user, const webauthn::RelyingParty& rp,
-	const std::vector<std::byte>& challenge, const std::optional<std::string>& password, const webauthn::WebAuthnOptions& options)
+	const std::vector<std::byte>& challenge, [[maybe_unused]] const std::optional<std::string>& password, const webauthn::WebAuthnOptions& options)
 {
 	if (!webAuthnWinHelloDll)
 	{
@@ -245,7 +245,7 @@ std::optional<webauthn::MakeCredentialResult> webauthn::impl::WebAuthnWinHello::
 }
 
 std::optional<webauthn::GetAssertionResult> webauthn::impl::WebAuthnWinHello::getAssertion(const std::vector<webauthn::CredentialId>& id, const webauthn::RelyingParty& rp,
-	const std::vector<std::byte>& challenge, const std::optional<std::string>& password, const webauthn::WebAuthnOptions& options)
+	const std::vector<std::byte>& challenge, [[maybe_unused]] const std::optional<std::string>& password, const webauthn::WebAuthnOptions& options)
 {
 	std::vector<std::vector<BYTE>> credentials_id{};
 	for (auto&& key_id : id)

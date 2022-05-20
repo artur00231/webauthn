@@ -104,7 +104,7 @@ namespace webauthn::impl
 		std::vector<EXTENSION> extensions{};
 
 		//Supported options
-		std::vector<std::pair<OPTION, bool>> options{};
+		std::vector<std::pair<OPTION, bool>> supported_options{};
 
 		//Return error, even if libfido2 library error is not critical
 		static constexpr const bool aggresive_errors{ true };

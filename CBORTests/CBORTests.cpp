@@ -14,7 +14,7 @@ namespace webauthn::CBOR
 		std::vector<std::byte> hexToBin(std::string_view hex)
 		{
 			std::vector<std::byte> data{};
-			auto fromHex = [](char x) {
+			auto fromHex = [](char x) -> std::uint8_t {
 				if (x >= '0' && x <= '9')
 					return (x - '0');
 				if (x >= 'A' && x <= 'F')

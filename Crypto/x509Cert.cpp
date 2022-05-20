@@ -39,7 +39,7 @@ webauthn::crypto::x509Cert webauthn::crypto::x509Cert::loadFromDer(const std::ve
 
     cert.bio_mem = BIO_new(BIO_s_mem());
     
-    auto writen = BIO_write(cert.bio_mem, reinterpret_cast<const char*>(data.data()), data.size());
+    [[maybe_unused]] auto writen = BIO_write(cert.bio_mem, reinterpret_cast<const char*>(data.data()), data.size());
 
     cert.x509 = d2i_X509_bio(cert.bio_mem, nullptr);
 

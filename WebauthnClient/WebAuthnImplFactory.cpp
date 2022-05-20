@@ -53,6 +53,7 @@ namespace helpers
     };
     static constexpr bool isWebauthnlibfido2Avaiable = Webauthnlibfido2Avaiable<>::value;
 
+    //TODO Add user choice
     static std::optional<std::string> getUserImpl()
     {
         auto user_impl = std::getenv(webauthn::WebAuthnImplFactory::environment_variable_name);
@@ -124,8 +125,6 @@ std::unique_ptr<webauthn::impl::WebAuthnImpl> webauthn::WebAuthnImplFactory::cre
             return helpers::createWebAuthnImplFromName(*implementation);
         }
     }
-
-    return {};
 }
 
 std::vector<std::string> webauthn::WebAuthnImplFactory::getAvaiableImplementations()

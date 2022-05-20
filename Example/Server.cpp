@@ -47,7 +47,7 @@ bool Server::createUser(const std::string& name, const std::string& passw)
 	statement.bind(3, passw_key.data(), static_cast<int>(passw_key.size()));
 
 	try {
-		auto changed = statement.exec();
+		statement.exec();
 	}
 	catch ([[maybe_unused]] const SQLite::Exception& exception)
 	{
@@ -92,7 +92,7 @@ ServerInterface::LoginResult Server::loginUser(const std::string& name, const st
 		SQLite::Statement statement{ *db, query };
 		statement.bind(1, name);
 
-		auto result = statement.tryExecuteStep();
+		result = statement.tryExecuteStep();
 		if (result == SQLITE_ROW)
 		{
 			last_auth_data.clear();
@@ -199,7 +199,7 @@ bool Server::addWebauthn(const std::string& name, const webauthn::MakeCredential
 		statement.bind(4, rp.ID.data(), static_cast<int>(rp.ID.size()));
 
 		try {
-			auto changed = statement.exec();
+			statement.exec();
 		}
 		catch ([[maybe_unused]] const SQLite::Exception& exception)
 		{

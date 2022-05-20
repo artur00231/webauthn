@@ -33,6 +33,6 @@ public:
 	std::vector<std::byte> last_auth_data{};
 	std::vector<std::byte> last_user_id{};
 	std::vector<std::byte> last_RP_id{};
-	std::vector<std::byte> last_challenge{};;
+	std::vector<std::byte> last_challenge{};
 };
 

@@ -22,7 +22,7 @@ namespace webauthn::crypto
 		static std::vector<std::byte> hexToBin(std::string_view hex)
 		{
 			std::vector<std::byte> data{};
-			auto fromHex = [](char x) {
+			auto fromHex = [](char x) -> std::uint8_t {
 				if (x >= '0' && x <= '9')
 					return (x - '0');
 				if (x >= 'A' && x <= 'F')
@@ -50,12 +50,12 @@ namespace webauthn::crypto
 				return false;
 			}
 
-			if (sizeof(typename T::value_type) != 1)
+			if constexpr (sizeof(typename T::value_type) != 1)
 			{
 				return false;
 			}
 
-			if (alignof(typename T::value_type) != alignof(std::byte))
+			if constexpr (alignof(typename T::value_type) != alignof(std::byte))
 			{
 				return false;
 			}

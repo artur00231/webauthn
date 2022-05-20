@@ -101,7 +101,7 @@ namespace webauthn::impl::helpers
 	}
 }
 
-std::optional<webauthn::impl::Libfido2Authenticator> webauthn::impl::Libfido2Authenticator::createLibfido2Authenticator(std::string path, Libfido2Token token)
+std::optional<webauthn::impl::Libfido2Authenticator> webauthn::impl::Libfido2Authenticator::createLibfido2Authenticator(std::string path, [[maybe_unused]] Libfido2Token token)
 {
 	auto device = helpers::openFido2Device(path);
 	if (!device)
@@ -153,7 +153,7 @@ std::optional<webauthn::impl::Libfido2Authenticator> webauthn::impl::Libfido2Aut
 		option_map[getOptionText(x)] = x;
 		});
 	std::ranges::for_each(options_raw, [&option_map, &authenticator](auto&& x) {
-		option_map[x.first].and_then([&authenticator, &x](auto&& y) { authenticator.options.emplace_back(y, x.second); return std::optional<bool>{}; });
+		option_map[x.first].and_then([&authenticator, &x](auto&& y) { authenticator.supported_options.emplace_back(y, x.second); return std::optional<bool>{}; });
 		});
 
 	if (authenticator.winhello() && authenticator.algorithms.empty())
@@ -167,7 +167,7 @@ std::optional<webauthn::impl::Libfido2Authenticator> webauthn::impl::Libfido2Aut
 	return authenticator;
 }
 
-webauthn::impl::Libfido2Authenticator::MakeCredentialLibfido2Result webauthn::impl::Libfido2Authenticator::makeCredential(Libfido2Token token, const UserData& user, const RelyingParty& rp, const std::vector<std::byte>& challenge, const std::optional<std::string>& password, const WebAuthnOptions& options)
+webauthn::impl::Libfido2Authenticator::MakeCredentialLibfido2Result webauthn::impl::Libfido2Authenticator::makeCredential([[maybe_unused]] Libfido2Token token, const UserData& user, const RelyingParty& rp, const std::vector<std::byte>& challenge, const std::optional<std::string>& password, const WebAuthnOptions& options)
 {
 	auto device = helpers::openFido2Device(path);
 	if (!device)
@@ -260,7 +260,7 @@ webauthn::impl::Libfido2Authenticator::MakeCredentialLibfido2Result webauthn::im
 	return created_credential;
 }
 
-webauthn::impl::Libfido2Authenticator::GetAssertionLibfido2Result webauthn::impl::Libfido2Authenticator::getAssertion(Libfido2Token token, const std::vector<CredentialId>& id, const RelyingParty& rp, const std::vector<std::byte>& challenge, const std::optional<std::string>& password, const WebAuthnOptions& options)
+webauthn::impl::Libfido2Authenticator::GetAssertionLibfido2Result webauthn::impl::Libfido2Authenticator::getAssertion([[maybe_unused]] Libfido2Token token, const std::vector<CredentialId>& id, const RelyingParty& rp, const std::vector<std::byte>& challenge, const std::optional<std::string>& password, const WebAuthnOptions& options)
 {
 	auto device = helpers::openFido2Device(path);
 	if (!device)
@@ -358,8 +358,8 @@ webauthn::impl::Libfido2Authenticator::GetAssertionLibfido2Result webauthn::impl
 
 bool webauthn::impl::Libfido2Authenticator::supports(OPTION option) const noexcept
 {
-	auto it = std::ranges::find_if(options, [option](auto&& x) { return x.first == option; });
-	if (it == options.end())
+	auto it = std::ranges::find_if(supported_options, [option](auto&& x) { return x.first == option; });
+	if (it == supported_options.end())
 		return false;
 
 	return it->second;

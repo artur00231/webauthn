@@ -11,6 +11,8 @@ namespace webauthn
 	class Attestation
 	{
 	public:
+		virtual ~Attestation() = default;
+
 		enum class Format { None };
 
 		virtual bool canAttest() const = 0;

@@ -40,14 +40,14 @@ std::optional<std::unique_ptr<webauthn::crypto::PublicKey>> webauthn::crypto::Pu
     //Check for algorithm type
     for (auto& elem : *map_arr)
     {
-        auto value = CBOR::getIntegral<int>(elem->key);
-        if (!value) {
+        const auto key = CBOR::getIntegral<int>(elem->key);
+        if (!key) {
             continue;
         }
 
-        if (*value == 1)
+        if (*key == 1)
         {
-            auto value = CBOR::getIntegral<int>(elem->value);
+            const auto value = CBOR::getIntegral<int>(elem->value);
             if (!value) return {};
 
             if (!COSE::isCOSE_KeyType(*value)) return {};
@@ -55,9 +55,9 @@ std::optional<std::unique_ptr<webauthn::crypto::PublicKey>> webauthn::crypto::Pu
             key_type = static_cast<COSE::KEY_TYPE>(*value);
         }
 
-        if (*value == 3)
+        if (*key == 3)
         {
-            auto value = CBOR::getIntegral<int>(elem->value);
+            const auto value = CBOR::getIntegral<int>(elem->value);
             if (!value) return {};
 
             if (!COSE::isCOSE_ALGORITHM(*value)) return {};
@@ -123,9 +123,6 @@ std::optional<std::unique_ptr<webauthn::crypto::PublicKey>> webauthn::crypto::Pu
         return {};
         break;
     }
-
-    [[unlikely]]
-    return {};
 }
 
 std::optional<webauthn::crypto::ECDSAKey> webauthn::crypto::createECDSA(webauthn::CBOR::CBORHandle handle, webauthn::crypto::COSE::SIGNATURE_HASH hash,
@@ -140,16 +137,16 @@ std::optional<webauthn::crypto::ECDSAKey> webauthn::crypto::createECDSA(webauthn
     //Check for algorithm type
     for (auto& elem : *map_arr)
     {
-        auto value = webauthn::CBOR::getIntegral<int>(elem->key);
+        const auto key = webauthn::CBOR::getIntegral<int>(elem->key);
 
-        if (!value)
+        if (!key)
         {
             continue;
         }
 
-        if (*value == -1 && !ec)
+        if (*key == -1 && !ec)
         {
-            auto value = webauthn::CBOR::getIntegral<int>(elem->value);
+            const auto value = webauthn::CBOR::getIntegral<int>(elem->value);
             if (!value) return {};
 
             if (!webauthn::crypto::COSE::isCOSE_ECDSA_EC(*value)) return {};
@@ -157,12 +154,12 @@ std::optional<webauthn::crypto::ECDSAKey> webauthn::crypto::createECDSA(webauthn
             ec = static_cast<webauthn::crypto::COSE::ECDSA_EC>(*value);
         }
 
-        if (*value == -2 && !bin_x)
+        if (*key == -2 && !bin_x)
         {
             bin_x = std::move(webauthn::CBOR::getByteString(elem->value));
         }
 
-        if (*value == -3 && !bin_y)
+        if (*key == -3 && !bin_y)
         {
             bin_y = std::move(webauthn::CBOR::getByteString(elem->value));
         }
@@ -189,16 +186,16 @@ std::optional<webauthn::crypto::EdDSAKey> webauthn::crypto::createEdDSA(webauthn
     //Check for algorithm type
     for (auto& elem : *map_arr)
     {
-        auto value = webauthn::CBOR::getIntegral<int>(elem->key);
+        const auto key = webauthn::CBOR::getIntegral<int>(elem->key);
 
-        if (!value)
+        if (!key)
         {
             continue;
         }
 
-        if (*value == -1 && !ec)
+        if (*key == -1 && !ec)
         {
-            auto value = webauthn::CBOR::getIntegral<int>(elem->value);
+            const auto value = webauthn::CBOR::getIntegral<int>(elem->value);
             if (!value) return {};
 
             if (!webauthn::crypto::COSE::isCOSE_EdDSA_EC(*value)) return {};
@@ -206,7 +203,7 @@ std::optional<webauthn::crypto::EdDSAKey> webauthn::crypto::createEdDSA(webauthn
             ec = static_cast<webauthn::crypto::COSE::EdDSA_EC>(*value);
         }
 
-        if (*value == -2 && !bin_x)
+        if (*key == -2 && !bin_x)
         {
             bin_x = std::move(webauthn::CBOR::getByteString(elem->value));
         }

@@ -98,19 +98,21 @@ namespace webauthn::CBOR
 			return {};
 		}
 
-		bool is_positive = cbor_isa_uint(item);
-		auto uint_value = cbor_get_int(item);
+		const bool is_positive = cbor_isa_uint(item);
+		const auto uint_value = cbor_get_int(item);
 
 		//Chek if T has same sign
-
-		if (std::is_unsigned_v<T> && !is_positive)
+		if constexpr (std::is_unsigned_v<T>)
 		{
-			return {};
+			if (!is_positive)
+			{
+				return {};
+			}
 		}
 
 		if (!is_positive)
 		{
-			std::make_signed_t<decltype(uint_value)> int_value = uint_value;
+			std::make_signed_t<std::decay_t<decltype(uint_value)>> int_value = uint_value;
 			int_value = -int_value - 1;
 
 			T value = static_cast<T>(int_value);
@@ -123,7 +125,7 @@ namespace webauthn::CBOR
 			return value;
 		}
 
-		T value = static_cast<T>(uint_value);
+		const T value = static_cast<T>(uint_value);
 		if (static_cast<decltype(uint_value)>(value) != uint_value)
 		{
 			return {};
